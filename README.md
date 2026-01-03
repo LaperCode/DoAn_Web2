@@ -1,7 +1,6 @@
-Phạm Hồng Trường 3122410442
+Nguyễn Hoàng Lập - 3123410194
 
-Dương Minh Trí 3122410420
+Dương Thiện Quý - 3123410298
 
-Lê Quang Kiệt 3123410180
+Nguyễn Quang Minh - 3122410241
 
-phạm phan đức khải 3123410146
