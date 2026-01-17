@@ -44,4 +44,4 @@ setInterval(() => {
         nextSlide()
         showSlide()
     }
-}, 3000) // chuyển slide mỗi 3 giây
+}, 6000) // chuyển slide mỗi 6 giây

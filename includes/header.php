@@ -36,12 +36,15 @@ $page = $page - 1;
     <link rel="stylesheet" href="./assets/css/reponsive.css">
     <link rel="stylesheet" href="./assets/css/grid.css">
     <link rel="stylesheet" href="./assets/css/app.css">
-    <link rel="icon" href="./images/booknest.jpg">
+    <link rel="icon" href="./images/logo2.jpg">
     <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
 
     <!-- mobile menu -->
     <div class="mobile-menu bg-second">
-        <a href="#" class="mb-logo">ZBooks</a>
+        <a href="#" class="mb-logo">
+            <img src="./images/logo2.jpg" alt="ZBooks" style="height: 30px; width: auto; margin-right: 8px; vertical-align: middle; border-radius: 3px;">
+            <span style="vertical-align: middle;">ZBooks</span>
+        </a>
         <span class="mb-menu-toggle" id="mb-menu-toggle">
             <i class='bx bx-menu'></i>
         </span>
@@ -69,7 +72,10 @@ $page = $page - 1;
         <!-- mid header -->
         <div class="bg-main">
             <div class="mid-header container">
-                <a href="index.php" class="logo">ZBooks</a>
+                <a href="index.php" class="logo">
+                    <img src="./images/logo2.jpg" alt="ZBooks Logo" style="height: 40px; width: auto; margin-right: 10px; vertical-align: middle; border-radius: 5px;">
+                    <span style="vertical-align: middle;">ZBooks</span>
+                </a>
                 <?php if (!isset($type_post)) { ?>
                     <form class="search" method="get" action="./products.php">
                     <?php } else { ?>

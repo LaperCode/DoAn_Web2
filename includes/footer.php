@@ -15,8 +15,8 @@
                 <h3 class="footer-head">Thông Tin Và Chính Sách</h3>
                 <ul class="menu">
                     <li><a href="#">Liên hệ chúng tôi</a></li>
-                    <li><a href="#">Chương trình ưu đãi thu game cũ</a></li>
-                    <li><a href="#">Chính sách đổi trả game</a></li>
+                    <li><a href="#">Chương trình ưu đãi thu sách cũ</a></li>
+                    <li><a href="#">Chính sách đổi trả sách</a></li>
                     <li><a href="#">Chính sách bảo mật thông tin</a></li>
                 </ul>
             </div>

@@ -292,12 +292,12 @@ ul.devided > li:last-child {
 }
 
 .slide {
-    height: 0;
+    height: 100%;
     position: absolute;
     display: flex;
     inset: 0;
     overflow: hidden;
-    visibility: hidden;
+    padding: 30px;
 }
 
 .slide.active {
@@ -311,6 +311,7 @@ ul.devided > li:last-child {
     flex-direction: column;
     justify-content: center;
     height: 100%;
+    margin-top: 50px;
 }
 
 .info-content h2 {
@@ -404,6 +405,15 @@ ul.devided > li:last-child {
     opacity: 0;
     visibility: hidden;
     transition: all 0.8s cubic-bezier(0.77, 0, 0.175, 1);
+    padding: 20px;
+}
+
+.right-left img {
+    height: 100%;
+    box-sizing: border-box;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.7);
 }
 
 .slide.active .right-left {
@@ -478,7 +488,7 @@ ul.devided > li:last-child {
 }
 
 .section {
-    padding: 60px 0;
+    padding: 10px 0;
 }
 
 .section-header,
