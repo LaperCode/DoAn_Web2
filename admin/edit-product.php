@@ -22,7 +22,7 @@ include("../admin/includes/header.php");
                                 </h4>
                             </div>
                             <div class="card-body">
-                                <form id= "productForm"action="code.php" method="POST" enctype="multipart/form-data"><!-- Uploads image -->
+                                <form id="productForm" action="code.php" method="POST" enctype="multipart/form-data"><!-- Uploads image -->
                                     <div class="row">
                                         <div class="col-md-12">
                                             <label class="mb-0"><b>Select Category</b></label>
@@ -137,7 +137,7 @@ include("../admin/includes/header.php");
 <script>
     document.getElementById('productForm').addEventListener('submit', function(e) {
         const originalPrice = parseFloat(document.querySelector('input[name="original_price"]').value);
-        const sellingPrice = parseFloat(document.querySelector('input[name="selling_price"]').value || "0"); 
+        const sellingPrice = parseFloat(document.querySelector('input[name="selling_price"]').value || "0");
         // Kiểm tra xem giá trị có phải số hay không 
         if (isNaN(originalPrice) || originalPrice <= 0) {
             alert("Giá ban đầu phải là một số lớn hơn 0.");

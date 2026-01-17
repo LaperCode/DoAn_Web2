@@ -7,6 +7,16 @@ $blogs                  =   getBlogs($page, $search);
 
 
 <body>
+    <style>
+        .hero {
+            min-height: 600px;
+            margin-bottom: 50px;
+        }
+
+        .slide .info {
+            z-index: 10;
+        }
+    </style>
     <!-- hero section -->
     <div class="hero">
         <div class="slider">
@@ -19,7 +29,7 @@ $blogs                  =   getBlogs($page, $search);
                     }
                 ?>
                     <!-- slide item -->
-                    <div class="slide">
+                    <div class="slide <?= $count == 0 ? 'active' : '' ?>">
                         <div class="info">
                             <div class="info-content">
                                 <h3 class="top-down">

@@ -86,7 +86,7 @@ if (isset($_POST['add_category_btn'])) {
     $small_description = $_POST['small_description'];
     $description = $_POST['description'];
     $original_price = $_POST['original_price'];
-    $selling_price = $_POST['selling_price'] == '' || $_POST['selling_price'] == 0? $_POST['original_price'] : $_POST['selling_price'];
+    $selling_price = $_POST['selling_price'] == '' || $_POST['selling_price'] == 0 ? $_POST['original_price'] : $_POST['selling_price'];
     $status = isset($_POST['status']) ? '1' : '0';
     $qty = 100;
     $image = $_FILES['image']['name'];
@@ -119,7 +119,7 @@ if (isset($_POST['add_category_btn'])) {
     $small_description = $_POST['small_description'];
     $description = $_POST['description'];
     $original_price = $_POST['original_price'];
-    $selling_price = $_POST['selling_price'] == '' || $_POST['selling_price'] == 0? $_POST['original_price'] : $_POST['selling_price'];
+    $selling_price = $_POST['selling_price'] == '' || $_POST['selling_price'] == 0 ? $_POST['original_price'] : $_POST['selling_price'];
     $status = isset($_POST['status']) ? '1' : '0';
     $qty = $_POST['qty'];
 

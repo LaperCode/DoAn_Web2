@@ -100,7 +100,7 @@ include("../admin/includes/header.php");
 <script>
     document.getElementById('productForm').addEventListener('submit', function(e) {
         const originalPrice = parseFloat(document.querySelector('input[name="original_price"]').value);
-        const sellingPrice = parseFloat(document.querySelector('input[name="selling_price"]').value || "0"); 
+        const sellingPrice = parseFloat(document.querySelector('input[name="selling_price"]').value || "0");
         // Kiểm tra xem giá trị có phải số hay không 
         if (isNaN(originalPrice) || originalPrice <= 0) {
             alert("Giá ban đầu phải là một số lớn hơn 0.");
