@@ -37,3 +37,11 @@ document.querySelector('.slide-prev').addEventListener('click', () => {
 })
 
 showSlide()
+
+// auto play slider
+setInterval(() => {
+    if (slide_play) {
+        nextSlide()
+        showSlide()
+    }
+}, 3000) // chuyển slide mỗi 3 giây

@@ -24,7 +24,7 @@ $page = $page - 1;
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BookNest-Tổ ấm của những cuốn sách</title>
+    <title>ZBooks - Read Your Favorite Books</title>
     <!-- google font -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,900&display=swap" rel="stylesheet">
@@ -41,7 +41,7 @@ $page = $page - 1;
 
     <!-- mobile menu -->
     <div class="mobile-menu bg-second">
-        <a href="#" class="mb-logo">BookNest</a>
+        <a href="#" class="mb-logo">ZBooks</a>
         <span class="mb-menu-toggle" id="mb-menu-toggle">
             <i class='bx bx-menu'></i>
         </span>
@@ -60,7 +60,7 @@ $page = $page - 1;
                         <a href="#">+84977723622</a>
                     </li>
                     <li>
-                        <a href="#">BookNest@mail.com</a>
+                        <a href="#">ZBooks@mail.com</a>
                     </li>
                 </ul>
             </div>
@@ -69,7 +69,7 @@ $page = $page - 1;
         <!-- mid header -->
         <div class="bg-main">
             <div class="mid-header container">
-                <a href="index.php" class="logo">BookNest</a>
+                <a href="index.php" class="logo">ZBooks</a>
                 <?php if (!isset($type_post)) { ?>
                     <form class="search" method="get" action="./products.php">
                     <?php } else { ?>
