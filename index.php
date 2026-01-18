@@ -197,7 +197,7 @@ $blogs                  =   getBlogs($page, $search);
     <div class="section">
         <div class="container">
             <div class="section-header">
-                <h2>Top ấn phẩm bán chạy</h2>
+                <h2>Top các ấn phẩm bán chạy</h2>
             </div>
             <div class="row" id="best-products">
                 <?php

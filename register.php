@@ -23,7 +23,7 @@ include("./includes/header.php");
     }
 
     .register-header {
-        background: linear-gradient(135deg, #000 0%, #333 100%);
+        background: linear-gradient(135deg, #2C3E50 0%, #34495E 100%);
         padding: 40px 30px;
         text-align: center;
     }
@@ -47,7 +47,7 @@ include("./includes/header.php");
         display: block;
         margin-bottom: 8px;
         font-weight: 600;
-        color: #333;
+        color: #2C3E50;
         font-size: 14px;
     }
 
@@ -62,13 +62,14 @@ include("./includes/header.php");
 
     .form-group input:focus {
         outline: none;
-        border-color: #000;
+        border-color: #F39C12;
+        box-shadow: 0 0 0 3px rgba(243, 156, 18, 0.1);
     }
 
     .btn-register {
         width: 100%;
         padding: 14px;
-        background: #000;
+        background: #F39C12;
         color: white;
         border: none;
         border-radius: 5px;
@@ -82,9 +83,9 @@ include("./includes/header.php");
     }
 
     .btn-register:hover {
-        background: #333;
+        background: #E67E22;
         transform: translateY(-2px);
-        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 5px 20px rgba(243, 156, 18, 0.3);
     }
 
     .register-footer {
@@ -95,12 +96,14 @@ include("./includes/header.php");
     }
 
     .register-footer a {
-        color: #000;
+        color: #F39C12;
         text-decoration: none;
         font-weight: 500;
+        transition: color 0.3s ease;
     }
 
     .register-footer a:hover {
+        color: #E67E22;
         text-decoration: underline;
     }
 

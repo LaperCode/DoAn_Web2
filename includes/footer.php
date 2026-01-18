@@ -1,4 +1,4 @@
-<footer class="bg-second">
+<footer class="bg-second" style="background-color: #2C3E50;">
     <div class="container">
         <div class="row">
             <div class="col-5 col-md-6 ">
@@ -23,7 +23,7 @@
             <div class="col-2 col-md-6 col-sm-12">
                 <div class="contact">
                     <h3 class="contact-header">
-                        GameHub
+                        ZBooks
                     </h3>
                     <ul class="contact-socials">
                         <li><a href="#">

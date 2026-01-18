@@ -1,16 +1,35 @@
 :root {
+    /* ZBooks Brand Colors - Navy Blue + Orange Theme */
     --main-bg-color: #fff;
     --second-bg-color: #f5f5f5;
     --third-bg-color: #e3e3e3;
     --grey: #4b4b4b;
     --black: #000;
-    --red: #c0392b;
+    
+    /* Primary Brand Colors */
+    --navy-blue: #2C3E50;           /* Main navy blue from logo */
+    --dark-navy: #1A252F;           /* Darker shade for hover */
+    --light-navy: #34495E;          /* Lighter shade for backgrounds */
+    
+    /* Accent Colors */
+    --orange: #F39C12;              /* Orange from logo */
+    --light-orange: #FFB84D;        /* Lighter orange for hover */
+    --dark-orange: #E67E22;         /* Darker orange */
+    
+    /* Legacy red variable (kept for backward compatibility, now points to orange) */
+    --red: var(--orange);
+    
+    /* Header Sizes */
     --top-header-size: 30px;
     --mid-header-size: 80px;
     --bottom-header-size: 45px;
-    --btn-bg: #000;
-    --btn-border-color: #000;
+    
+    /* Button Colors - Updated to Navy + Orange theme */
+    --btn-bg: var(--navy-blue);
+    --btn-border-color: var(--navy-blue);
     --btn-color: #fff;
+    --btn-accent-bg: var(--orange);
+    --btn-accent-hover: var(--light-orange);
 }
 
 * {
@@ -61,8 +80,24 @@ img {
     background-color: var(--main-bg-color);
 }
 
+.bg-navy {
+    background-color: var(--navy-blue);
+}
+
+.bg-light-navy {
+    background-color: var(--light-navy);
+}
+
 .text-red {
-    color: var(--red);
+    color: var(--orange);
+}
+
+.text-navy {
+    color: var(--navy-blue);
+}
+
+.text-orange {
+    color: var(--orange);
 }
 
 .mobile-menu {
@@ -81,6 +116,8 @@ img {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    background-color: var(--dark-navy);
+    color: var(--main-bg-color);
 }
 
 .top-header ul {
@@ -89,6 +126,12 @@ img {
 
 .top-header a {
     font-size: 13px;
+    color: var(--second-bg-color);
+    transition: color 0.3s ease;
+}
+
+.top-header a:hover {
+    color: var(--orange);
 }
 
 ul.devided > li {
@@ -140,17 +183,24 @@ ul.devided > li:last-child {
     align-items: center;
     justify-content: space-between;
     height: 80px;
-    background-color: var(--main-bg-color);
+    background-color: var(--navy-blue);
 }
 
 .logo {
     font-size: 40px;
     font-weight: 700;
+    color: var(--main-bg-color);
+    transition: color 0.3s ease;
+}
+
+.logo:hover {
+    color: var(--orange);
 }
 
 .mb-logo {
     font-size: 25px;
     font-weight: 700;
+    color: var(--navy-blue);
 }
 
 .search {
@@ -177,6 +227,12 @@ ul.devided > li:last-child {
     right: 20px;
     cursor: pointer;
     font-size: 25px;
+    color: var(--orange);
+    transition: color 0.3s ease;
+}
+
+.search i:hover {
+    color: var(--dark-orange);
 }
 
 .user-menu {
@@ -186,12 +242,19 @@ ul.devided > li:last-child {
 .user-menu > li > a {
     font-size: 30px;
     margin-left: 15px;
+    color: var(--main-bg-color);
+    transition: color 0.3s ease;
+}
+
+.user-menu > li > a:hover {
+    color: var(--orange);
 }
 
 .bottom-header {
     display: flex;
     align-items: center;
     justify-content: center;
+    background-color: var(--light-navy);
 }
 
 .main-menu {
@@ -206,15 +269,22 @@ ul.devided > li:last-child {
     font-weight: 600;
     height: 100%;
     text-transform: uppercase;
+    color: var(--main-bg-color);
+    transition: color 0.3s ease;
+}
+
+.main-menu > li > a:hover {
+    color: var(--orange);
 }
 
 .main-menu > li {
     border-bottom: 2px solid transparent;
     border-top: 2px solid transparent;
+    transition: border-color 0.3s ease;
 }
 
 .main-menu > li:hover {
-    border-bottom: 2px solid var(--red);
+    border-bottom: 2px solid var(--orange);
 }
 
 /* mega menu */
@@ -229,6 +299,7 @@ ul.devided > li:last-child {
     z-index: 2;
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0;
     transition: all 0.4s cubic-bezier(0.77, 0, 0.175, 1);
+    border-top: 3px solid var(--orange);
 }
 
 .mega-dropdown:hover .mega-content {
@@ -240,6 +311,7 @@ ul.devided > li:last-child {
 .mega-content h3 {
     margin: 20px 0;
     padding-left: 20px;
+    color: var(--navy-blue);
 }
 
 .mega-content ul {
@@ -251,13 +323,15 @@ ul.devided > li:last-child {
     font-weight: normal;
     padding: 10px 0;
     border-bottom: 2px dashed #f5f5f5;
-    transition: padding-left 0.2s ease-in-out;
+    transition: padding-left 0.2s ease-in-out, color 0.3s ease;
     margin: 0 20px;
     text-transform: capitalize;
+    color: var(--txt-second-color);
 }
 
 .mega-content ul > li > a:hover {
     padding-left: 10px;
+    color: var(--orange);
 }
 
 .mega-content ul > li {
@@ -265,7 +339,7 @@ ul.devided > li:last-child {
 }
 
 .mega-content ul > li:hover {
-    border-bottom: 2px solid var(--red);
+    border-bottom: 2px solid var(--orange);
 }
 
 /* end mega menu */
@@ -363,11 +437,13 @@ ul.devided > li:last-child {
     align-items: center;
     padding: 10px;
     transition: all 0.3s cubic-bezier(0.77, 0, 0.175, 1);
+    background-color: var(--orange);
+    color: var(--main-bg-color);
 }
 
 .slide-controll:hover {
-    background-color: var(--btn-bg);
-    color: var(--btn-color);
+    background-color: var(--dark-orange);
+    color: var(--main-bg-color);
 }
 
 .slide-next {
@@ -563,7 +639,7 @@ ul.devided > li:last-child {
     margin-left: 5px;
     font-size: 20px;
     font-weight: 600;
-    color: var(--red);
+    color: var(--orange);
 }
 
 .product-btn {
@@ -675,37 +751,101 @@ ul.devided > li:last-child {
 }
 
 footer {
-    padding: 100px 0;
+    padding: 60px 0 30px;
 }
 
 .footer-head {
-    margin-bottom: 20px;
+    margin-bottom: 25px;
     text-transform: uppercase;
+    color: var(--main-bg-color);
+    font-weight: 600;
+    font-size: 18px;
+    letter-spacing: 1px;
+    position: relative;
+    padding-bottom: 12px;
+}
+
+.footer-head::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 40px;
+    height: 3px;
+    background: var(--orange);
 }
 
 footer ul li {
-    margin-bottom: 10px;
+    margin-bottom: 12px;
+}
+
+footer ul li a {
+    color: var(--second-bg-color);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+}
+
+footer ul li a:hover {
+    color: var(--orange);
+    padding-left: 5px;
+}
+
+.contact {
+    text-align: center;
 }
 
 .contact-header {
     text-align: center;
     font-weight: 600;
     margin-bottom: 30px;
-    font-size: 38px;
+    font-size: 18px;
+    color: var(--main-bg-color);
+    position: relative;
+    padding-bottom: 12px;
+    display: inline-block;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.contact-header::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 0;
+    width: 60px;
+    height: 3px;
+    background: var(--orange);
 }
 
 .contact-socials {
     display: flex;
     justify-content: center;
+    gap: 10px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
 .contact-socials a {
-    font-size: 30px;
-    margin: 0 10px;
+    font-size: 32px;
+    color: var(--main-bg-color);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
 }
 
 .contact-socials a:hover {
-    color: var(--grey);
+    color: var(--main-bg-color);
+    background: var(--orange);
+    transform: translateY(-3px);
 }
 
 .menu li a {
@@ -862,15 +1002,20 @@ footer ul li {
     height: 35px;
     margin-left: 5px;
     font-size: 20px;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    color: var(--navy-blue);
 }
 
 .pagination > li > a.active {
-    background-color: var(--black);
+    background-color: var(--navy-blue);
     color: var(--main-bg-color);
+    border-color: var(--navy-blue);
 }
 
 .pagination > li > a:hover {
-    border: 2px solid var(--black);
+    border: 2px solid var(--orange);
+    color: var(--orange);
 }
 
 .product-img {

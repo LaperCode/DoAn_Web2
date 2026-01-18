@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 include("./functions/userfunctions.php");
 $search =   "";
 $page   =   1;
@@ -56,7 +58,7 @@ $page = $page - 1;
             <i class='bx bx-x'></i>
         </span>
         <!-- top header -->
-        <div class="bg-second">
+        <div class="bg-second" style="background-color: #1A252F;">
             <div class="top-header container">
                 <ul class="devided">
                     <li>
@@ -70,10 +72,10 @@ $page = $page - 1;
         </div>
         <!-- end top header -->
         <!-- mid header -->
-        <div class="bg-main">
+        <div class="bg-main" style="background-color: #2C3E50;">
             <div class="mid-header container">
                 <a href="index.php" class="logo">
-                    <img src="./images/logo2.jpg" alt="ZBooks Logo" style="height: 40px; width: auto; margin-right: 10px; vertical-align: middle; border-radius: 5px;">
+                    <img src="./images/logo_no_text_2.jpg" alt="ZBooks Logo" style="height: 60px; width: auto; margin-right: 5px; vertical-align: middle; border-radius: 5px;">
                     <span style="vertical-align: middle;">ZBooks</span>
                 </a>
                 <?php if (!isset($type_post)) { ?>
@@ -136,7 +138,7 @@ $page = $page - 1;
         </div>
 
         <!-- menu-main -->
-        <div class="bg-second">
+        <div class="bg-second" style="background-color: #34495E;">
             <div class="bottom-header container">
                 <ul class="main-menu">
                     <li><a href="index.php">Trang chủ</a></li>
