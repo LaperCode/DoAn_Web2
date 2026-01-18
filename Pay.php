@@ -1,34 +1,43 @@
-<?php 
+<?php
 include("./includes/header.php");
-if (!isset($_SESSION['auth_user']['id'])){
+if (!isset($_SESSION['auth_user']['id'])) {
     die("Từ Chối truy cập <a href='./login'>Đăng nhập ngay</a>");
 }
 
 $id = $_SESSION['auth_user']['id'];
 
-$users = getByID("users",$id);                              
-$data= mysqli_fetch_array($users);
-?>;
+$users = getByID("users", $id);
+$data = mysqli_fetch_array($users);
+?>
 
 <style>
-    th,td{
-        padding: 5px;
+    body {
+        background: #f5f7fa;
+    }
+
+    th,
+    td {
+        padding: 12px 8px;
         text-align: center;
     }
-    .input-number{
-        width: 100%;
-        font-size: 20px;
-        outline: none;
-        border: none;
+
+    .breadcumb {
+        padding: 20px 0;
     }
-    .btn-buy{
-        border: none;
-        outline: none;
-        font-size: 17px;
-        padding: 2px 6px;
-        border-radius: 2px;
-        background-color: #59e1ff;
-        display: inline-block;
+
+    .breadcumb a {
+        color: #2C3E50;
+        font-weight: 500;
+        transition: color 0.3s ease;
+    }
+
+    .breadcumb a:hover {
+        color: #F39C12;
+    }
+
+    .breadcumb span {
+        color: #7f8c8d;
+        margin: 0 8px;
     }
 </style>
 
@@ -48,9 +57,9 @@ $data= mysqli_fetch_array($users);
 
             <div class="box" style="padding: 0 40px">
                 <div class="product-info">
-                    <?php include("PayInclude.php");?>
-                <br>
-                <br>
+                    <?php include("PayInclude.php"); ?>
+                    <br>
+                    <br>
                 </div>
             </div>
         </div>
@@ -63,68 +72,87 @@ $data= mysqli_fetch_array($users);
     <!-- <script src="./assets/font/jquery/jquery-3.6.1.js"></script> -->
     <script type="text/javascript" src="./assets/js/Wn3.js"></script>
 </body>
-    <script>
-        $(document).ready(function () {
-            $('.input-number').on('change', function (e) {
-                if (e.target.value == 0){
-                    e.target.value = 1;
-                }
-                const node      = $(this).parent().parent();
-                const price     = parseInt(node.find('.product-price').val());
-                let total_order = parseInt(e.target.value);
-                let total_price = price * total_order;
-                node.find('.total-price').html(total_price);
-            })
-        });
-    </script>
+<script>
+    $(document).ready(function() {
+        $('.input-number').on('change', function(e) {
+            if (e.target.value == 0) {
+                e.target.value = 1;
+            }
+            const node = $(this).parent().parent();
+            const price = parseInt(node.find('.product-price').val());
+            let total_order = parseInt(e.target.value);
+            let total_price = price * total_order;
+            node.find('.total-price').html(total_price);
+        })
+    });
+</script>
 
 <script>
-$(document).ready(function() {
-  $(".btn-buy").click(function(event) {
-    event.preventDefault();
+    $(document).ready(function() {
+        $(".btn-buy").click(function(event) {
+            event.preventDefault();
 
-    let addtional = $("#order_comments").val();
-    let name = $("#name").val();
-    let phone = $("#phone").val();
-    let address = $("#address").val();
+            let addtional = $("#order_comments").val();
+            let name = $("#name").val();
+            let phone = $("#phone").val();
+            let address = $("#address").val();
 
-    // Chuyển đổi form thành mảng các đối tượng thuộc tính và giá trị
-    var formDataArray = $("form").serializeArray();
+            // Chuyển đổi form thành mảng các đối tượng thuộc tính và giá trị
+            var formDataArray = $("form").serializeArray();
 
-    // Kiểm tra radio button đã được chọn
-    if ($("#payment_method_bacs").is(":checked")) {
-      let payment_method_bacs = $("#payment_method_bacs").val();
-      formDataArray.push({ name: "payment_method", value: 0 });
-    }else{
-      let payment_method_cod = $("#payment_method_cod").val();
-      formDataArray.push({ name: "payment_method", value: 1 });
-    }
+            // Kiểm tra radio button đã được chọn
+            if ($("#payment_method_bacs").is(":checked")) {
+                let payment_method_bacs = $("#payment_method_bacs").val();
+                formDataArray.push({
+                    name: "payment_method",
+                    value: 0
+                });
+            } else {
+                let payment_method_cod = $("#payment_method_cod").val();
+                formDataArray.push({
+                    name: "payment_method",
+                    value: 1
+                });
+            }
 
-    // Thêm biến tùy chỉnh vào mảng formDataArray
-    formDataArray.push({ name: "addtional", value: addtional });
-    formDataArray.push({ name: "name", value: name });
-    formDataArray.push({ name: "phone", value: phone });
-    formDataArray.push({ name: "address", value: address });
+            // Thêm biến tùy chỉnh vào mảng formDataArray
+            formDataArray.push({
+                name: "addtional",
+                value: addtional
+            });
+            formDataArray.push({
+                name: "name",
+                value: name
+            });
+            formDataArray.push({
+                name: "phone",
+                value: phone
+            });
+            formDataArray.push({
+                name: "address",
+                value: address
+            });
 
-    // Chuyển đổi mảng formDataArray thành chuỗi dữ liệu
-    var formData = $.param(formDataArray);
-    console.log(formData);
-    // Gửi dữ liệu form thông qua AJAX
-    $.ajax({
-      url: "./functions/ordercode.php",
-      type: "post",
-      data: formData,
-      success: function(response) {
-        if (response == 1) {
-            console.log(response);
-            window.location.href = "cart-status.php";
-        }
-      },
-      error: function(xhr, status, error) {
-        console.error(error);
-      }
+            // Chuyển đổi mảng formDataArray thành chuỗi dữ liệu
+            var formData = $.param(formDataArray);
+            console.log(formData);
+            // Gửi dữ liệu form thông qua AJAX
+            $.ajax({
+                url: "./functions/ordercode.php",
+                type: "post",
+                data: formData,
+                success: function(response) {
+                    if (response == 1) {
+                        console.log(response);
+                        window.location.href = "cart-status.php";
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
     });
-  });
-});
 </script>
+
 </html>

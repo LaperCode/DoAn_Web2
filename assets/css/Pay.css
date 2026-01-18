@@ -1,28 +1,39 @@
 .slider {
     width: 100%;
-    /* height: 750px; */
     display: flex;
     justify-content: space-between;
-    padding-top: 10px;
+    padding-top: 30px;
+    gap: 30px;
 }
 
 .slider .form-left {
     width: 58%;
     height: 100%;
-    
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
 }
 
 .slider .information {
-    padding: 0 15px 30px;
+    padding: 0 30px 30px;
     height: 100%;
-    
 }
 
 .slider .information-bill {
     width: 100%;
     height: 70%;
     padding: 30px 0 0;
-    border-top: 2px solid rgb(221 221 221);
+    border-top: 3px solid #F39C12;
+}
+
+.slider .information-bill h3,
+.slider .addtional-fill h3 {
+    color: #2C3E50;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 25px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .slider .input-information > p {
@@ -39,51 +50,76 @@
     float: right;
 }
 
+.slider label {
+    font-weight: 600;
+    color: #2C3E50;
+    font-size: 14px;
+}
+
+.slider label font:last-child {
+    color: #F39C12;
+}
 
 .slider input[type='text'] {
     width: 100%;
     outline: none;
     margin-left: 0;
     font-size: 16px;
-    border: 1px solid rgb(221 221 221);
+    border: 2px solid #e3e3e3;
     padding: 0 0.75em;
-    height: 2.507em;
+    height: 2.8em;
     margin-top: 7px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
 }
 
+.slider input[type='text']:focus {
+    border-color: #F39C12;
+    box-shadow: 0 0 0 3px rgba(243, 156, 18, 0.1);
+}
+
+.slider input[type='text']:read-only {
+    background-color: #f8f9fa;
+    cursor: not-allowed;
+}
 
 .slider label > span {
     font-weight: normal;
-    
 }
 
 .slider .addtional-fill {
     width: 100%;
     height: 30%;
+    margin-top: 30px;
 }
 
 .slider .order-option {
     padding: 15px 0 0;
 }
 
-
 .slider .optional {
-    color: rgb(34 34 34);
-    font-weight: bold;
-    font-size: 16px;
-    font-family: 'Mulish',sans-serif;
+    color: #7f8c8d;
+    font-weight: normal;
+    font-size: 14px;
+    font-style: italic;
 }
 
 .slider textarea {
     box-sizing: border-box;
-    border: 1px solid rgb(221 221 221);
-    padding: 0 0.75em;
-    height: 2.507em;
-    font-size: .97em;
-    border-radius: 0;
+    border: 2px solid #e3e3e3;
+    padding: 12px;
+    font-size: 15px;
+    border-radius: 8px;
     width: 100%;
     outline: none;
     margin-top: 10px;
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+.slider textarea:focus {
+    border-color: #F39C12;
+    box-shadow: 0 0 0 3px rgba(243, 156, 18, 0.1);
 }
 
 .slider .input-text {
@@ -95,150 +131,183 @@
 
 .slider .form-right {
     width: 40%;
-    height: 750px;
-    /* height: 100%; */
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    padding: 30px;
 }
 
 .slider .order {
-    /* height: 100%; */
-    border: 2px solid rgb(23 154 148);
-    padding: 0 30px;
+    border: 3px solid #F39C12;
+    border-radius: 12px;
+    padding: 0 30px 30px;
 }
 
-.slider h3 {
+.slider .your-oder {
     text-transform: uppercase;
-    color: rgb(27 25 25);
-    font-size: 18px;
-    font-family: 'Merriweather',sans-serif;
-    margin-top: 10px;
+    color: #2C3E50;
+    font-size: 20px;
+    font-weight: 700;
+    margin: 20px 0;
+    letter-spacing: 0.5px;
 }
 
 .slider .product-provisinal {
     width: 100%;
-    height: 250px;
     padding-top: 20px;
 }
 
 .slider th, td {
-    padding: 0.5em;
-    border-bottom: 3px solid rgb(236 236 236);
+    padding: 12px 8px;
+    border-bottom: 2px solid #ecf0f1;
     letter-spacing: .05em;
-    line-height: 1.3;
+    line-height: 1.5;
     width: 50%;
-    font-family: 'Mulish',sans-serif;
-    font-weight: bold;
+    font-weight: 600;
 }
 
 .slider th {
     text-align: left;
-    color: rgb(76 76 76); 
+    color: #2C3E50; 
 }
 
 .slider td {
     text-align: right;
-    color: rgb(17 17 17);
+    color: #2C3E50;
 }
 
 .slider th.product-name {
     text-transform: uppercase;
     font-size: 15px;
-    color: rgb(76 76 76);
-    font-family: 'Mulish',sans-serif;
-    /* border-width: 3px; */
+    color: #2C3E50;
+    border-bottom-width: 3px;
+    border-bottom-color: #F39C12;
 }
 
 .slider th.product-total {
     text-transform: uppercase;
     text-align: right;
     font-size: 15px;
-    color: rgb(76 76 76);
-    font-family: 'Mulish',sans-serif;
-    /* border-width: 3px; */
+    color: #2C3E50;
+    border-bottom-width: 3px;
+    border-bottom-color: #F39C12;
 }
 
 .slider td.product-name {
-    text-transform: uppercase;
+    text-transform: none;
     text-align: left;
     font-size: 15px;
-    color: rgb(102 102 102);
-    font-family: 'Mulish',sans-serif;
-    /* border-width: 3px; */
+    color: #7f8c8d;
 }
 
 .slider td.product-total {
-    text-transform: uppercase;
+    text-transform: none;
     font-size: 15px;
-    color: rgb(102 102 102);
-    font-family: 'Mulish',sans-serif;
-    /* border-width: 3px; */
+    color: #2C3E50;
+    font-weight: 700;
 }
 
 .slider .price-amount, .price-currencySymbol {
-    color: rgb(17 17 17);
-    font-size: 15px;
+    color: #F39C12;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.slider .cart-subtotal th {
+    color: #2C3E50;
+    font-weight: 600;
+}
+
+.slider .order-total th {
+    color: #2C3E50;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.slider .order-total .price-amount {
+    font-size: 20px;
+    color: #F39C12;
 }
 
 .slider .payment {
-    /* height: 200px; */
-    padding-top: 10px;
+    padding-top: 20px;
+    margin-top: 20px;
+    border-top: 2px solid #ecf0f1;
 }
 
 .slider .payment-list {
     list-style: none;
-    height: 100%;
+    padding: 0;
 }
 
 .slider .payment-bank, .payment-cash {
-    color: rgb(76 76 76);
-    font-family: 'Mulish',sans-serif;
+    padding: 15px 0;
+    border-radius: 8px;
+    transition: background 0.3s ease;
 }
 
 .slider .payment-bank {
-    border-bottom: 1px solid rgb(236 236 236);
-    margin-top: 5px;
+    border-bottom: 2px solid #ecf0f1;
 }
 
 .slider .payment-cash {
     margin-top: 8px;
 }
 
-.slider input {
-    margin: 3px 10px 16px 5px;
+.slider input[type="radio"] {
+    margin: 3px 10px 0 5px;
+    accent-color: #F39C12;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
 }
 
-.slider label {
-    color: rgb(34 34 34);
-    font-weight: bold;
+.slider .payment-bank label,
+.slider .payment-cash label {
+    color: #2C3E50;
+    font-weight: 600;
     font-size: 16px;
-    margin-bottom: 0.4em;
-    font-family: 'Mulish',sans-serif;
+    cursor: pointer;
 }
 
 .slider .payment-text {
-    margin-bottom: 8px; 
-    line-height: 1.5;
-    font-family: 'Mulish',sans-serif;
-    font-size: 15px;
-    color: rgb(76 76 76);
+    margin: 10px 0 10px 33px; 
+    line-height: 1.6;
+    font-size: 14px;
+    color: #7f8c8d;
+    background: #f8f9fa;
+    padding: 12px 15px;
+    border-radius: 6px;
+    border-left: 3px solid #F39C12;
 }
+
 .slider .payment-text p{
     margin-bottom: 0 !important;
 }
 
 .slider .btn-order {
-    height: 70px;
-    width: 100%;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 2px solid #ecf0f1;
 }
 
 .slider .btn-order-click {
     text-transform: uppercase;
     font-size: 16px;
-    font-family: 'Mulish',sans-serif;
-    color: rgb(255 255 255 );
-    background-color: rgb(0 0 0);
-    padding: 10px 30px;
-    font-weight: bold;
+    color: white;
+    background-color: #F39C12;
+    padding: 14px 35px;
+    font-weight: 700;
     cursor: pointer;
-    letter-spacing: .03em;
-    text-shadow: none;
+    letter-spacing: 1px;
+    border: none;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.slider .btn-order-click:hover {
+    background-color: #E67E22;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(243, 156, 18, 0.4);
 }
