@@ -7,32 +7,7 @@ $to_date = $_GET['end_date'] ?? null;
 $users = thongkeKH($from_date, $to_date);
 
 ?>
-<style>
-    input[name="xem"] {
-        background: linear-gradient(45deg, #ff512f, #dd2476);
-        border: none;
-        color: white;
-        padding: 12px 24px;
-        font-size: 10px;
-        font-weight: bold;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
-
-    input[name="xem"]:hover {
-        background: linear-gradient(45deg, #dd2476, #ff512f);
-        transform: translateY(-2px);
-        box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.3);
-    }
-
-    input[name="xem"]:active {
-        transform: scale(0.95);
-    }
-</style>
+<link rel="stylesheet" href="assets/css/dashboard.css">
 
 <body>
     <div class="container">
@@ -113,6 +88,7 @@ $users = thongkeKH($from_date, $to_date);
             </div>
         </div>
         <br>
+        <!-- Customer Table -->
         <div class="row">
             <div class="col-12">
                 <div class="card my-4">
@@ -176,7 +152,7 @@ $users = thongkeKH($from_date, $to_date);
                                             </td>
                                             <td class="align-middle text-center">
                                                 <span class="text-secondary text-xs font-weight-bold">
-                                                    <form method="GET" action="DonHang.php">
+                                                    <form method="GET" action="customer-orders.php">
                                                         <input type="hidden" name="id" value=<?= $user['id'] ?> />
                                                         <input type="hidden" name="start_date" value="<?= htmlspecialchars($from_date) ?>" />
                                                         <input type="hidden" name="end_date" value="<?= htmlspecialchars($to_date) ?>" />

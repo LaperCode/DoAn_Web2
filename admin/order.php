@@ -78,7 +78,7 @@ $orders = getAllOrder($type, $startDate, $endDate, $district, $city);
                                                 <p class="text-secondary mb-0"><?= $order['email'] ?></p>
                                             </td>
                                             <td>
-                                                <a href="./order-detail.php?id_order=<?= $order['id'] ?>" class="btn btn-primary btn-sm mb-1">
+                                                <a href="./customer-order-details.php?id_order=<?= $order['id'] ?>" class="btn btn-primary btn-sm mb-1">
                                                     <i class="fas fa-eye"></i> View now
                                                 </a>
                                                 <p class="mb-0 fw-bold text-dark">

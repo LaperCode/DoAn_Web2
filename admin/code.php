@@ -3,7 +3,7 @@ session_start();
 include("../middleware/adminMiddleware.php");
 include("../config/dbcon.php");
 
-if (isset($_POST['add_category_btn'])) {
+if (isset($_POST['add_category_btn'])) {    //Thêm danh mục
 
     $name = $_POST['name'];
     $slug = $_POST['slug'] . "-" . rand(10, 99);
@@ -26,7 +26,7 @@ if (isset($_POST['add_category_btn'])) {
     } else {
         redirect("add-category.php", "Đã xảy ra lỗi");
     }
-} else if (isset($_POST['update_category_btn'])) {
+} else if (isset($_POST['update_category_btn'])) {  //Cập nhật danh mục
 
     $category_id = $_POST['category_id'];
     $name = $_POST['name'];
@@ -59,7 +59,7 @@ if (isset($_POST['add_category_btn'])) {
     } else {
         redirect("edit-category.php?id=$category_id", "Đã xảy ra lỗi");
     }
-} else if (isset($_POST['delete_category_btn'])) {
+} else if (isset($_POST['delete_category_btn'])) { //Xóa danh mục
     $category_id = mysqli_real_escape_string($conn, $_POST['category_id']);
 
     $category_query = "SELECT * FROM categories WHERE id='$category_id'";
@@ -78,7 +78,7 @@ if (isset($_POST['add_category_btn'])) {
     } else {
         redirect("caterory.php", "Đã xảy ra lỗi");
     }
-} else if (isset($_POST['add_product_btn'])) {
+} else if (isset($_POST['add_product_btn'])) {  //Thêm sản phẩm
     $category_id = $_POST['category_id'];
 
     $name = $_POST['name'];
@@ -95,6 +95,7 @@ if (isset($_POST['add_category_btn'])) {
     $image_ext = pathinfo($image, PATHINFO_EXTENSION);
     $filename = time() . '.' . $image_ext;
 
+    // Validate input fields
     if ($name != "" && $slug != "" && $description != "") {
         $product_query = "INSERT INTO products (category_id,name,slug,small_description,description,original_price,selling_price,image,qty,status) VALUES 
         ('$category_id','$name','$slug','$small_description','$description','$original_price','$selling_price','$filename','$qty','$status')";
@@ -110,7 +111,7 @@ if (isset($_POST['add_category_btn'])) {
     } else {
         redirect("add-product.php", "Bạn chưa điền đủ thông tin");
     }
-} else if (isset($_POST['update_product_btn'])) {
+} else if (isset($_POST['update_product_btn'])) {   //Cập nhật sản phẩm
     $product_id = $_POST['product_id'];
     $category_id = $_POST['category_id'];
 
@@ -151,7 +152,7 @@ if (isset($_POST['add_category_btn'])) {
     } else {
         redirect("edit-product.php?id=$product_id", "Đã xảy ra lỗi");
     }
-} else if (isset($_POST['delete_product_btn'])) {
+} else if (isset($_POST['delete_product_btn'])) {   //Xóa sản phẩm
     $product_id = mysqli_real_escape_string($conn, $_POST['product_id']);
 
     $product_query = "SELECT * FROM products WHERE id='$product_id'";
@@ -181,7 +182,7 @@ if (isset($_POST['add_category_btn'])) {
             redirect("products.php", "Không thể xóa sản phẩm vì có đơn hàng chứa sản phẩm đó");
         }
     }
-} else if (isset($_POST['add_blog_btn'])) {
+} else if (isset($_POST['add_blog_btn'])) {  //Thêm bài viết
     $title          = $_POST['title'];
     $slug           = $_POST['slug']  . "-" . rand(10, 99);
     $small_content  = $_POST['small_content'];
@@ -208,7 +209,7 @@ if (isset($_POST['add_category_btn'])) {
     } else {
         redirect("add-product.php", "Bạn chưa điền đủ thông tin");
     }
-} else if (isset($_POST['update_blog_btn'])) {
+} else if (isset($_POST['update_blog_btn'])) {  //Cập nhật bài viết
 
     $id             = $_POST['id'];
     $title          = $_POST['title'];
@@ -253,7 +254,7 @@ if (isset($_POST['add_category_btn'])) {
     } else {
         redirect("edit-blog.php?id=$id", "Đã xảy ra lỗi");
     }
-} else if (isset($_POST['delete_blog_btn'])) {
+} else if (isset($_POST['delete_blog_btn'])) {  //Xóa bài viết
     $blog_id    =   $_POST['blog_id'];
 
     $blog_query =   "SELECT * FROM blog WHERE id='$blog_id'";
@@ -276,7 +277,7 @@ if (isset($_POST['add_category_btn'])) {
     } else {
         redirect("blog.php", "Đã xảy ra lỗi");
     }
-} else if (isset($_GET['order'])) {
+} else if (isset($_GET['order'])) { //Cập nhật trạng thái đơn hàng
     $order_id   = $_GET['id'];
     $type       = $_GET['order'];
     $query =    "UPDATE `orders` SET `status` = '$type'
@@ -287,7 +288,7 @@ if (isset($_POST['add_category_btn'])) {
                 WHERE `order_id` = '$order_id'";
     mysqli_query($conn, $query);
 
-    redirect("order-detail.php?id_order=$order_id", "Cập nhập trạng thái thành công");
+    redirect("customer-order-details.php?id_order=$order_id", "Cập nhập trạng thái thành công");
 } {
     header('Location: ./index.php');
 }

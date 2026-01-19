@@ -3,7 +3,7 @@ include("../admin/includes/header.php");
 
 $type = isset($_REQUEST['type']) ? $_REQUEST['type'] : -1;
 $startDate = isset($_REQUEST['start_date']) ? $_REQUEST['start_date'] : "";
-$endDate = isset($_REQUEST['end_date']) ? $_REQUEST['end_date'] : "";//var_dump($startDate); var_dump($endDate); exit;
+$endDate = isset($_REQUEST['end_date']) ? $_REQUEST['end_date'] : ""; //var_dump($startDate); var_dump($endDate); exit;
 $district = isset($_REQUEST['district']) ? $_REQUEST['district'] : "";
 $city = isset($_REQUEST['city']) ? $_REQUEST['city'] : "";
 
@@ -46,7 +46,7 @@ $orders = donhangKH($startDate, $endDate, $district, $city, $userid);
                         <div class="table-responsive p-0">
 
                             <!-- Form lọc đơn hàng -->
-                            <form method="GET" action="./DonHang.php" style="margin: 20px;">
+                            <form method="GET" action="./customer-orders.php" style="margin: 20px;">
                                 <input type="hidden" name="id" value="<?= htmlspecialchars($userid) ?>">
                                 <div class="row">
                                     <div class="col-md-2">
@@ -98,7 +98,7 @@ $orders = donhangKH($startDate, $endDate, $district, $city, $userid);
                                                     <p class="text-secondary mb-0"><?= $order['email'] ?></p>
                                                 </td>
                                                 <td>
-                                                    <a href="./ChiTietDonHang.php?id_order=<?= $order['id'] ?>">View now</a>
+                                                    <a href="./customer-order-details.php?id_order=<?= $order['id'] ?>">View now</a>
                                                     <p class="text-secondary mb-0">Quantity: <?= $order['quantity'] ?></p>
                                                 </td>
                                                 <td>

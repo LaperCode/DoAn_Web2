@@ -155,7 +155,7 @@ else if (isset($_POST['add-user-btn'])) {
     }
 }
 //khóa người dùng
-else if(isset($_POST['user_id'])){
+else if (isset($_POST['user_id'])) {
     $id = $_POST['user_id'];
     $newRole = isset($_POST['lock_user']) ? 2 : 0; //nếu checkbox được tick thì trả ra 2, nếu đã bỏ tick thì trả ra 0
 
@@ -195,8 +195,7 @@ else if (isset($_POST['user_idd'])) {
         } else {
             redirect("../admin/user.php", "Xảy ra lỗi, vui lòng cập nhật lại");
         }
-    }
-     else {
+    } else {
         if ($password == $cpassword) {
             $p_hash = password_hash($password, PASSWORD_DEFAULT);
             $update_query = "UPDATE `users` SET `name`='$name', `email`='$email', `phone`='$phone', `address`='$address', `password`='$p_hash' WHERE `id`='$id' ";
