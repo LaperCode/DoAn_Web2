@@ -3,15 +3,15 @@
 $page = substr($_SERVER['SCRIPT_NAME'], strripos($_SERVER['SCRIPT_NAME'], "/") + 1);
 ?>
 
-<aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3   bg-gradient-dark" id="sidenav-main">
-  <div class="sidenav-header" style="padding-bottom: 2.5rem; padding-top: 1 rem;">
+<aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 bg-gradient-dark" id="sidenav-main" style="margin: 0 !important; width: 280px; left: 0; top: 0; bottom: 0; height: 100vh; border-radius: 0 !important;">
+  <div class="sidenav-header" style="padding-bottom: 0.3rem; padding-top: 0.3rem;">
     <i class="fas fa-times p-3 cursor-pointer text-white opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
     <a class="navbar-brand m-0" href="#" target="_blank" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
       <img src="../images/logo2.jpg" class="navbar-brand-img" style="max-height: 50px; width: auto; border-radius: 8px; margin-bottom: 5px; margin-top: -5px; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">
       <span class="font-weight-bold text-white" style="font-size: 0.75rem; letter-spacing: 0.5px;">TRUNG TÂM ĐIỀU KHIỂN</span>
     </a>
   </div>
-  <hr class="horizontal light mb-2" style="margin-top: 1.5rem;">
+  <hr class="horizontal light mb-2" style="margin-top: 2.5rem;">
   <div class="collapse navbar-collapse  w-auto" id="sidenav-collapse-main" style="height: 75vh">
     <ul class="navbar-nav">
       <li class="nav-item">

@@ -1,0 +1,807 @@
+/* ============================================
+   ADMIN THEME - ZBOOKS STYLE (FRIENDLY VERSION)
+   Modern Admin Panel with Soft, Eye-friendly Colors
+   ============================================ */
+
+/* Root Variables - Soft & Friendly Color Palette */
+:root {
+    --primary-color: #4A90E2;        /* Soft Blue */
+    --primary-light: #6BA3E8;        /* Light Blue */
+    --primary-dark: #3A7BC8;         /* Deep Blue */
+    --secondary-color: #FFB74D;      /* Soft Orange */
+    --accent-color: #81C784;         /* Soft Green */
+    --purple-soft: #9575CD;          /* Soft Purple */
+    --pink-soft: #F06292;            /* Soft Pink */
+    --sidebar-dark: #3E2723;         /* Dark Brown - Bookstore */
+    --sidebar-darker: #2C1810;       /* Darker Brown - Wood */
+    --sidebar-accent: #D7CCC8;       /* Light Brown - Warm */
+    --dark-bg: #37474F;              /* Blue Gray */
+    --darker-bg: #263238;            /* Darker Blue Gray */
+    --light-bg: #F5F7FA;             /* Very Light Blue Gray */
+    --white: #FFFFFF;
+    --text-dark: #37474F;
+    --text-light: #78909C;
+    --success: #66BB6A;              /* Soft Green */
+    --danger: #EF5350;               /* Soft Red */
+    --warning: #FFA726;              /* Soft Orange */
+    --info: #42A5F5;                 /* Soft Blue */
+}
+
+/* Body Background - Soft Gradient */
+body.g-sidenav-show {
+    background: linear-gradient(135deg, #8ffff2 0%, #8ffff2 100%) !important;
+}
+
+
+.sidenav.bg-gradient-dark {
+    background: linear-gradient(180deg, #4E342E 0%, #3E2723 100%) !important;
+    box-shadow: 4px 0 20px rgba(62, 39, 35, 0.3);
+    border-right: 1px solid rgba(215, 204, 200, 0.1);
+}
+
+/* Sidebar Header Enhancement */
+.sidenav-header img {
+    border: 2px solid #FFB74D;
+    transition: all 0.3s ease;
+    background: white;
+    padding: 2px;
+}
+
+.sidenav-header img:hover {
+    transform: scale(1.05);
+    border-color: #FFA726;
+    box-shadow: 0 4px 15px rgba(255, 183, 77, 0.4);
+}
+
+.sidenav-header .font-weight-bold {
+    color: #D7CCC8 !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Sidebar Menu Items - Warm Hover */
+.sidenav .nav-link {
+    border-radius: 10px;
+    margin: 5px 12px;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.sidenav .nav-link .nav-link-text {
+    color: #FFFFFF !important;
+}
+
+.sidenav .nav-link .material-icons {
+    color: #FFFFFF !important;
+    opacity: 0.8;
+}
+
+.sidenav .nav-link::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 0;
+    width: 3px;
+    background: #FFB74D;
+    transition: height 0.3s ease;
+    border-radius: 0 3px 3px 0;
+}
+
+.sidenav .nav-link:hover {
+    background: rgba(255, 183, 77, 0.15) !important;
+    transform: translateX(3px);
+}
+
+.sidenav .nav-link:hover::before {
+    height: 70%;
+}
+
+.sidenav .nav-link:hover .material-icons {
+    opacity: 1 !important;
+}
+
+.sidenav .nav-link:hover .nav-link-text {
+    color: #FFFFFF !important;
+}
+
+/* Active Menu Item - Warm Orange Accent */
+.sidenav .nav-link.active {
+    background: linear-gradient(90deg, rgba(255, 183, 77, 0.25) 0%, rgba(255, 167, 38, 0.3) 100%) !important;
+    border-left: 3px solid #FFB74D;
+    box-shadow: 0 2px 12px rgba(255, 183, 77, 0.2);
+}
+
+.sidenav .nav-link.active .material-icons {
+    color: #FFFFFF !important;
+    opacity: 1 !important;
+}
+
+.sidenav .nav-link.active .nav-link-text {
+    color: #FFFFFF !important;
+    font-weight: 600;
+}
+
+/* Horizontal line in sidebar */
+.sidenav .horizontal.light {
+    background: rgba(215, 204, 200, 0.2);
+}
+
+/* Logout Button - Warm Orange */
+.sidenav-footer .btn {
+    background: linear-gradient(90deg, var(--secondary-color) 0%, #FFCC80 100%) !important;
+    border: none;
+    font-weight: 600;
+    color: var(--text-dark) !important;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 10px rgba(255, 183, 77, 0.25);
+}
+
+.sidenav-footer .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 183, 77, 0.35);
+    background: linear-gradient(90deg, #FFCC80 0%, var(--secondary-color) 100%) !important;
+}
+
+/* ============================================
+   NAVBAR STYLING - CLEAN & LIGHT
+   ============================================ */
+
+.navbar-main {
+    background: white !important;
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.05);
+    border-radius: 12px;
+    margin: 16px;
+}
+
+.breadcrumb-item.active {
+    color: var(--primary-color) !important;
+    font-weight: 500;
+}
+
+/* ============================================
+   CARDS STYLING - SOFT & ELEGANT
+   ============================================ */
+
+.card {
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    border: none;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Card Gradients - Soft Pastel Colors */
+.card-header.bg-gradient-primary {
+    background: linear-gradient(135deg, #64B5F6 0%, #42A5F5 100%) !important;
+}
+
+/* Fix Card Header - Full Rectangle with Border Radius */
+.card-header.p-0.position-relative.mt-n4.mx-3 {
+    margin-top: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    border-radius: 16px 16px 0 0 !important;
+}
+
+.card-header .bg-gradient-primary {
+    border-radius: 16px 16px 0 0 !important;
+    padding: 20px !important;
+}
+
+.card .bg-gradient-primary {
+    background: linear-gradient(135deg, #64B5F6 0%, #42A5F5 100%) !important;
+}
+
+.card .bg-gradient-dark {
+    background: linear-gradient(135deg, #78909C 0%, #546E7A 100%) !important;
+}
+
+.card .bg-gradient-success {
+    background: linear-gradient(135deg, #81C784 0%, #66BB6A 100%) !important;
+}
+
+.card .bg-gradient-info {
+    background: linear-gradient(135deg, #FFD54F 0%, #FFCA28 100%) !important;
+}
+
+/* Icon Shape Enhancement */
+.icon.icon-shape {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    transition: all 0.3s ease;
+}
+
+.card:hover .icon.icon-shape {
+    transform: translateY(-3px) scale(1.05);
+}
+
+/* Card Footer - Subtle */
+.card-footer {
+    background: rgba(245, 247, 250, 0.8);
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* ============================================
+   BUTTONS STYLING - FRIENDLY & SOFT
+   ============================================ */
+
+/* Primary Button - Soft Blue */
+.btn-primary {
+    background: linear-gradient(90deg, #64B5F6 0%, #42A5F5 100%) !important;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    padding: 10px 24px;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 10px rgba(66, 165, 245, 0.25);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 18px rgba(66, 165, 245, 0.35);
+    background: linear-gradient(90deg, #42A5F5 0%, #64B5F6 100%) !important;
+}
+
+/* "Xem Chi Tiết" Button - Soft Orange */
+input[name="xem"] {
+    background: linear-gradient(90deg, #FFB74D 0%, #FFA726 100%);
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 10px rgba(255, 183, 77, 0.25);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+input[name="xem"]:hover {
+    background: linear-gradient(90deg, #FFA726 0%, #FFB74D 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 183, 77, 0.35);
+}
+
+input[name="xem"]:active {
+    transform: scale(0.97);
+}
+
+/* ============================================
+   TABLE STYLING - CLEAN & MODERN
+   ============================================ */
+
+.table {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.table thead th {
+    background: linear-gradient(90deg, #4DB6AC 0%, #26A69A 100%);
+    color: #FFFFFF !important;
+    font-weight: 700 !important;
+    text-transform: uppercase;
+    font-size: 12px !important;
+    letter-spacing: 0.8px;
+    padding: 16px;
+    border: none;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Override Material Dashboard classes for table header - Higher specificity */
+.table thead th.text-secondary,
+.table thead th.text-uppercase,
+.table thead th.opacity-10 {
+    color: #FFFFFF !important;
+    opacity: 1 !important;
+    font-size: 12px !important;
+}
+
+.table tbody tr {
+    transition: all 0.2s ease;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+}
+
+.table tbody tr:hover {
+    background: rgba(100, 181, 246, 0.05);
+    transform: scale(1.005);
+}
+
+/* ============================================
+   FORM ELEMENTS - FRIENDLY
+   ============================================ */
+
+.form-control {
+    border: 1px solid #E0E0E0;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: var(--primary-light);
+    box-shadow: 0 0 0 3px rgba(100, 181, 246, 0.1);
+}
+
+label {
+    font-weight: 500;
+    color: var(--text-dark);
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+/* ============================================
+   BADGES - SOFT COLORS
+   ============================================ */
+
+.badge {
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 11px;
+}
+
+.bg-warning {
+    background: #FFA726 !important;
+}
+
+.bg-primary {
+    background: #42A5F5 !important;
+}
+
+.bg-info {
+    background: #29B6F6 !important;
+}
+
+.bg-success {
+    background: #66BB6A !important;
+}
+
+.bg-danger {
+    background: #EF5350 !important;
+}
+
+/* ============================================
+   ANIMATIONS - SMOOTH & GENTLE
+   ============================================ */
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card {
+    animation: fadeInUp 0.5s ease-out both;
+}
+
+/* Stagger animation */
+.col-xl-3:nth-child(1) .card {
+    animation-delay: 0.05s;
+}
+
+.col-xl-3:nth-child(2) .card {
+    animation-delay: 0.1s;
+}
+
+.col-xl-3:nth-child(3) .card {
+    animation-delay: 0.15s;
+}
+
+.col-xl-3:nth-child(4) .card {
+    animation-delay: 0.2s;
+}
+
+/* ============================================
+   SCROLLBAR - SOFT BLUE
+   ============================================ */
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #F5F5F5;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-light);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-color);
+}
+
+/* ============================================
+   TEXT COLORS - READABLE
+   ============================================ */
+
+.text-success {
+    color: #66BB6A !important;
+}
+
+.text-danger {
+    color: #EF5350 !important;
+}
+
+h4, h5, h6 {
+    color: var(--text-dark);
+}
+
+p {
+    color: var(--text-light);
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 768px) {
+    .sidenav {
+        width: 240px !important;
+    }
+    
+    .main-content {
+        margin-left: 240px !important;
+    }
+}
+
+
+/* ============================================
+   SIDEBAR STYLING
+   ============================================ */
+
+/* Sidebar Background - Modern Gradient */
+.sidenav.bg-gradient-dark {
+    background: linear-gradient(180deg, #2C2C2C 0%, #1E1E1E 100%) !important;
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Sidebar Header Enhancement */
+.sidenav-header img {
+    border: 3px solid var(--primary-color);
+    transition: all 0.3s ease;
+}
+
+.sidenav-header img:hover {
+    transform: scale(1.05);
+    border-color: var(--secondary-color);
+}
+
+/* Sidebar Menu Items */
+.sidenav .nav-link {
+    border-radius: 8px;
+    margin: 4px 8px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.sidenav .nav-link::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 3px;
+    background: var(--primary-color);
+    transform: scaleY(0);
+    transition: transform 0.3s ease;
+}
+
+.sidenav .nav-link:hover {
+    background: rgba(255, 140, 0, 0.1) !important;
+    transform: translateX(5px);
+}
+
+.sidenav .nav-link:hover::before {
+    transform: scaleY(1);
+}
+
+/* Active Menu Item - Orange Gradient */
+.sidenav .nav-link.active {
+    background: linear-gradient(90deg, var(--primary-color) 0%, var(--primary-light) 100%) !important;
+    box-shadow: 0 4px 12px rgba(255, 140, 0, 0.4);
+}
+
+.sidenav .nav-link.active .material-icons {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+/* Logout Button */
+.sidenav-footer .btn {
+    background: linear-gradient(90deg, var(--primary-color) 0%, var(--accent-color) 100%) !important;
+    border: none;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 140, 0, 0.3);
+}
+
+.sidenav-footer .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 140, 0, 0.5);
+}
+
+/* ============================================
+   NAVBAR STYLING
+   ============================================ */
+
+.navbar-main {
+    background: white !important;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+    margin: 16px;
+}
+
+.breadcrumb-item.active {
+    color: var(--primary-color) !important;
+    font-weight: 600;
+}
+
+/* ============================================
+   CARDS STYLING
+   ============================================ */
+
+/* Statistics Cards */
+.card {
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* Card Header with Orange Gradient */
+.card-header.bg-gradient-primary {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%) !important;
+}
+
+.card .bg-gradient-primary {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%) !important;
+}
+
+.card .bg-gradient-dark {
+    background: linear-gradient(135deg, #2C2C2C 0%, #1E1E1E 100%) !important;
+}
+
+.card .bg-gradient-success {
+    background: linear-gradient(135deg, #28A745 0%, #20C997 100%) !important;
+}
+
+.card .bg-gradient-info {
+    background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-light) 100%) !important;
+}
+
+/* Icon Shape Enhancement */
+.icon.icon-shape {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.card:hover .icon.icon-shape {
+    transform: rotate(-5deg) scale(1.1);
+}
+
+/* Card Footer */
+.card-footer {
+    background: rgba(248, 249, 250, 0.5);
+    border-top: 1px solid rgba(255, 140, 0, 0.1);
+}
+
+/* ============================================
+   BUTTONS STYLING
+   ============================================ */
+
+/* Primary Button - Orange Theme */
+.btn-primary {
+    background: linear-gradient(90deg, var(--primary-color) 0%, var(--accent-color) 100%) !important;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    padding: 10px 24px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 140, 0, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(255, 140, 0, 0.5);
+    background: linear-gradient(90deg, var(--accent-color) 0%, var(--primary-color) 100%) !important;
+}
+
+/* "Xem Chi Tiết" Button */
+input[name="xem"] {
+    background: linear-gradient(90deg, var(--primary-color) 0%, var(--accent-color) 100%);
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(255, 140, 0, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+}
+
+input[name="xem"]:hover {
+    background: linear-gradient(90deg, var(--accent-color) 0%, var(--primary-color) 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 140, 0, 0.5);
+}
+
+input[name="xem"]:active {
+    transform: scale(0.95);
+}
+
+/* ============================================
+   TABLE STYLING
+   ============================================ */
+
+.table {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.table thead th {
+    background: linear-gradient(90deg, var(--primary-color) 0%, var(--accent-color) 100%);
+    color: white;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.8px;
+    padding: 16px;
+    border: none;
+}
+
+.table tbody tr {
+    transition: all 0.3s ease;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.table tbody tr:hover {
+    background: rgba(255, 140, 0, 0.05);
+    transform: scale(1.01);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* ============================================
+   FORM ELEMENTS
+   ============================================ */
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(255, 140, 0, 0.25);
+}
+
+label {
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 8px;
+}
+
+/* ============================================
+   BADGES & ALERTS
+   ============================================ */
+
+.badge {
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 11px;
+}
+
+.bg-warning {
+    background: var(--warning) !important;
+}
+
+.bg-primary {
+    background: var(--primary-color) !important;
+}
+
+.bg-info {
+    background: var(--info) !important;
+}
+
+.bg-success {
+    background: var(--success) !important;
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card, .table {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+/* Stagger animation for multiple cards */
+.col-xl-3:nth-child(1) .card {
+    animation-delay: 0.1s;
+}
+
+.col-xl-3:nth-child(2) .card {
+    animation-delay: 0.2s;
+}
+
+.col-xl-3:nth-child(3) .card {
+    animation-delay: 0.3s;
+}
+
+.col-xl-3:nth-child(4) .card {
+    animation-delay: 0.4s;
+}
+
+/* ============================================
+   SCROLLBAR STYLING
+   ============================================ */
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-dark);
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 768px) {
+    .sidenav {
+        width: 240px !important;
+    }
+    
+    .main-content {
+        margin-left: 240px !important;
+    }
+}
