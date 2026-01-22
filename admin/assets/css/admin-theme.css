@@ -3,12 +3,12 @@
    Modern Admin Panel with Soft, Eye-friendly Colors
    ============================================ */
 
-/* Root Variables - Soft & Friendly Color Palette */
+/* Root Variables - ZBooks Orange Brand Color Palette */
 :root {
-    --primary-color: #4A90E2;        /* Soft Blue */
-    --primary-light: #6BA3E8;        /* Light Blue */
-    --primary-dark: #3A7BC8;         /* Deep Blue */
-    --secondary-color: #FFB74D;      /* Soft Orange */
+    --primary-color: #FF9800;        /* Orange - Main Brand */
+    --primary-light: #FFB74D;        /* Light Orange */
+    --primary-dark: #F57C00;         /* Dark Orange */
+    --secondary-color: #FFC107;      /* Amber/Yellow */
     --accent-color: #81C784;         /* Soft Green */
     --purple-soft: #9575CD;          /* Soft Purple */
     --pink-soft: #F06292;            /* Soft Pink */
@@ -17,19 +17,19 @@
     --sidebar-accent: #D7CCC8;       /* Light Brown - Warm */
     --dark-bg: #37474F;              /* Blue Gray */
     --darker-bg: #263238;            /* Darker Blue Gray */
-    --light-bg: #F5F7FA;             /* Very Light Blue Gray */
+    --light-bg: #FFF8F0;             /* Warm Light Background */
     --white: #FFFFFF;
     --text-dark: #37474F;
     --text-light: #78909C;
     --success: #66BB6A;              /* Soft Green */
     --danger: #EF5350;               /* Soft Red */
     --warning: #FFA726;              /* Soft Orange */
-    --info: #42A5F5;                 /* Soft Blue */
+    --info: #FF9800;                 /* Orange - Brand */
 }
 
-/* Body Background - Soft Gradient */
+/* Body Background - Warm Orange Gradient */
 body.g-sidenav-show {
-    background: linear-gradient(135deg, #8ffff2 0%, #8ffff2 100%) !important;
+    background: linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 100%) !important;
 }
 
 
@@ -283,7 +283,7 @@ input[name="xem"]:active {
 }
 
 .table thead th {
-    background: linear-gradient(90deg, #4DB6AC 0%, #26A69A 100%);
+    background: linear-gradient(90deg, #FF9800 0%, #F57C00 100%);
     color: #FFFFFF !important;
     font-weight: 700 !important;
     text-transform: uppercase;

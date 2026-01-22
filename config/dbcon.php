@@ -2,7 +2,7 @@
 $host = "localhost";
 $username = "root";
 $password = "";
-$database = "atshop_db";
+$database = "zbook_db";
 
 $conn = mysqli_connect($host, $username, $password, $database, 3306);
 mysqli_set_charset($conn, 'utf8');
