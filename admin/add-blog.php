@@ -1,14 +1,19 @@
-<?php 
-include ("../admin/includes/header.php");
+<?php
+include("../admin/includes/header.php");
 ?>
 <script src="./assets/js/tinymce.min.js" referrerpolicy="origin"></script>
+
 <body>
-<div class="container-fluid">   
+    <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4>Thêm bài viết</h4>
+                        <h4>Thêm bài viết
+                            <a href="blog.php" class="btn btn-danger btn-sm float-end">
+                                <i class="fa fa-arrow-left"></i> Quay lại
+                            </a>
+                        </h4>
                     </div>
                     <div class="card-body">
                         <form action="code.php" method="POST" enctype="multipart/form-data"><!-- Uploads image -->
@@ -16,25 +21,25 @@ include ("../admin/includes/header.php");
                             <div class="row">
                                 <div class="col-md-12">
                                     <label for=""><b>Tiêu đề</b></label>
-                                    <input type="text" id="full-name" required name="title" placeholder="Nhập tên bài viết" class="form-control"> 
-                                </div>                               
+                                    <input type="text" id="full-name" required name="title" placeholder="Nhập tên bài viết" class="form-control">
+                                </div>
                                 <div class="col-md-12">
-                                <br>
+                                    <br>
                                     <label for=""><b>Slug</b></label>
                                     <input type="text" id="slug-name" required name="slug" placeholder="Nhập vào slug" class="form-control">
-                                </div>                                                        
+                                </div>
                                 <div class="col-md-12">
-                                <br>
+                                    <br>
                                     <label for=""><b>Hình ảnh</b></label>
                                     <input type="file" required name="image" class="form-control">
                                 </div>
                                 <div class="col-md-12">
-                                <br>
+                                    <br>
                                     <label class="mb-0"><b>Tóm tắt</b></label>
                                     <textarea type="text" style="height: 150px" required="" name="small_content" placeholder="Nhập một đoạn" class="form-control mb-2"></textarea>
                                 </div>
                                 <div class="col-md-12">
-                                <br>
+                                    <br>
                                     <label for=""><b>Nội dung</b></label>
                                     <textarea name="content" id="myTextarea" style="height: 500px"></textarea>
                                 </div>
@@ -49,8 +54,8 @@ include ("../admin/includes/header.php");
                 </div>
             </div>
         </div>
-    </form>
-</div>
+        </form>
+    </div>
 </body>
 <script type="text/javascript" src="./assets/js/StringConvertToSlug.js"></script>
 <script>
@@ -58,4 +63,4 @@ include ("../admin/includes/header.php");
         selector: "#myTextarea",
     });
 </script>
-<?php include ("../admin/includes/footer.php"); ?>
+<?php include("../admin/includes/footer.php"); ?>
