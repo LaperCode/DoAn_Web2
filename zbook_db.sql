@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Mar 08, 2025 at 01:49 AM
--- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- Máy chủ: 127.0.0.1
+-- Thời gian đã tạo: Th1 22, 2026 lúc 04:52 AM
+-- Phiên bản máy phục vụ: 10.4.32-MariaDB
+-- Phiên bản PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,13 +18,13 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `atshop_db`
+-- Cơ sở dữ liệu: `atshop_db`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `blog`
+-- Cấu trúc bảng cho bảng `blog`
 --
 
 CREATE TABLE `blog` (
@@ -38,7 +38,7 @@ CREATE TABLE `blog` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
--- Dumping data for table `blog`
+-- Đang đổ dữ liệu cho bảng `blog`
 --
 
 INSERT INTO `blog` (`id`, `title`, `slug`, `img`, `small_content`, `content`, `created_at`) VALUES
@@ -50,7 +50,7 @@ INSERT INTO `blog` (`id`, `title`, `slug`, `img`, `small_content`, `content`, `c
 -- --------------------------------------------------------
 
 --
--- Table structure for table `categories`
+-- Cấu trúc bảng cho bảng `categories`
 --
 
 CREATE TABLE `categories` (
@@ -64,7 +64,7 @@ CREATE TABLE `categories` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `categories`
+-- Đang đổ dữ liệu cho bảng `categories`
 --
 
 INSERT INTO `categories` (`id`, `name`, `slug`, `description`, `status`, `image`, `created_at`) VALUES
@@ -77,7 +77,7 @@ INSERT INTO `categories` (`id`, `name`, `slug`, `description`, `status`, `image`
 -- --------------------------------------------------------
 
 --
--- Table structure for table `orders`
+-- Cấu trúc bảng cho bảng `orders`
 --
 
 CREATE TABLE `orders` (
@@ -90,20 +90,18 @@ CREATE TABLE `orders` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
--- Dumping data for table `orders`
+-- Đang đổ dữ liệu cho bảng `orders`
 --
 
 INSERT INTO `orders` (`id`, `user_id`, `status`, `created_at`, `addtional`, `payment`) VALUES
-(19, 56, 4, '2025-03-02 04:29:41', 'giao vào buổi trưa giúp em', 0),
-(20, 56, 4, '2025-03-02 04:31:34', 'giao vào giờ cũ nha', 0),
-(21, 56, 4, '2025-03-02 04:32:52', '', 0),
-(22, 56, 4, '2025-03-02 04:41:47', '', 1),
-(23, 56, 4, '2025-03-02 05:00:34', 'aaaaaaaaaaaaaa', 0);
+(24, 59, 4, '2026-01-17 01:18:38', '1', 0),
+(25, 59, 2, '2026-01-17 01:22:26', '', 0),
+(26, 59, 3, '2026-01-18 11:12:50', 'Nhớ giao sớm đó nhe!', 0);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `order_detail`
+-- Cấu trúc bảng cho bảng `order_detail`
 --
 
 CREATE TABLE `order_detail` (
@@ -120,19 +118,22 @@ CREATE TABLE `order_detail` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
--- Dumping data for table `order_detail`
+-- Đang đổ dữ liệu cho bảng `order_detail`
 --
 
 INSERT INTO `order_detail` (`id`, `user_id`, `product_id`, `order_id`, `selling_price`, `quantity`, `status`, `rate`, `comment`, `created_at`) VALUES
-(60, 56, 45, 19, 299, 1, 4, 5, 'Sách rất hay, mọi người nên mua về đọc nhaaa\r\n', '2025-03-02 04:29:15'),
-(62, 56, 45, 21, 299, 1, 4, NULL, NULL, '2025-03-02 04:32:46'),
-(63, 56, 45, 22, 299, 1, 4, NULL, NULL, '2025-03-02 04:41:42'),
-(66, 56, 45, NULL, 299, 1, 1, NULL, NULL, '2025-03-08 00:33:53');
+(67, 59, 74, 24, 450, 1, 4, NULL, NULL, '2026-01-17 01:18:01'),
+(68, 59, 73, 24, 450, 1, 4, NULL, NULL, '2026-01-17 01:18:04'),
+(70, 59, 69, 25, 299, 6, 2, NULL, NULL, '2026-01-17 01:22:21'),
+(71, 59, 53, 26, 500, 4, 3, NULL, NULL, '2026-01-18 10:54:52'),
+(72, 59, 52, 26, 699, 12, 3, NULL, NULL, '2026-01-18 10:54:54'),
+(74, 59, 52, NULL, 699, 4, 1, NULL, NULL, '2026-01-18 11:25:26'),
+(76, 59, 74, NULL, 450, 2, 1, NULL, NULL, '2026-01-19 08:38:30');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `products`
+-- Cấu trúc bảng cho bảng `products`
 --
 
 CREATE TABLE `products` (
@@ -151,22 +152,19 @@ CREATE TABLE `products` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `products`
+-- Đang đổ dữ liệu cho bảng `products`
 --
 
 INSERT INTO `products` (`id`, `category_id`, `name`, `slug`, `small_description`, `description`, `original_price`, `selling_price`, `image`, `qty`, `status`, `created_at`) VALUES
-(45, 22, '\"Nhà giả kim\" – Paulo Coelho', 'nha-gia-kim--paulo-coelho-12', '\"Nhà giả kim\" kể về hành trình của một chàng trai trẻ chăn cừu tên Santiago từ Tây Ban Nha đến sa mạc Ai Cập để tìm kiếm kho báu ẩn giấu. Trên đường đi, Santiago gặp gỡ nhiều người khác nhau và học hỏi những bài học quý báu về cuộc sống. Cuối cùng, anh phát hiện ra rằng kho báu thực sự không phải là vàng bạc, mà chính là sự trưởng thành và hiểu biết về chính mình cũng như ý nghĩa cuộc sống.', '\"Nhà giả kim\" là một tiểu thuyết truyền cảm hứng, đậm chất triết lý, kể về hành trình khám phá bản thân và theo đuổi ước mơ của mình. Cuốn sách nhấn mạnh tầm quan trọng của việc lắng nghe tiếng gọi của trái tim và không ngừng nỗ lực để đạt được những mục tiêu lớn lao. Paulo Coelho đã khéo léo sử dụng các yếu tố của văn hóa, tôn giáo và triết học để tạo nên một câu chuyện giàu ý nghĩa và đầy cảm hứng, gợi mở cho người đọc nhiều suy ngẫm về cuộc sống.', 326, 299, '1740889351.png', 7, 0, '2025-03-02 04:22:31'),
-(46, 22, '\"Bố già\" – Mario Puzo', 'bo-gia--mario-puzo-70-94', '\"Bố già\" (The Godfather) là một tiểu thuyết nổi tiếng của Mario Puzo, xoay quanh gia đình tội phạm Corleone ở New York. Cuốn sách bắt đầu với buổi lễ cưới của Connie, con gái của Bố già Don Vito Corleone. Don Vito là người đứng đầu gia đình Corleone, một trong những tổ chức tội phạm mạnh nhất nước Mỹ. Ông nổi tiếng vì sự thông minh, quyết đoán và lòng trung thành với gia đình và bạn bè.\r\n\r\nCâu chuyện tiếp tục với việc Don Vito phải đối mặt với các mối đe dọa từ các băng đảng tội phạm khác và những thách thức từ chính phủ. Khi Don Vito bị ám sát hụt và phải nhập viện, con trai thứ Michael Corleone, vốn là người muốn tránh xa thế giới tội phạm, buộc phải tham gia vào cuộc chiến để bảo vệ gia đình. Michael dần dần trở thành người kế vị và xây dựng lại quyền lực cho gia đình Corleone.', '\"Bố già\" là một cuốn tiểu thuyết hấp dẫn, sâu sắc, miêu tả rõ nét về thế giới ngầm của tội phạm và quyền lực. Cuốn sách không chỉ nói về bạo lực và tội ác, mà còn về tình cảm gia đình, lòng trung thành và sự hy sinh. Mario Puzo đã tạo ra những nhân vật phức tạp và cuốn hút, mỗi người đều có những động lực và mâu thuẫn riêng. Tác phẩm không chỉ là một câu chuyện về thế giới tội phạm mà còn là một nghiên cứu tâm lý sâu sắc về con người và xã hội.', 350, 280, '1740903713.png', 33, 0, '2025-03-02 08:15:54'),
+(45, 22, '\"Nhà giả kim\" – Paulo Coelho', 'nha-gia-kim--paulo-coelho-12', '\"Nhà giả kim\" kể về hành trình của một chàng trai trẻ chăn cừu tên Santiago từ Tây Ban Nha đến sa mạc Ai Cập để tìm kiếm kho báu ẩn giấu. Trên đường đi, Santiago gặp gỡ nhiều người khác nhau và học hỏi những bài học quý báu về cuộc sống. Cuối cùng, anh phát hiện ra rằng kho báu thực sự không phải là vàng bạc, mà chính là sự trưởng thành và hiểu biết về chính mình cũng như ý nghĩa cuộc sống.', '\"Nhà giả kim\" là một tiểu thuyết truyền cảm hứng, đậm chất triết lý, kể về hành trình khám phá bản thân và theo đuổi ước mơ của mình. Cuốn sách nhấn mạnh tầm quan trọng của việc lắng nghe tiếng gọi của trái tim và không ngừng nỗ lực để đạt được những mục tiêu lớn lao. Paulo Coelho đã khéo léo sử dụng các yếu tố của văn hóa, tôn giáo và triết học để tạo nên một câu chuyện giàu ý nghĩa và đầy cảm hứng, gợi mở cho người đọc nhiều suy ngẫm về cuộc sống.', 326, 299, '1740889351.png', 7, 1, '2025-03-02 04:22:31'),
 (47, 22, '\"Tôi thấy hoa vàng trên cỏ xanh\" – Nguyễn Nhật Ánh', 'toi-thay-hoa-vang-tren-co-xanh--nguyen-nhat-anh-80', '\"Tôi thấy hoa vàng trên cỏ xanh\" là một câu chuyện đầy cảm xúc về tuổi thơ của hai anh em Thiều và Tường sống tại một ngôi làng nhỏ ở Việt Nam. Câu chuyện diễn ra trong những năm 1980, khi đất nước còn khó khăn và thiếu thốn. Thiều và Tường cùng nhau trải qua nhiều kỷ niệm vui buồn, từ những cuộc phiêu lưu trong thế giới tưởng tượng, những trò nghịch ngợm, cho đến những tình cảm chân thành dành cho bạn bè và gia đình. Cuốn sách không chỉ tái hiện lại hình ảnh tuổi thơ hồn nhiên mà còn chứa đựng những bài học về tình yêu, lòng nhân ái và sự tha thứ.', '\"Tôi thấy hoa vàng trên cỏ xanh\" là một tác phẩm đầy chất thơ và đậm đà tình cảm của nhà văn Nguyễn Nhật Ánh. Cuốn sách mang đến cho người đọc một cái nhìn chân thật và sâu sắc về tuổi thơ ở vùng quê Việt Nam, với những kỷ niệm đẹp và đầy ý nghĩa. Bằng ngòi bút tinh tế và sự am hiểu sâu sắc về tâm lý trẻ em, Nguyễn Nhật Ánh đã tạo nên một câu chuyện dễ thương và đầy cảm động, gợi nhắc người đọc về những giá trị truyền thống và tình cảm gia đình quý báu.', 723, 649, '1740904106.png', 23, 0, '2025-03-02 08:28:26'),
 (50, 22, '\"Những người khốn khổ\" – Victor Hugo', 'nhung-nguoi-khon-kho--victor-hugo-56', '\"Những người khốn khổ\" (Les Misérables) là một tiểu thuyết nổi tiếng của nhà văn Victor Hugo, kể về cuộc đời của Jean Valjean, một người đàn ông nghèo khó bị kết án và bị giam cầm vì tội ăn cắp một ổ bánh mì để nuôi em gái và các cháu. Sau khi được thả, Jean Valjean trải qua nhiều biến cố và gặp gỡ nhiều nhân vật khác nhau như Fantine, Cosette, Marius và Javert. Ông cố gắng chuộc lỗi và thay đổi cuộc đời, nhưng luôn bị ám ảnh bởi quá khứ và sự truy đuổi của viên thanh tra Javert.\r\n\r\nCâu chuyện diễn ra trong bối cảnh xã hội Pháp thế kỷ 19, với những cuộc cách mạng và biến đổi lớn lao. Cuộc sống của các nhân vật phản ánh những khó khăn, đau khổ và nỗ lực không ngừng nghỉ để tìm kiếm hạnh phúc và công lý.', '\"Những người khốn khổ\" là một tác phẩm văn học kinh điển, miêu tả sâu sắc về cuộc sống của những con người bị lãng quên và đau khổ trong xã hội. Cuốn sách thể hiện sự đồng cảm sâu sắc của Victor Hugo đối với những người khốn khó và bất hạnh, đồng thời lên án những bất công và áp bức của xã hội. Những nhân vật trong cuốn sách được xây dựng một cách tỉ mỉ và phức tạp, mỗi người đều có những nỗi đau và khát vọng riêng.\r\n\r\nTác phẩm không chỉ là một câu chuyện về cuộc đời Jean Valjean mà còn là một bức tranh toàn cảnh về xã hội Pháp thế kỷ 19, với những biến đổi về chính trị, kinh tế và xã hội. \"Những người khốn khổ\" đã truyền cảm hứng cho nhiều thế hệ và được chuyển thể thành nhiều bộ phim, vở nhạc kịch và tác phẩm nghệ thuật khác.', 459, 399, '1740904594.png', 32, 0, '2025-03-02 08:36:34'),
 (51, 23, '\"Cha giàu cha nghèo\" – Robert Kiyosaki', 'cha-giau-cha-ngheo--robert-kiyosaki-35', '\"Cha giàu cha nghèo\" (Rich Dad Poor Dad) là một cuốn sách về tài chính cá nhân được viết bởi Robert Kiyosaki. Cuốn sách kể về những bài học mà tác giả đã học được từ hai người cha khác nhau: người cha ruột (Cha nghèo) và cha của bạn thân (Cha giàu). Cha nghèo là một công chức với tư duy truyền thống về tiền bạc và công việc ổn định, trong khi Cha giàu là một doanh nhân thành đạt với tư duy khác biệt về đầu tư và tài chính.\r\n\r\nQua những câu chuyện và bài học từ hai người cha, Robert Kiyosaki chia sẻ những nguyên tắc cơ bản về tài chính cá nhân, cách quản lý tiền bạc, đầu tư và xây dựng sự giàu có. Ông nhấn mạnh tầm quan trọng của giáo dục tài chính và sự tự do tài chính.', '\"Cha giàu cha nghèo\" là một tác phẩm nổi tiếng về tài chính cá nhân, giúp người đọc thay đổi cách nhìn về tiền bạc và đầu tư. Cuốn sách cung cấp những kiến thức và kỹ năng cần thiết để quản lý tài chính cá nhân, tạo ra nguồn thu nhập thụ động và đạt được sự tự do tài chính. Robert Kiyosaki sử dụng ngôn ngữ đơn giản, dễ hiểu, kết hợp với những ví dụ thực tế và câu chuyện cá nhân để minh họa cho các khái niệm và bài học.\r\n\r\nCuốn sách đã truyền cảm hứng cho hàng triệu người trên khắp thế giới, giúp họ cải thiện tình hình tài chính và đạt được những mục tiêu lớn lao trong cuộc sống. \"Cha giàu cha nghèo\" không chỉ là một cuốn sách về tài chính, mà còn là một lời khuyên quý giá về việc thay đổi tư duy và hành động để đạt được thành công.', 650, 478, '1740904883.png', 45, 0, '2025-03-02 08:41:23'),
-(52, 23, '\"Đắc nhân tâm\" – Dale Carnegie', 'dac-nhan-tam--dale-carnegie-39', '\"Đắc nhân tâm\" (How to Win Friends and Influence People) là một cuốn sách nổi tiếng về nghệ thuật giao tiếp và lãnh đạo, được viết bởi Dale Carnegie. Cuốn sách bao gồm nhiều nguyên tắc và kỹ thuật giúp cải thiện các mối quan hệ xã hội, làm cho người khác thích mình và ảnh hưởng đến họ một cách tích cực. Những bài học này dựa trên những tình huống thực tế và trải nghiệm cá nhân của tác giả, giúp người đọc áp dụng dễ dàng vào cuộc sống hàng ngày.\r\n\r\nCuốn sách chia thành bốn phần chính: (1) Những cách thức để làm cho mọi người thích mình, (2) Các phương pháp thuyết phục người khác theo quan điểm của mình, (3) Cách thay đổi người khác mà không gây ra sự phản kháng, và (4) Các quy tắc để cải thiện mối quan hệ trong công việc và cuộc sống.', '\"Đắc nhân tâm\" là một tác phẩm kinh điển về nghệ thuật giao tiếp và phát triển cá nhân, đã được dịch ra nhiều ngôn ngữ và bán chạy hàng đầu trên thế giới. Dale Carnegie đã khéo léo kết hợp lý thuyết và ví dụ thực tế để cung cấp cho người đọc những kỹ năng cần thiết để xây dựng và duy trì các mối quan hệ tốt đẹp.\r\n\r\nCuốn sách không chỉ giúp người đọc hiểu rõ hơn về tâm lý con người mà còn hướng dẫn cách để tạo ra sự đồng cảm, tôn trọng và tin tưởng trong giao tiếp. Những nguyên tắc được trình bày trong \"Đắc nhân tâm\" không chỉ áp dụng trong cuộc sống cá nhân mà còn rất hữu ích trong môi trường công việc và kinh doanh.', 750, 699, '1740905039.png', 56, 0, '2025-03-02 08:43:59'),
-(53, 23, '\"Nghệ thuật tư duy rành mạch\" – Rolf Dobelli', 'nghe-thuat-tu-duy-ranh-mach--rolf-dobelli-47', '\"Nghệ thuật tư duy rành mạch\" (The Art of Thinking Clearly) của Rolf Dobelli là một cuốn sách tập hợp những sai lầm thường gặp trong tư duy hàng ngày và cách để tránh chúng. Tác giả phân tích 99 lỗi tư duy phổ biến mà chúng ta thường mắc phải, từ các thiên kiến nhận thức đến những sai lầm trong việc ra quyết định. Mỗi chương trong cuốn sách tập trung vào một lỗi tư duy cụ thể, giải thích nó và cung cấp các ví dụ minh họa cùng những cách thức để tránh sai lầm đó.', '\"Nghệ thuật tư duy rành mạch\" là một cuốn sách hữu ích và dễ tiếp cận cho bất kỳ ai quan tâm đến việc cải thiện khả năng tư duy và ra quyết định. Rolf Dobelli đã sử dụng ngôn ngữ rõ ràng, dễ hiểu, kết hợp với những ví dụ thực tế và nghiên cứu khoa học để minh họa các lỗi tư duy. Cuốn sách không chỉ giúp người đọc nhận ra những sai lầm trong tư duy mà còn cung cấp những gợi ý thực tế để tránh chúng, từ đó nâng cao chất lượng quyết định và hiệu suất làm việc.\r\n\r\nCuốn sách đã được nhiều người đón nhận và đánh giá cao vì khả năng giúp người đọc hiểu rõ hơn về cách tư duy và ra quyết định. \"Nghệ thuật tư duy rành mạch\" không chỉ là một cuốn sách về khoa học nhận thức mà còn là một công cụ hữu ích để cải thiện cuộc sống cá nhân và công việc.', 650, 500, '1740905228.jpg', 19, 0, '2025-03-02 08:47:08'),
+(52, 23, '\"Đắc nhân tâm\" – Dale Carnegie', 'dac-nhan-tam--dale-carnegie-39', '\"Đắc nhân tâm\" (How to Win Friends and Influence People) là một cuốn sách nổi tiếng về nghệ thuật giao tiếp và lãnh đạo, được viết bởi Dale Carnegie. Cuốn sách bao gồm nhiều nguyên tắc và kỹ thuật giúp cải thiện các mối quan hệ xã hội, làm cho người khác thích mình và ảnh hưởng đến họ một cách tích cực. Những bài học này dựa trên những tình huống thực tế và trải nghiệm cá nhân của tác giả, giúp người đọc áp dụng dễ dàng vào cuộc sống hàng ngày.\r\n\r\nCuốn sách chia thành bốn phần chính: (1) Những cách thức để làm cho mọi người thích mình, (2) Các phương pháp thuyết phục người khác theo quan điểm của mình, (3) Cách thay đổi người khác mà không gây ra sự phản kháng, và (4) Các quy tắc để cải thiện mối quan hệ trong công việc và cuộc sống.', '\"Đắc nhân tâm\" là một tác phẩm kinh điển về nghệ thuật giao tiếp và phát triển cá nhân, đã được dịch ra nhiều ngôn ngữ và bán chạy hàng đầu trên thế giới. Dale Carnegie đã khéo léo kết hợp lý thuyết và ví dụ thực tế để cung cấp cho người đọc những kỹ năng cần thiết để xây dựng và duy trì các mối quan hệ tốt đẹp.\r\n\r\nCuốn sách không chỉ giúp người đọc hiểu rõ hơn về tâm lý con người mà còn hướng dẫn cách để tạo ra sự đồng cảm, tôn trọng và tin tưởng trong giao tiếp. Những nguyên tắc được trình bày trong \"Đắc nhân tâm\" không chỉ áp dụng trong cuộc sống cá nhân mà còn rất hữu ích trong môi trường công việc và kinh doanh.', 750, 699, '1740905039.png', 44, 0, '2025-03-02 08:43:59'),
+(53, 23, '\"Nghệ thuật tư duy rành mạch\" – Rolf Dobelli', 'nghe-thuat-tu-duy-ranh-mach--rolf-dobelli-47', '\"Nghệ thuật tư duy rành mạch\" (The Art of Thinking Clearly) của Rolf Dobelli là một cuốn sách tập hợp những sai lầm thường gặp trong tư duy hàng ngày và cách để tránh chúng. Tác giả phân tích 99 lỗi tư duy phổ biến mà chúng ta thường mắc phải, từ các thiên kiến nhận thức đến những sai lầm trong việc ra quyết định. Mỗi chương trong cuốn sách tập trung vào một lỗi tư duy cụ thể, giải thích nó và cung cấp các ví dụ minh họa cùng những cách thức để tránh sai lầm đó.', '\"Nghệ thuật tư duy rành mạch\" là một cuốn sách hữu ích và dễ tiếp cận cho bất kỳ ai quan tâm đến việc cải thiện khả năng tư duy và ra quyết định. Rolf Dobelli đã sử dụng ngôn ngữ rõ ràng, dễ hiểu, kết hợp với những ví dụ thực tế và nghiên cứu khoa học để minh họa các lỗi tư duy. Cuốn sách không chỉ giúp người đọc nhận ra những sai lầm trong tư duy mà còn cung cấp những gợi ý thực tế để tránh chúng, từ đó nâng cao chất lượng quyết định và hiệu suất làm việc.\r\n\r\nCuốn sách đã được nhiều người đón nhận và đánh giá cao vì khả năng giúp người đọc hiểu rõ hơn về cách tư duy và ra quyết định. \"Nghệ thuật tư duy rành mạch\" không chỉ là một cuốn sách về khoa học nhận thức mà còn là một công cụ hữu ích để cải thiện cuộc sống cá nhân và công việc.', 650, 500, '1740905228.jpg', 15, 0, '2025-03-02 08:47:08'),
 (54, 23, '\"Khởi nghiệp tinh gọn\" – Eric Ries', 'khoi-nghiep-tinh-gon--eric-ries-52', '\"Khởi nghiệp tinh gọn\" (The Lean Startup) là một cuốn sách nổi tiếng của Eric Ries, giới thiệu về phương pháp khởi nghiệp dựa trên việc thử nghiệm, học hỏi và cải tiến liên tục. Cuốn sách tập trung vào việc phát triển các sản phẩm và dịch vụ mới một cách hiệu quả và tiết kiệm, bằng cách sử dụng các nguyên tắc của tư duy tinh gọn và cải tiến liên tục.\r\n\r\nPhương pháp Khởi nghiệp tinh gọn giúp các doanh nghiệp khởi nghiệp tăng cơ hội thành công bằng cách tập trung vào việc xây dựng các phiên bản thử nghiệm tối thiểu (Minimum Viable Product - MVP) và thu thập phản hồi từ khách hàng để nhanh chóng điều chỉnh và cải tiến sản phẩm. Cuốn sách cũng giới thiệu các khái niệm quan trọng như \"vòng lặp xây dựng - đo lường - học hỏi\" và \"các chỉ số đổi mới\".', '\"Khởi nghiệp tinh gọn\" là một cuốn sách đột phá về cách thức khởi nghiệp, giúp người đọc hiểu rõ hơn về cách xây dựng và phát triển một doanh nghiệp khởi nghiệp thành công. Eric Ries đã đưa ra một phương pháp tiếp cận mới mẻ và hiệu quả, giúp giảm thiểu rủi ro và lãng phí trong quá trình khởi nghiệp.\r\n\r\nCuốn sách không chỉ dành riêng cho các doanh nhân khởi nghiệp, mà còn hữu ích cho các nhà quản lý và lãnh đạo trong các tổ chức lớn muốn áp dụng tư duy tinh gọn vào quá trình phát triển sản phẩm và dịch vụ. \"Khởi nghiệp tinh gọn\" đã trở thành một nguồn cảm hứng và hướng dẫn quý giá cho nhiều thế hệ doanh nhân và nhà quản lý trên toàn thế giới.', 550, 450, '1740905358.png', 13, 0, '2025-03-02 08:49:18'),
 (55, 24, '\"Lược sử thời gian\" – Stephen Hawking', 'luoc-su-thoi-gian--stephen-hawking-28', '\"Lược sử thời gian\" là một cuốn sách khoa học phổ thông do nhà vật lý lý thuyết Stephen Hawking viết. Cuốn sách cung cấp một cái nhìn tổng quan về lịch sử vũ trụ, từ vụ nổ Big Bang cho đến các lỗ đen và lý thuyết dây. Stephen Hawking giải thích những khái niệm phức tạp về thời gian, không gian, và bản chất của vũ trụ một cách dễ hiểu và hấp dẫn. Cuốn sách cũng đề cập đến những câu hỏi sâu sắc về nguồn gốc và số phận của vũ trụ, từ đó khơi dậy sự tò mò và khuyến khích người đọc tìm hiểu thêm về thế giới xung quanh.', '\"Lược sử thời gian\" là một tác phẩm kinh điển về khoa học phổ thông, giúp người đọc tiếp cận với những khái niệm khoa học phức tạp một cách dễ dàng và thú vị. Bằng cách sử dụng ngôn ngữ giản dị và hình ảnh minh họa, Stephen Hawking đã biến những ý tưởng khó hiểu trở nên dễ hiểu và dễ tiếp thu hơn. Cuốn sách không chỉ giải thích các hiện tượng vật lý như lỗ đen, lỗ sâu, và vũ trụ giãn nở, mà còn đưa ra những vấn đề triết học về thời gian và không gian.\r\n\r\nCuốn sách đã truyền cảm hứng cho nhiều thế hệ nhà khoa học và người yêu khoa học, khuyến khích họ tìm hiểu và khám phá những bí ẩn của vũ trụ. \"Lược sử thời gian\" không chỉ là một cuốn sách về khoa học, mà còn là một hành trình tri thức, mở ra những chân trời mới và kích thích tư duy sáng tạo.', 953, 899, '1740905520.png', 22, 0, '2025-03-02 08:52:00'),
-(56, 24, '\"Vũ trụ trong vỏ hạt dẻ\" – Stephen Hawking', 'vu-tru-trong-vo-hat-de--stephen-hawking-97', '\"Vũ trụ trong vỏ hạt dẻ\" là một cuốn sách khoa học phổ thông do nhà vật lý lý thuyết nổi tiếng Stephen Hawking viết. Cuốn sách cung cấp một cái nhìn tổng quan và sâu sắc về các khái niệm quan trọng trong vật lý hiện đại, bao gồm lý thuyết về vũ trụ học, không gian-thời gian, các lỗ đen, và lý thuyết dây. Stephen Hawking giải thích các khái niệm này một cách rõ ràng và dễ hiểu, mang lại cho người đọc một cái nhìn toàn diện về vũ trụ và những nguyên lý cơ bản của nó.', '\"Vũ trụ trong vỏ hạt dẻ\" là một tác phẩm quan trọng trong lĩnh vực khoa học phổ thông, giúp người đọc tiếp cận với những khái niệm phức tạp của vật lý một cách dễ dàng và thú vị. Cuốn sách được trình bày một cách sinh động với nhiều hình ảnh minh họa và ví dụ cụ thể, giúp người đọc hiểu rõ hơn về các hiện tượng vật lý và những khám phá mới nhất trong lĩnh vực vũ trụ học.\r\n\r\nStephen Hawking không chỉ giải thích những khái niệm khoa học khó hiểu mà còn đưa ra những câu hỏi lớn về bản chất của vũ trụ và sự tồn tại của con người. Cuốn sách mang lại cho người đọc cảm giác ngưỡng mộ và khâm phục trước sự kỳ diệu và phức tạp của vũ trụ.', 466, 350, '1740905693.png', 25, 0, '2025-03-02 08:54:53'),
 (57, 24, '\"Code: The Hidden Language of Computer Hardware and Software\" – Charles Petzold', 'code-the-hidden-language-of-computer-hardware-and-software--charles-petzold-60', '\"Code: The Hidden Language of Computer Hardware and Software\" là một cuốn sách cung cấp cái nhìn sâu sắc về cách máy tính hoạt động ở cả mức phần cứng và phần mềm. Charles Petzold giải thích các khái niệm phức tạp về máy tính bằng cách sử dụng các ví dụ từ các công nghệ lịch sử như mã Morse, chữ nổi Braille và logic Boolean. Cuốn sách bắt đầu từ những nguyên lý cơ bản nhất và dần dần xây dựng lên các khái niệm phức tạp hơn, giúp người đọc hiểu rõ hơn về cách máy tính xử lý thông tin.', '\"Code: The Hidden Language of Computer Hardware and Software\" là một tác phẩm quan trọng trong lĩnh vực khoa học máy tính, giúp người đọc tiếp cận với những khái niệm phức tạp một cách dễ dàng và thú vị. Charles Petzold sử dụng ngôn ngữ rõ ràng, dễ hiểu và kết hợp với nhiều ví dụ minh họa để giải thích các khái niệm về điện tử, mạch logic, và cách máy tính thực hiện các phép tính. Cuốn sách không chỉ giúp người đọc hiểu rõ hơn về cách máy tính hoạt động mà còn mang lại cảm giác ngưỡng mộ trước sự kỳ diệu và phức tạp của công nghệ.', 230, 199, '1740905915.jpg', 55, 0, '2025-03-02 08:58:35'),
-(58, 25, '\"Giáo trình Kinh tế học\" – Paul Samuelson', 'giao-trinh-kinh-te-hoc--paul-samuelson-80', '\"Giáo trình Kinh tế học\" là một trong những cuốn sách kinh điển về kinh tế học, được viết bởi Paul Samuelson, người đoạt giải Nobel Kinh tế năm 1970. Cuốn sách cung cấp một cái nhìn tổng quan về các khái niệm và nguyên lý cơ bản của kinh tế học, bao gồm cả kinh tế vi mô và kinh tế vĩ mô. Cuốn sách đề cập đến các chủ đề quan trọng như cung cầu, sản xuất và phân phối, tiền tệ và ngân hàng, thị trường lao động, và vai trò của chính phủ trong nền kinh tế.', '\"Giáo trình Kinh tế học\" là một tài liệu giáo dục quan trọng và toàn diện, giúp người đọc hiểu rõ hơn về cách nền kinh tế hoạt động và các yếu tố ảnh hưởng đến nó. Cuốn sách được trình bày một cách rõ ràng, dễ hiểu, với nhiều ví dụ minh họa và đồ thị giúp người đọc dễ dàng tiếp thu các khái niệm kinh tế phức tạp. Paul Samuelson đã thành công trong việc kết hợp lý thuyết kinh tế với các ví dụ thực tế, tạo nên một tác phẩm vừa mang tính học thuật, vừa thực tiễn.\r\n\r\nCuốn sách không chỉ dành cho sinh viên kinh tế mà còn hữu ích cho bất kỳ ai muốn hiểu rõ hơn về các vấn đề kinh tế và tài chính trong xã hội. \"Giáo trình Kinh tế học\" đã được dịch ra nhiều ngôn ngữ và sử dụng rộng rãi trong các trường đại học trên khắp thế giới, khẳng định vị trí quan trọng của nó trong lĩnh vực giáo dục kinh tế.', 120, 99, '1740906121.png', 10, 0, '2025-03-02 09:02:01'),
 (59, 25, '\"Sapiens: Lược sử loài người\" – Yuval Noah Harari', 'sapiens-luoc-su-loai-nguoi--yuval-noah-harari-35', '\"Sapiens: Lược sử loài người\" là một cuốn sách nổi tiếng của Yuval Noah Harari, trình bày về quá trình phát triển và tiến hóa của loài người từ hàng triệu năm trước đến hiện tại. Cuốn sách bắt đầu từ thời kỳ xuất hiện của Homo sapiens và tiếp tục qua các giai đoạn quan trọng như Cách mạng Nhận thức, Cách mạng Nông nghiệp, và Cách mạng Khoa học. Harari phân tích những thay đổi lớn trong xã hội loài người và những yếu tố đã định hình nên thế giới hiện đại, từ ngôn ngữ, văn hóa đến kinh tế và chính trị.', '\"Sapiens: Lược sử loài người\" là một tác phẩm khoa học phổ thông đầy cuốn hút và sắc bén, giúp người đọc hiểu rõ hơn về quá trình tiến hóa và phát triển của loài người. Yuval Noah Harari đã sử dụng ngôn ngữ dễ hiểu và lối viết kể chuyện hấp dẫn để trình bày những khái niệm phức tạp về lịch sử và xã hội học. Cuốn sách không chỉ cung cấp những kiến thức khoa học mà còn khơi dậy những suy ngẫm sâu sắc về bản chất của loài người và tương lai của chúng ta.\r\n\r\nCuốn sách đã nhận được nhiều lời khen ngợi từ các nhà phê bình và bạn đọc trên khắp thế giới, và đã được dịch ra nhiều ngôn ngữ. \"Sapiens: Lược sử loài người\" là một tài liệu quý giá cho bất kỳ ai muốn tìm hiểu về lịch sử loài người và những yếu tố đã định hình nên thế giới hiện đại.', 342, 300, '1740906401.jpg', 72, 0, '2025-03-02 09:06:41'),
 (60, 26, '\"Nobita và chuyến tàu tốc hành ngân hà\" – Fujiko F. Fujio', 'nobita-va-chuyen-tau-toc-hanh-ngan-ha--fujiko-f-fujio-16', '\"Nobita và chuyến tàu tốc hành ngân hà\" (Nobita and the Galaxy Super-Express) là một câu chuyện trong loạt truyện tranh Doraemon. Trong câu chuyện này, Doraemon sử dụng bảo bối của mình để đưa Nobita, Shizuka, Suneo và Jaian tham gia vào một chuyến tàu vũ trụ đặc biệt đi qua các hành tinh trong dải Ngân Hà. Trong hành trình, họ khám phá những hành tinh kỳ lạ, gặp gỡ những sinh vật và nền văn minh mới, cũng như trải qua nhiều cuộc phiêu lưu đầy kịch tính.\r\n\r\nCâu chuyện trở nên gay cấn khi họ phải đối mặt với một thế lực đen tối có âm mưu chiếm đoạt tàu và gây nguy hiểm cho hành khách. Với sự giúp đỡ của Doraemon và các bảo bối thần kỳ, nhóm bạn cùng nhau vượt qua những thử thách, giải cứu tàu và đảm bảo sự an toàn cho mọi người.', '\"Nobita và chuyến tàu tốc hành ngân hà\" là một câu chuyện phiêu lưu hấp dẫn, kết hợp giữa yếu tố khoa học viễn tưởng và tình bạn. Truyện không chỉ mang đến những phút giây hồi hộp và hài hước mà còn truyền tải những thông điệp về tình bạn, lòng dũng cảm và tinh thần đoàn kết. Qua mỗi hành trình, nhóm bạn Nobita học được nhiều bài học quý báu và trưởng thành hơn.', 63, 59, '1740906770.jpg', 67, 0, '2025-03-02 09:12:50'),
 (61, 26, '\"Nobita và lịch sử khai phá vũ trụ\" – Fujiko F. Fujio', 'nobita-va-lich-su-khai-pha-vu-tru--fujiko-f-fujio-76', '\"Nobita và lịch sử khai phá vũ trụ\" là một phần trong loạt truyện tranh Doraemon. Trong câu chuyện này, Doraemon, Nobita và các bạn của họ tham gia vào một cuộc phiêu lưu kỳ thú trong vũ trụ. Họ đến hành tinh Koya Koya, nơi đang bị đe dọa bởi bọn xâm lược từ không gian. Để bảo vệ hành tinh này, nhóm bạn phải sử dụng các bảo bối của Doraemon để chiến đấu chống lại kẻ thù và giải cứu cư dân Koya Koya.\r\n\r\nCâu chuyện là hành trình đầy thử thách và kịch tính, khi nhóm bạn Nobita phải đối mặt với nhiều nguy hiểm và sử dụng trí thông minh cùng lòng dũng cảm để vượt qua.', '\"Nobita và lịch sử khai phá vũ trụ\" là một truyện tranh phiêu lưu hấp dẫn, kết hợp giữa khoa học viễn tưởng và tình bạn. Truyện không chỉ mang lại những phút giây giải trí thú vị mà còn truyền tải những thông điệp về lòng dũng cảm, tinh thần đoàn kết và tình bạn chân thành. Với nét vẽ đặc trưng và cốt truyện cuốn hút, câu chuyện đã ghi dấu ấn trong lòng nhiều độc giả và trở thành một phần của ký ức tuổi thơ.', 33, 30, '1740906969.jpg', 32, 0, '2025-03-02 09:16:09'),
@@ -176,17 +174,17 @@ INSERT INTO `products` (`id`, `category_id`, `name`, `slug`, `small_description`
 (65, 26, '\"Bách khoa toàn thư Pokemon\" – Nhiều tác giả, Lê Thế Đôn dịch', 'bach-khoa-toan-thu-pokemon--nhieu-tac-gia-le-the-don-dich-40', '\"Bách khoa toàn thư Pokemon\" là một cuốn sách tổng hợp chi tiết và đầy đủ thông tin về thế giới Pokemon, từ các loài Pokemon, khả năng, tiến hóa cho đến các huấn luyện viên và khu vực trong vũ trụ Pokemon. Cuốn sách cung cấp kiến thức toàn diện về mọi khía cạnh của Pokemon, từ những Pokemon đầu tiên cho đến những loài mới nhất. Các thông tin về kỹ năng, thuộc tính, cách bắt và huấn luyện Pokemon cũng được trình bày một cách rõ ràng và dễ hiểu.', '\"Bách khoa toàn thư Pokemon\" là một tài liệu quý giá dành cho những người yêu thích và đam mê thế giới Pokemon. Cuốn sách được biên soạn một cách công phu, với hình ảnh minh họa sống động và thông tin chi tiết về từng loài Pokemon. Người đọc có thể dễ dàng tra cứu thông tin về Pokemon yêu thích của mình, tìm hiểu về nguồn gốc, tiến hóa, đặc điểm và kỹ năng của chúng.\r\n\r\nCuốn sách không chỉ là một công cụ hữu ích cho việc nghiên cứu và tìm hiểu về Pokemon mà còn mang lại niềm vui và cảm hứng cho người đọc. \"Bách khoa toàn thư Pokemon\" đã trở thành một tài liệu không thể thiếu đối với các fan của Pokemon trên toàn thế giới.', 230, 199, '1740907796.png', 100, 0, '2025-03-02 09:29:56'),
 (66, 26, '\"Harry Potter và Hòn đá phù thủy\" – J.K. Rowling', 'harry-potter-va-hon-da-phu-thuy--jk-rowling-13', '\"Harry Potter và Hòn đá phù thủy\" là cuốn sách đầu tiên trong loạt truyện Harry Potter. Câu chuyện bắt đầu khi Harry Potter, một cậu bé mồ côi sống với dì dượng và bị họ đối xử tệ bạc, phát hiện ra mình là phù thủy vào ngày sinh nhật thứ mười một. Harry được mời đến học tại Trường Phù thủy và Pháp sư Hogwarts, nơi cậu nhanh chóng kết bạn với Ron Weasley và Hermione Granger.\r\n\r\nTại Hogwarts, Harry khám phá ra sự thật về cha mẹ mình và quá khứ bi thảm của họ, đồng thời phát hiện ra một bí mật về Hòn đá phù thủy - một vật phẩm ma thuật có thể mang lại sự bất tử. Cậu cùng các bạn trải qua nhiều cuộc phiêu lưu và đối mặt với những nguy hiểm để ngăn chặn kế hoạch chiếm đoạt Hòn đá phù thủy của tên phù thủy hắc ám Voldemort.', '\"Harry Potter và Hòn đá phù thủy\" là một cuốn sách kỳ ảo hấp dẫn và lôi cuốn, mở đầu cho một loạt truyện làm say mê hàng triệu độc giả trên khắp thế giới. Tác giả J.K. Rowling đã xây dựng một thế giới phép thuật đầy màu sắc, với những nhân vật sống động và cốt truyện cuốn hút. Cuốn sách không chỉ mang lại những phút giây giải trí tuyệt vời mà còn truyền tải những thông điệp về tình bạn, lòng dũng cảm và sự hy sinh.', 720, 599, '1740907919.jpg', 56, 0, '2025-03-02 09:31:59'),
 (68, 26, '\"Harry Potter và Phòng chứa bí mật\" – J.K. Rowling', 'harry-potter-va-phong-chua-bi-mat--jk-rowling-13', '\"Harry Potter và Phòng Chứa Bí Mật\" là cuốn sách thứ hai trong loạt truyện Harry Potter. Câu chuyện tiếp tục với năm học thứ hai của Harry tại Trường Phù thủy và Pháp sư Hogwarts. Khi trở lại trường, Harry phát hiện ra rằng có một loạt các vụ tấn công bí ẩn xảy ra khiến nhiều học sinh bị hóa đá. Lời đồn rằng \"Phòng Chứa Bí Mật\" đã được mở lại và một con quái vật nguy hiểm đang được thả ra để tấn công những người không thuần chủng.\r\n\r\nHarry cùng với bạn bè Ron Weasley và Hermione Granger bắt đầu điều tra và phát hiện ra nhiều manh mối quan trọng liên quan đến sự kiện này. Cuối cùng, Harry phải đối mặt với con quái vật trong Phòng Chứa Bí Mật và giải cứu các học sinh bị nạn.', '\"Harry Potter và Phòng Chứa Bí Mật\" là một cuốn sách kỳ ảo hấp dẫn, tiếp tục hành trình phiêu lưu của Harry Potter và những người bạn tại Hogwarts. J.K. Rowling đã tạo ra một câu chuyện lôi cuốn, với những tình tiết bất ngờ và hồi hộp, cùng những bài học về lòng dũng cảm, tình bạn và sự trung thực. Cuốn sách không chỉ mang lại những phút giây giải trí tuyệt vời mà còn truyền tải những thông điệp ý nghĩa về cuộc sống.', 720, 599, '1740908153.jpg', 50, 0, '2025-03-02 09:35:53'),
-(69, 22, '\"Trăm năm cô đơn\" – Gabriel García Márquez', 'tram-nam-co-don--gabriel-garcia-marquez-46', '\"Trăm năm cô đơn\" là một tác phẩm văn học kinh điển của Gabriel García Márquez, kể về cuộc đời của gia đình Buendía trong làng Macondo. Câu chuyện bao trùm bảy thế hệ của gia đình Buendía, từ khi người sáng lập José Arcadio Buendía và vợ ông, Ursula Iguarán, đến Macondo và xây dựng làng. Qua các thế hệ, gia đình Buendía trải qua nhiều biến cố và bi kịch, từ tình yêu và chiến tranh, đến sự cô đơn và mất mát. Tác phẩm kết thúc với sự diệt vong của gia đình Buendía khi hậu duệ cuối cùng, Aureliano, phát hiện ra những tiên tri đã được ghi chép từ trước về số phận của gia đình.', '\"Trăm năm cô đơn\" là một kiệt tác của văn học hiện thực huyền ảo, nổi bật với ngòi bút tinh tế và giàu sức gợi của Gabriel García Márquez. Cuốn sách không chỉ kể về lịch sử và cuộc sống của một gia đình mà còn phản ánh những vấn đề xã hội, văn hóa và chính trị của châu Mỹ Latinh. Với sự kết hợp giữa hiện thực và huyền ảo, tác phẩm mang đến cho người đọc một trải nghiệm độc đáo và sâu sắc, gợi lên nhiều suy ngẫm về cuộc sống, số phận và sự cô đơn của con người.\r\n\r\nCuốn sách đã nhận được nhiều giải thưởng và được coi là một trong những tác phẩm văn học vĩ đại nhất của thế kỷ 20. \"Trăm năm cô đơn\" không chỉ là một câu chuyện về một gia đình, mà còn là một hành trình khám phá những bí ẩn của cuộc sống và tâm hồn con người.', 350, 299, '1740922142.jpg', 68, 0, '2025-03-02 13:29:02'),
+(69, 22, '\"Trăm năm cô đơn\" – Gabriel García Márquez', 'tram-nam-co-don--gabriel-garcia-marquez-46', '\"Trăm năm cô đơn\" là một tác phẩm văn học kinh điển của Gabriel García Márquez, kể về cuộc đời của gia đình Buendía trong làng Macondo. Câu chuyện bao trùm bảy thế hệ của gia đình Buendía, từ khi người sáng lập José Arcadio Buendía và vợ ông, Ursula Iguarán, đến Macondo và xây dựng làng. Qua các thế hệ, gia đình Buendía trải qua nhiều biến cố và bi kịch, từ tình yêu và chiến tranh, đến sự cô đơn và mất mát. Tác phẩm kết thúc với sự diệt vong của gia đình Buendía khi hậu duệ cuối cùng, Aureliano, phát hiện ra những tiên tri đã được ghi chép từ trước về số phận của gia đình.', '\"Trăm năm cô đơn\" là một kiệt tác của văn học hiện thực huyền ảo, nổi bật với ngòi bút tinh tế và giàu sức gợi của Gabriel García Márquez. Cuốn sách không chỉ kể về lịch sử và cuộc sống của một gia đình mà còn phản ánh những vấn đề xã hội, văn hóa và chính trị của châu Mỹ Latinh. Với sự kết hợp giữa hiện thực và huyền ảo, tác phẩm mang đến cho người đọc một trải nghiệm độc đáo và sâu sắc, gợi lên nhiều suy ngẫm về cuộc sống, số phận và sự cô đơn của con người.\r\n\r\nCuốn sách đã nhận được nhiều giải thưởng và được coi là một trong những tác phẩm văn học vĩ đại nhất của thế kỷ 20. \"Trăm năm cô đơn\" không chỉ là một câu chuyện về một gia đình, mà còn là một hành trình khám phá những bí ẩn của cuộc sống và tâm hồn con người.', 350, 299, '1740922142.jpg', 62, 0, '2025-03-02 13:29:02'),
 (70, 22, '\"Cánh đồng bất tận\" – Nguyễn Ngọc Tư', 'canh-dong-bat-tan--nguyen-ngoc-tu-86', '\"Cánh đồng bất tận\" là một tập truyện ngắn của nhà văn Nguyễn Ngọc Tư, nổi tiếng với câu chuyện cùng tên \"Cánh đồng bất tận\". Truyện kể về cuộc sống của những con người ở miền Tây Nam Bộ, với những khát vọng, niềm đau và sự đấu tranh trong cuộc sống. Nhân vật chính trong truyện \"Cánh đồng bất tận\" là hai đứa trẻ, Nương và Điền, sống cùng người cha thô bạo và lạnh lùng sau khi mẹ bỏ đi. Họ phải trải qua nhiều khó khăn và biến cố trên những cánh đồng rộng lớn, đối mặt với nỗi cô đơn và bất hạnh. Tập truyện còn bao gồm nhiều câu chuyện khác, mỗi câu chuyện đều mang một màu sắc và thông điệp riêng, nhưng đều xoay quanh cuộc sống và tình cảm của con người.', '\"Cánh đồng bất tận\" là một tác phẩm văn học nổi bật của Nguyễn Ngọc Tư, ghi dấu ấn mạnh mẽ trong lòng độc giả bởi lối viết chân thực, tinh tế và đầy cảm xúc. Tác giả đã khéo léo miêu tả bức tranh cuộc sống ở miền Tây Nam Bộ với những con người bình dị, cảnh vật quen thuộc và những câu chuyện đời thường nhưng đầy ý nghĩa. Từng câu chuyện trong tập truyện mang đến những suy ngẫm sâu sắc về tình cảm gia đình, tình yêu thương và sự hy sinh.\r\n\r\nCuốn sách không chỉ phản ánh hiện thực cuộc sống mà còn truyền tải những thông điệp nhân văn về lòng nhân ái, sự kiên trì và hy vọng. \"Cánh đồng bất tận\" đã nhận được nhiều giải thưởng và được đánh giá cao trong giới phê bình văn học, khẳng định vị trí của Nguyễn Ngọc Tư trong văn học Việt Nam đương đại.', 277, 249, '1740922535.jpg', 57, 0, '2025-03-02 13:35:35'),
 (71, 22, '\"Đồi gió hú\" – Emily Brontë', 'doi-gio-hu--emily-bront-31', '\"Đồi gió hú\" là tiểu thuyết duy nhất của Emily Brontë, kể về câu chuyện tình yêu đầy bi kịch và thù hận giữa Heathcliff và Catherine Earnshaw. Câu chuyện diễn ra tại hai trang trại gần nhau là Wuthering Heights và Thrushcross Grange, nằm trên một vùng đồng quê hoang dã và hẻo lánh của nước Anh. Heathcliff là một cậu bé mồ côi được ông Earnshaw nhận nuôi, nhưng bị đối xử tàn nhẫn bởi con trai của ông, Hindley. Catherine, con gái của ông Earnshaw, và Heathcliff nhanh chóng trở nên thân thiết và phát triển một tình yêu mãnh liệt nhưng không thể nào hòa hợp được.\r\n\r\nSau khi ông Earnshaw qua đời, Hindley tiếp quản Wuthering Heights và đẩy Heathcliff vào cuộc sống khổ cực. Catherine yêu và kết hôn với Edgar Linton, một người giàu có và tinh tế từ Thrushcross Grange, nhưng trái tim cô vẫn thuộc về Heathcliff. Heathcliff, đau khổ và đầy thù hận, trở lại và bắt đầu cuộc trả thù tàn nhẫn, không chỉ đối với Hindley mà còn với thế hệ con cháu của cả hai gia đình.', '\"Đồi gió hú\" là một tác phẩm văn học kinh điển, nổi bật với phong cách viết mạnh mẽ và lối miêu tả tâm lý nhân vật sâu sắc của Emily Brontë. Cuốn sách khám phá những khía cạnh tăm tối của tình yêu, thù hận và sự trả thù, qua đó lột tả những xung đột nội tâm và nỗi đau khổ của các nhân vật. Cảnh sắc hoang dã và cô lập của vùng đồng quê Yorkshire tạo nên bối cảnh hoàn hảo cho câu chuyện đầy ám ảnh và u ám này.\r\n\r\nCuốn sách đã nhận được nhiều lời khen ngợi từ giới phê bình và độc giả, và được coi là một trong những tác phẩm văn học vĩ đại nhất của thế kỷ 19. \"Đồi gió hú\" không chỉ là một câu chuyện tình yêu bi thảm mà còn là một tác phẩm phản ánh những mặt tối của con người và sức mạnh tàn phá của tình yêu và thù hận.', 560, 399, '1740922661.png', 56, 0, '2025-03-02 13:37:41'),
 (72, 22, '\"Lão Hạc\" – Nam Cao', 'lao-hac--nam-cao-91', '\"Lão Hạc\" là một truyện ngắn nổi tiếng của nhà văn Nam Cao, kể về cuộc đời bi kịch của Lão Hạc, một nông dân già sống ở một làng quê nghèo. Lão Hạc sống cô đơn sau khi vợ qua đời và con trai bỏ nhà ra đi vì không có tiền cưới vợ. Lão dành tình cảm đặc biệt cho con chó Vàng, người bạn duy nhất của mình. Tuy nhiên, do không còn đủ tiền nuôi sống cả mình và chó, Lão Hạc buộc phải bán con chó Vàng, điều này khiến ông vô cùng đau khổ và day dứt.\r\n\r\nSau khi bán chó, Lão Hạc quyết định chọn cách tự tử bằng bả chó để tránh gánh nặng cho mọi người xung quanh và giữ lại mảnh đất cho con trai. Cái chết của Lão Hạc không chỉ là sự giải thoát cho ông mà còn là lời tố cáo xã hội phong kiến thối nát, khiến những người nông dân phải chịu đựng cuộc sống cơ cực và bế tắc.', '\"Lão Hạc\" là một tác phẩm nổi bật của Nam Cao, phản ánh chân thực cuộc sống khốn khó của người nông dân Việt Nam trong xã hội phong kiến. Qua câu chuyện về Lão Hạc, tác giả đã thể hiện lòng nhân ái và sự cảm thông sâu sắc đối với những con người nghèo khổ. Nam Cao sử dụng ngôn ngữ giản dị, chân thực và giàu cảm xúc để miêu tả tâm lý nhân vật và cuộc sống đời thường, tạo nên một tác phẩm văn học đầy ý nghĩa và giá trị nhân văn.\r\n\r\nCuốn sách \"Lão Hạc\" không chỉ giúp người đọc hiểu rõ hơn về cuộc sống và số phận của người nông dân trong xã hội phong kiến mà còn truyền tải những thông điệp về lòng nhân ái, tình cảm gia đình và sự hy sinh. Tác phẩm đã trở thành một phần quan trọng của văn học Việt Nam và được nhiều thế hệ độc giả yêu mến.', 899, 750, '1740922867.jpg', 78, 0, '2025-03-02 13:41:07'),
-(73, 22, '\"Thép đã tôi thế đấy\" – Nikolai Ostrovsky', 'thep-da-toi-the-day--nikolai-ostrovsky-50', '\"Thép đã tôi thế đấy\" là một tiểu thuyết tự truyện của Nikolai Ostrovsky, kể về cuộc đời và sự nghiệp của Pavel Korchagin, một người lính và nhà cách mạng. Câu chuyện bắt đầu từ những năm tuổi thơ đầy khó khăn của Pavel, khi anh sống trong cảnh nghèo khó và chịu đựng sự bất công của xã hội. Sau khi gia nhập Hồng quân trong cuộc Nội chiến Nga, Pavel phải đối mặt với nhiều thử thách gian khổ và những trận chiến khốc liệt.\r\n\r\nBị thương nặng và mất đi sức khỏe, Pavel vẫn không từ bỏ lý tưởng cách mạng và tiếp tục cống hiến cho công cuộc xây dựng xã hội chủ nghĩa. Anh viết sách để chia sẻ kinh nghiệm và truyền cảm hứng cho những người khác, mặc dù phải đấu tranh với bệnh tật và những khó khăn cá nhân.', '\"Thép đã tôi thế đấy\" là một tác phẩm văn học kinh điển của văn học Xô Viết, thể hiện tinh thần kiên cường, dũng cảm và lòng yêu nước của nhân vật chính. Nikolai Ostrovsky đã khéo léo miêu tả cuộc sống gian khổ và sự hy sinh của Pavel Korchagin, từ đó truyền tải thông điệp về ý chí và nghị lực vượt qua khó khăn. Cuốn sách không chỉ là một câu chuyện về cuộc đời của một cá nhân mà còn là một tác phẩm ca ngợi tinh thần cách mạng và sự kiên cường của con người trong cuộc đấu tranh vì lý tưởng cao cả.\r\n\r\n\"Thép đã tôi thế đấy\" đã trở thành một nguồn cảm hứng lớn cho nhiều thế hệ độc giả và được dịch ra nhiều ngôn ngữ trên thế giới. Tác phẩm này không chỉ có giá trị văn học mà còn là một tài liệu quý giá về lịch sử và tinh thần của thời đại cách mạng.', 475, 450, '1740923121.jpg', 76, 0, '2025-03-02 13:45:21'),
-(74, 22, '\"Giết con chim nhại\" – Harper Lee', 'giet-con-chim-nhai--harper-lee-51', '\"Giết con chim nhại\" là một tiểu thuyết nổi tiếng của Harper Lee, lấy bối cảnh ở thị trấn nhỏ Maycomb, Alabama, vào những năm 1930. Câu chuyện được kể qua góc nhìn của Scout Finch, một cô bé nghịch ngợm nhưng thông minh, và anh trai Jem Finch. Bố của họ, Atticus Finch, là một luật sư đầy phẩm cách và kiên định. Ông được giao nhiệm vụ bào chữa cho Tom Robinson, một người da đen bị cáo buộc tấn công tình dục một cô gái da trắng.\r\n\r\nTrong suốt quá trình xét xử, gia đình Finch phải đối mặt với sự kỳ thị và thù hận từ cộng đồng. Atticus cố gắng bảo vệ sự công bằng và khẳng định giá trị nhân văn của mỗi con người, bất kể màu da. Câu chuyện không chỉ tập trung vào vụ xét xử mà còn khắc họa cuộc sống hàng ngày của Scout và Jem, cùng những bài học mà họ học được về lòng dũng cảm, sự đồng cảm và công lý.', '\"Giết con chim nhại\" là một tác phẩm văn học kinh điển, thể hiện sự sâu sắc và chân thực trong việc miêu tả những vấn đề xã hội phức tạp như phân biệt chủng tộc, bất công xã hội và lòng dũng cảm. Harper Lee đã xây dựng những nhân vật sống động và đáng nhớ, từ đó truyền tải những thông điệp nhân văn và ý nghĩa.\r\n\r\nCuốn sách được đánh giá cao bởi giới phê bình và đã nhận giải Pulitzer vào năm 1961. \"Giết con chim nhại\" không chỉ là một câu chuyện về cuộc đấu tranh của một người luật sư bảo vệ công lý, mà còn là một bài học về lòng nhân ái, sự đồng cảm và sức mạnh của tình người. Tác phẩm đã trở thành một biểu tượng của văn học Mỹ và được giảng dạy rộng rãi trong các trường học trên khắp thế giới.', 569, 450, '1740923323.png', 78, 0, '2025-03-02 13:48:43');
+(73, 22, '\"Thép đã tôi thế đấy\" – Nikolai Ostrovsky', 'thep-da-toi-the-day--nikolai-ostrovsky-50', '\"Thép đã tôi thế đấy\" là một tiểu thuyết tự truyện của Nikolai Ostrovsky, kể về cuộc đời và sự nghiệp của Pavel Korchagin, một người lính và nhà cách mạng. Câu chuyện bắt đầu từ những năm tuổi thơ đầy khó khăn của Pavel, khi anh sống trong cảnh nghèo khó và chịu đựng sự bất công của xã hội. Sau khi gia nhập Hồng quân trong cuộc Nội chiến Nga, Pavel phải đối mặt với nhiều thử thách gian khổ và những trận chiến khốc liệt.\r\n\r\nBị thương nặng và mất đi sức khỏe, Pavel vẫn không từ bỏ lý tưởng cách mạng và tiếp tục cống hiến cho công cuộc xây dựng xã hội chủ nghĩa. Anh viết sách để chia sẻ kinh nghiệm và truyền cảm hứng cho những người khác, mặc dù phải đấu tranh với bệnh tật và những khó khăn cá nhân.', '\"Thép đã tôi thế đấy\" là một tác phẩm văn học kinh điển của văn học Xô Viết, thể hiện tinh thần kiên cường, dũng cảm và lòng yêu nước của nhân vật chính. Nikolai Ostrovsky đã khéo léo miêu tả cuộc sống gian khổ và sự hy sinh của Pavel Korchagin, từ đó truyền tải thông điệp về ý chí và nghị lực vượt qua khó khăn. Cuốn sách không chỉ là một câu chuyện về cuộc đời của một cá nhân mà còn là một tác phẩm ca ngợi tinh thần cách mạng và sự kiên cường của con người trong cuộc đấu tranh vì lý tưởng cao cả.\r\n\r\n\"Thép đã tôi thế đấy\" đã trở thành một nguồn cảm hứng lớn cho nhiều thế hệ độc giả và được dịch ra nhiều ngôn ngữ trên thế giới. Tác phẩm này không chỉ có giá trị văn học mà còn là một tài liệu quý giá về lịch sử và tinh thần của thời đại cách mạng.', 475, 450, '1740923121.jpg', 75, 0, '2025-03-02 13:45:21'),
+(74, 22, '\"Giết con chim nhại\" – Harper Lee', 'giet-con-chim-nhai--harper-lee-51', '\"Giết con chim nhại\" là một tiểu thuyết nổi tiếng của Harper Lee, lấy bối cảnh ở thị trấn nhỏ Maycomb, Alabama, vào những năm 1930. Câu chuyện được kể qua góc nhìn của Scout Finch, một cô bé nghịch ngợm nhưng thông minh, và anh trai Jem Finch. Bố của họ, Atticus Finch, là một luật sư đầy phẩm cách và kiên định. Ông được giao nhiệm vụ bào chữa cho Tom Robinson, một người da đen bị cáo buộc tấn công tình dục một cô gái da trắng.\r\n\r\nTrong suốt quá trình xét xử, gia đình Finch phải đối mặt với sự kỳ thị và thù hận từ cộng đồng. Atticus cố gắng bảo vệ sự công bằng và khẳng định giá trị nhân văn của mỗi con người, bất kể màu da. Câu chuyện không chỉ tập trung vào vụ xét xử mà còn khắc họa cuộc sống hàng ngày của Scout và Jem, cùng những bài học mà họ học được về lòng dũng cảm, sự đồng cảm và công lý.', '\"Giết con chim nhại\" là một tác phẩm văn học kinh điển, thể hiện sự sâu sắc và chân thực trong việc miêu tả những vấn đề xã hội phức tạp như phân biệt chủng tộc, bất công xã hội và lòng dũng cảm. Harper Lee đã xây dựng những nhân vật sống động và đáng nhớ, từ đó truyền tải những thông điệp nhân văn và ý nghĩa.\r\n\r\nCuốn sách được đánh giá cao bởi giới phê bình và đã nhận giải Pulitzer vào năm 1961. \"Giết con chim nhại\" không chỉ là một câu chuyện về cuộc đấu tranh của một người luật sư bảo vệ công lý, mà còn là một bài học về lòng nhân ái, sự đồng cảm và sức mạnh của tình người. Tác phẩm đã trở thành một biểu tượng của văn học Mỹ và được giảng dạy rộng rãi trong các trường học trên khắp thế giới.', 569, 450, '1740923323.png', 77, 0, '2025-03-02 13:48:43');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `users`
+-- Cấu trúc bảng cho bảng `users`
 --
 
 CREATE TABLE `users` (
@@ -201,37 +199,38 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `users`
+-- Đang đổ dữ liệu cho bảng `users`
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `phone`, `address`, `password`, `role_as`, `creat_at`) VALUES
-(55, 'Lê Quang Kiệt', 'abc@gmail.com', '123456789', NULL, '$2y$10$1kF2ZwZLo6iuhNCCS3XxQudhRkOCUcWdwpf06/h97iKCmcS1moP5K', 1, '2025-03-01 13:32:37'),
-(56, 'Nguyễn Quang Kiệt', 'abcd@gmail.com', '123456666', 'Hải Phòng', '$2y$10$eI.05PbxyRED3Q0oOiDHH.gNJKs9TUO20XhoUkse02uY0/yHu7e76', 0, '2025-03-02 04:27:16');
+(57, 'Nguyễn Hoàng Lộc', 'test@example.com', '0287317289', 'Q8', '$2y$10$HTx6xb/uNjOHbPxaJjVzGuZqgJTWQLofxjlAsM8PY85PvsIKexwFe', 1, '2025-11-21 07:48:15'),
+(58, 'Quý', 'test2@gmail.com', '028731728', 'Quận 8', '123456', 1, '2025-12-27 01:02:47'),
+(59, 'Nguyễn Hoàng Lập', 'lap2@example.com', '0902752693', 'Q7', '$2y$10$nm7yMIpCrAjeJmI98ZMskeFs6B7HBWxqJVbON3XYhdtZA3XR5Tisi', 0, '2026-01-17 01:17:25');
 
 --
--- Indexes for dumped tables
+-- Chỉ mục cho các bảng đã đổ
 --
 
 --
--- Indexes for table `blog`
+-- Chỉ mục cho bảng `blog`
 --
 ALTER TABLE `blog`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `categories`
+-- Chỉ mục cho bảng `categories`
 --
 ALTER TABLE `categories`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `orders`
+-- Chỉ mục cho bảng `orders`
 --
 ALTER TABLE `orders`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `order_detail`
+-- Chỉ mục cho bảng `order_detail`
 --
 ALTER TABLE `order_detail`
   ADD PRIMARY KEY (`id`),
@@ -240,64 +239,64 @@ ALTER TABLE `order_detail`
   ADD KEY `order_id` (`order_id`);
 
 --
--- Indexes for table `products`
+-- Chỉ mục cho bảng `products`
 --
 ALTER TABLE `products`
   ADD PRIMARY KEY (`id`),
   ADD KEY `category_id` (`category_id`);
 
 --
--- Indexes for table `users`
+-- Chỉ mục cho bảng `users`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT cho các bảng đã đổ
 --
 
 --
--- AUTO_INCREMENT for table `blog`
+-- AUTO_INCREMENT cho bảng `blog`
 --
 ALTER TABLE `blog`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
--- AUTO_INCREMENT for table `categories`
+-- AUTO_INCREMENT cho bảng `categories`
 --
 ALTER TABLE `categories`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
--- AUTO_INCREMENT for table `orders`
+-- AUTO_INCREMENT cho bảng `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
--- AUTO_INCREMENT for table `order_detail`
+-- AUTO_INCREMENT cho bảng `order_detail`
 --
 ALTER TABLE `order_detail`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=77;
 
 --
--- AUTO_INCREMENT for table `products`
+-- AUTO_INCREMENT cho bảng `products`
 --
 ALTER TABLE `products`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=75;
 
 --
--- AUTO_INCREMENT for table `users`
+-- AUTO_INCREMENT cho bảng `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
 
 --
--- Constraints for dumped tables
+-- Các ràng buộc cho các bảng đã đổ
 --
 
 --
--- Constraints for table `order_detail`
+-- Các ràng buộc cho bảng `order_detail`
 --
 ALTER TABLE `order_detail`
   ADD CONSTRAINT `order_detail_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`),
@@ -305,7 +304,7 @@ ALTER TABLE `order_detail`
   ADD CONSTRAINT `order_detail_ibfk_3` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`);
 
 --
--- Constraints for table `products`
+-- Các ràng buộc cho bảng `products`
 --
 ALTER TABLE `products`
   ADD CONSTRAINT `products_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`);

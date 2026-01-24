@@ -16,7 +16,11 @@ if (isset($_POST['user_id'])) {
             <div class="col-md-8">
                 <div class="card">
                     <div class="card-header bg-primary">
-                        <h1 style="color:white ; ">Sửa Người Dùng</h1>
+                        <h1 style="color:white ; ">Sửa Người Dùng
+                            <a href="user.php" class="btn btn-danger btn-sm float-end">
+                                <i class="fa fa-arrow-left"></i> Quay lại
+                            </a>
+                        </h1>
                     </div>
                     <div class="card-body">
                         <form action="../functions/authcode.php" method="POST" id="update_user">
@@ -38,11 +42,11 @@ if (isset($_POST['user_id'])) {
                             </div class="mb-3">
                             <div class="mb-3">
                                 <b><label for="exampleInputPassword1" class="form-label">Mật khẩu</label></b>
-                                <input type="password" required name="password" id="InputPassword1" class="form-control" value="<?= $data['password']?>">
+                                <input type="password" required name="password" id="InputPassword1" class="form-control" value="<?= $data['password'] ?>">
                             </div>
                             <div class="mb-3">
                                 <b><label for="exampleInputPassword1" class="form-label">Xác nhận mật khẩu</label></b>
-                                <input type="password" required name="cpassword" id="InputPassword2" class="form-control" value="<?= $data['password']?>">
+                                <input type="password" required name="cpassword" id="InputPassword2" class="form-control" value="<?= $data['password'] ?>">
                             </div>
                             <!-- Đăng kí -->
                             <input type="hidden" name="user_idd" value="<?= $data['id'] ?>" />

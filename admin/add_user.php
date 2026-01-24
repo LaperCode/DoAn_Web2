@@ -9,7 +9,11 @@ include("../admin/includes/header.php");
             <div class="col-md-8">
                 <div class="card">
                     <div class="card-header bg-primary">
-                        <h1 style="color:white ; ">Thêm Người Dùng</h1>
+                        <h1 style="color:white ; ">Thêm Người Dùng
+                            <a href="user.php" class="btn btn-danger btn-sm float-end">
+                                <i class="fa fa-arrow-left"></i> Quay lại
+                            </a>
+                        </h1>
                     </div>
                     <div class="card-body">
                         <form action="../functions/authcode.php" method="POST" id="register-account">

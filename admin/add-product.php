@@ -8,7 +8,11 @@ include("../admin/includes/header.php");
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4>Thêm sản phẩm</h4>
+                        <h4>Thêm sản phẩm
+                            <a href="products.php" class="btn btn-danger btn-sm float-end">
+                                <i class="fa fa-arrow-left"></i> Quay lại
+                            </a>
+                        </h4>
                     </div>
                     <div class="card-body">
                         <form id="productForm" action="code.php" method="POST" enctype="multipart/form-data"><!-- Uploads image -->

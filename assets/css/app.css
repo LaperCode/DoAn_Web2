@@ -349,20 +349,17 @@ ul.devided > li:last-child {
 }
 
 .hero {
-    height: calc(
-        100vh -
-            (
-                var(--top-header-size) + var(--mid-header-size) +
-                    var(--bottom-header-size)
-            )
-    );
+    min-height: 600px;
+    height: calc(100vh - (var(--top-header-size) + var(--mid-header-size) + var(--bottom-header-size)));
     padding: 0 20px;
+    overflow: visible;
 }
 
 .slider,
 .slider .container {
     height: 100%;
     position: relative;
+    overflow: visible;
 }
 
 .slide {
@@ -370,7 +367,7 @@ ul.devided > li:last-child {
     position: absolute;
     display: flex;
     inset: 0;
-    overflow: hidden;
+    overflow: visible;
     padding: 30px;
 }
 
@@ -385,16 +382,37 @@ ul.devided > li:last-child {
     flex-direction: column;
     justify-content: center;
     height: 100%;
-    margin-top: 50px;
+    margin-top: 10px;
+    overflow: visible;
+    position: relative;
+    z-index: 10;
+}
+
+.info-content {
+    position: relative;
+    z-index: 10;
 }
 
 .info-content h2 {
     font-size: 70px;
     margin: 10px 0 35px;
+    line-height: 1.2;
+}
+
+.info-content h3 {
+    position: relative;
+    z-index: 10;
+}
+
+.info-content p {
+    position: relative;
+    z-index: 10;
 }
 
 .info-content button {
     margin-top: 30px;
+    z-index: 15;
+    position: relative;
 }
 
 .slide .img {
@@ -417,6 +435,8 @@ ul.devided > li:last-child {
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(44, 62, 80, 0.2);
     cursor: pointer;
+    position: relative;
+    z-index: 10;
 }
 
 .btn-hover {
@@ -449,11 +469,15 @@ ul.devided > li:last-child {
     transition: all 0.3s cubic-bezier(0.77, 0, 0.175, 1);
     background-color: var(--orange);
     color: var(--main-bg-color);
+    z-index: 5;
+    opacity: 0.9;
 }
 
 .slide-controll:hover {
     background-color: var(--dark-orange);
     color: var(--main-bg-color);
+    opacity: 1;
+    transform: translateY(-50%) scale(1.1);
 }
 
 .slide-next {
@@ -465,11 +489,11 @@ ul.devided > li:last-child {
 }
 
 .slider:hover .slide-next {
-    right: 50px;
+    right: 20px;
 }
 
 .slider:hover .slide-prev {
-    left: 50px;
+    left: 20px;
 }
 
 /* slide animation */
