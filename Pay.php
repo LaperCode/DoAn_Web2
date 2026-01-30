@@ -71,6 +71,7 @@ $data = mysqli_fetch_array($users);
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <!-- <script src="./assets/font/jquery/jquery-3.6.1.js"></script> -->
     <script type="text/javascript" src="./assets/js/Wn3.js"></script>
+    <script src="./assets/js/address-autofill.js"></script>
 </body>
 <script>
     $(document).ready(function() {

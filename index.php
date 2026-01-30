@@ -5,6 +5,46 @@ $LatestProducts         =   getLatestProducts(8);
 $blogs                  =   getBlogs($page, $search);
 ?>
 
+<style>
+    /* Fix nút Mua ngay trong hero slider */
+    .hero .slide .info {
+        position: relative;
+        z-index: 10;
+    }
+
+    .hero .slide .info-content {
+        position: relative;
+        z-index: 11;
+    }
+
+    .hero .slide .info-content a,
+    .hero .slide .info-content button {
+        position: relative;
+        z-index: 12;
+        pointer-events: auto;
+        cursor: pointer;
+    }
+
+    .hero .slide .img {
+        position: relative;
+        z-index: 5;
+        pointer-events: none;
+    }
+
+    .hero .slide .img img {
+        pointer-events: none;
+    }
+
+    /* Đảm bảo button có thể click */
+    .btn-flat {
+        pointer-events: auto !important;
+        cursor: pointer !important;
+    }
+
+    .btn-hover:hover {
+        cursor: pointer !important;
+    }
+</style>
 
 <body>
     <!-- hero section -->

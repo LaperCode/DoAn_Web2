@@ -395,11 +395,16 @@ ul.devided > li:last-child {
     inset: 0;
     overflow: visible;
     padding: 30px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
 }
 
 .slide.active {
     visibility: visible;
     height: 100%;
+    opacity: 1;
+    pointer-events: auto;
 }
 
 .slide .info {

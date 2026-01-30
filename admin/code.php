@@ -289,6 +289,63 @@ if (isset($_POST['add_category_btn'])) {    //Thêm danh mục
     mysqli_query($conn, $query);
 
     redirect("customer-order-details.php?id_order=$order_id", "Cập nhập trạng thái thành công");
+} else if (isset($_POST['import_stock'])) {  // NHẬP HÀNG VỚI CÔNG THỨC GIÁ BÌNH QUÂN
+    $product_id = mysqli_real_escape_string($conn, $_POST['product_id']);
+    $quantity_imported = mysqli_real_escape_string($conn, $_POST['quantity_imported']);
+    $import_price = mysqli_real_escape_string($conn, $_POST['import_price']);
+    $profit_margin = mysqli_real_escape_string($conn, $_POST['profit_margin']);
+    $note = mysqli_real_escape_string($conn, $_POST['note']);
+    $admin_id = $_SESSION['auth_user']['id'];
+
+    // Lấy thông tin sản phẩm hiện tại
+    $product_query = "SELECT qty, original_price FROM products WHERE id='$product_id'";
+    $product_result = mysqli_query($conn, $product_query);
+
+    if (mysqli_num_rows($product_result) > 0) {
+        $product = mysqli_fetch_array($product_result);
+        $old_quantity = $product['qty'];
+        $old_original_price = $product['original_price'];
+
+        // CÔNG THỨC GIÁ BÌNH QUÂN (theo yêu cầu thầy):
+        // Giá nhập mới = (SL tồn × Giá nhập cũ + SL nhập × Giá nhập mới) / (SL tồn + SL nhập)
+        $new_total_quantity = $old_quantity + $quantity_imported;
+        $new_average_price = ($old_quantity * $old_original_price + $quantity_imported * $import_price) / $new_total_quantity;
+
+        // Giá bán = Giá nhập × (100% + Tỷ lệ lợi nhuận)
+        $new_selling_price = $new_average_price * (1 + $profit_margin / 100);
+
+        // Cập nhật thông tin sản phẩm
+        $update_product_query = "UPDATE products SET 
+            qty = '$new_total_quantity',
+            original_price = '$new_average_price',
+            selling_price = '$new_selling_price',
+            profit_margin = '$profit_margin'
+            WHERE id = '$product_id'";
+
+        $update_product_run = mysqli_query($conn, $update_product_query);
+
+        if ($update_product_run) {
+            // Lưu lịch sử nhập hàng
+            $insert_history_query = "INSERT INTO import_history 
+                (product_id, quantity_imported, import_price, old_quantity, old_original_price, 
+                 new_average_price, new_selling_price, profit_margin, admin_id, note) 
+                VALUES 
+                ('$product_id', '$quantity_imported', '$import_price', '$old_quantity', '$old_original_price',
+                 '$new_average_price', '$new_selling_price', '$profit_margin', '$admin_id', '$note')";
+
+            $insert_history_run = mysqli_query($conn, $insert_history_query);
+
+            if ($insert_history_run) {
+                redirect("import-history.php", "Nhập hàng thành công! Giá bình quân mới: " . number_format($new_average_price, 2) . " $");
+            } else {
+                redirect("import-stock.php", "Lỗi khi lưu lịch sử nhập hàng");
+            }
+        } else {
+            redirect("import-stock.php", "Lỗi khi cập nhật sản phẩm");
+        }
+    } else {
+        redirect("import-stock.php", "Không tìm thấy sản phẩm");
+    }
 } {
     header('Location: ./index.php');
 }
