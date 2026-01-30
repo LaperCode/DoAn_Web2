@@ -99,7 +99,7 @@ $page = $page - 1;
                             ?>
                                 <li class="mega-dropdown">
                                     <a href="#"><i class='bx bx-user-circle'></i></a>
-                                    <div class="mega-content" style="width: auto;display: inline-block;right: 0;">
+                                    <div class="mega-content mega-content-right">
                                         <div class="row">
                                             <div class="box">
                                                 <h3>Xin chào <?= $_SESSION['auth_user']['name'] ?>!</h3>
@@ -118,7 +118,7 @@ $page = $page - 1;
                             ?>
                                 <li class="mega-dropdown">
                                     <a href="#"><i class='bx bx-user-circle'></i></a>
-                                    <div class="mega-content">
+                                    <div class="mega-content mega-content-right">
                                         <div class="row">
                                             <div class="box">
                                                 <ul>
@@ -145,7 +145,7 @@ $page = $page - 1;
                     <!-- mega menu -->
                     <li class="mega-dropdown">
                         <a href="index.php">Danh mục<i class='bx bxs-chevron-down'></i></a>
-                        <div class="mega-content">
+                        <div class="mega-content mega-content-center">
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="box">
