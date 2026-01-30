@@ -8,7 +8,7 @@ $categories_selected = isset($_GET["categories"]) ? $_GET["categories"] : 0;
 $page = isset($_GET["page"]) ? (int)$_GET["page"] : 1;
 function advance_find($sql, $page = 1) {
     global $conn;
-    $limit = 9;
+    $limit = 12;
     $offset = ($page - 1) * $limit;
     $sql .= " LIMIT $limit OFFSET $offset";
     return mysqli_query($conn, $sql);
@@ -41,6 +41,73 @@ if ($check) {
     $products_ad = getLatestProducts(9, $page, $type ?? "", $search ?? "");
 }
 ?>
+
+
+<style>
+    .advanced-search {
+    max-width: 100%;
+    background: #ffffff;
+    padding: 15px 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.search-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 40px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    font-size: 20px;
+}
+
+.form-group label {
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+
+.form-group input,
+.form-group select {
+    height: 36px;
+    padding: 6px 20px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    min-width: 150px;
+}
+
+.price-row {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 15px;
+}
+
+.search-btn {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.search-btn button {
+    padding: 10px 28px;
+    border: none;
+    border-radius: 10px;
+    background: #53708d;
+    color: #fff;
+    font-size: 11px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.search-btn button:hover {
+    background: #30475d;
+}
+</style>
+
 <body>
     <div class="bg-main">
         <div class="container">
@@ -51,40 +118,61 @@ if ($check) {
                     <a href="./advanced-search.php">Tìm kiếm sản phẩm nâng cao</a>
                 </div>
             </div>
+
             <div class="box">
-                <div class="box filter-toggle-box">
-                    <button class="btn-flat btn-hover" id="filter-close">close</button>
-                </div>
-                <div class="row">
-                    <div class="col-3 filter-col" id="filter-col">
-                        <h3>Tìm kiếm năng cao</h3><br>
-                        <form action="" method="GET">
-                            Tên sách: <input type="text" name="name_bk" value="<?= htmlspecialchars($name_bk) ?>"> <br><br>
-                            Giá thấp nhất: <input type="number" name="price1" style="width: 80px;" value="<?= $price1 ?>"> <br><br>
-                            Giá cao nhất: <input type="number" name="price2" style="width: 80px;" value="<?= $price2 ?>"> <br><br>
-                            <?php 
-                            $categories = getAllActive("categories");
-                            if (mysqli_num_rows($categories) > 0) {
-                                echo 'Thể loại: <select name="categories">';
-                                echo '<option value="0"' . ($categories_selected == 0 ? ' selected' : '') . '>Tất cả</option>';
-                                foreach ($categories as $item) {
-                                    $selected = ($categories_selected == $item["id"]) ? "selected" : "";
-                                    echo '<option value="'.$item["id"].'" '.$selected.'>'.$item["name"].'</option>';
-                                }
-                                echo '</select>';
-                            }
-                            ?>
-                            <br><br><input type="submit" name="sm" value="Tìm kiếm">
-                        </form>
-                    </div>
-                    <div class="col-9 col-md-12">
-                        <div class="box filter-toggle-box">
-                            <button id="filter-toggle">Lọc</button>
+                <h3>Tìm kiếm nâng cao</h3>
+                <form action="" method="GET" class="advanced-search">
+                    <div class="search-row">
+                        <!-- Tên sách -->
+                        <div class="form-group">
+                            <label>Tên sách</label>
+                            <input type="text" name="name_bk" value="<?= htmlspecialchars($name_bk) ?>">
                         </div>
+
+                        <!-- Thể loại -->
+                        <div class="form-group">
+                            <label>Thể loại</label>
+                            <select name="categories">
+                                <option value="0" <?= ($categories_selected == 0 ? 'selected' : '') ?>>Tất cả</option>
+                                <?php
+                                $categories = getAllActive("categories");
+                                if (mysqli_num_rows($categories) > 0) {
+                                    foreach ($categories as $item) {
+                                        $selected = ($categories_selected == $item["id"]) ? "selected" : "";
+                                        echo '<option value="'.$item["id"].'" '.$selected.'>'.$item["name"].'</option>';
+                                    }
+                                }
+                                ?>
+                            </select>
+                        </div>
+
+                        <!-- Giá -->
+                        <div class="form-group">
+                            <label>Giá ($)</label>
+                            <div class="price-row">
+                                <div>
+                                    <input type="number" name="price1" style="width: 80px;" value="<?= $price1 ?>">
+                                    <span style="width: 20px;">~</span>
+                                    <input type="number" name="price2" style="width: 80px;" value="<?= $price2 ?>">
+                                </div>
+                            </div>
+                        </div>
+
+                    <!-- Button -->
+                        <div class="search-btn">
+                            <button type="submit" name="sm">🔍 Tìm kiếm</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="box">
+                <div class="row">
+                    <div class="col-md-12">
                         <div class="box">
                             <div class="row" id="products">
                                 <?php foreach ($products_ad as $product) { ?>
-                                    <div class="col-4 col-md-6 col-sm-12">
+                                    <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6">
                                         <div class="product-card">
                                             <div class="product-card-img">
                                                 <a href="./product-detail.php?slug=<?= $product['slug'] ?>">
@@ -123,10 +211,12 @@ if ($check) {
                                 <?php } ?>
                             </div>
                         </div>
+
+                        <!-- Pagination -->
                         <div class="box">
                             <?php
                             $totalProducts = getTotalProducts($type ?? "", $search ?? "");
-                            $totalPages = ceil($totalProducts / 9); 
+                            $totalPages = ceil($totalProducts / 12); 
                             if ($totalPages > 1) {
                                 echo "<ul class='pagination'>";
                                 for ($i = 1; $i <= $totalPages; $i++) {
