@@ -128,9 +128,3 @@ ProjectWeb2-main/
 | 2   | Dương Thiên Quý   | 3123410298 |
 | 3   | Nguyễn Quang Minh | 3122410241 |
 | 4   | Đào Song Lộc      | 3123410200 |
-
----
-
-## Giấy Phép
-
-Dự án phát triển cho mục đích học tập - Môn Lập Trình Web và Ứng Dụng Nâng Cao.
