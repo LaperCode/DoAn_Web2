@@ -105,6 +105,7 @@ $page = $page - 1;
                                                 <h3>Xin chào <?= $_SESSION['auth_user']['name'] ?>!</h3>
                                                 <ul>
                                                     <li><a href="user-profile.php">Trang cá nhân</a></li>
+                                                    <li><a href="manage-addresses.php">Sổ địa chỉ</a></li>
                                                     <li><a href="./cart-status.php">Đơn hàng</a></li>
                                                     <li><a href="logout.php">Đăng Xuất</a></li>
                                                 </ul>

@@ -1,4 +1,4 @@
-<?php 
+<?php
 include("./includes/header.php");
 include_once("./functions/userfunctions.php");
 
@@ -18,6 +18,33 @@ if ($id <= 0) {
 $product = getMyOrderVote($id);
 ?>
 <link rel="stylesheet" href="./assets/css/vote.css">
+<style>
+    body {
+        background: #f5f7fa;
+        margin: 0;
+    }
+
+    .breadcumb {
+        padding: 20px 0;
+    }
+
+    .breadcumb a {
+        color: #2C3E50;
+        font-weight: 500;
+        transition: color 0.3s ease;
+        text-decoration: none;
+    }
+
+    .breadcumb a:hover {
+        color: #F39C12;
+    }
+
+    .breadcumb span {
+        color: #7f8c8d;
+        margin: 0 8px;
+    }
+</style>
+
 <body>
     <div class="bg-main">
         <div class="container">
@@ -35,55 +62,55 @@ $product = getMyOrderVote($id);
 
             <div class="box" style="padding: 0 40px">
                 <div class="product-info">
-                <?php if (!$product) { 
-                    http_response_code(404); // Trả về mã lỗi 404 nếu không tìm thấy
-                ?>
-                    <p style="font-size: 20px; text-align: center;">
-                        Mặt hàng này chưa thể vote <a style="color: blue; text-decoration: underline" href="./cart-status.php">Trở lại</a>  
-                    </p>
-                <?php } else { ?>
-                    <div class="box" style="padding: 0 100px">
-                        <div class="product-info">
-                            <h1><?= htmlspecialchars($product['name']) ?></h1>
-                            <p class="product-description">
-                                <?= nl2br(htmlspecialchars($product['small_description'])) ?>
-                            </p>
+                    <?php if (!$product) {
+                        http_response_code(404); // Trả về mã lỗi 404 nếu không tìm thấy
+                    ?>
+                        <p style="font-size: 20px; text-align: center;">
+                            Mặt hàng này chưa thể vote <a style="color: blue; text-decoration: underline" href="./cart-status.php">Trở lại</a>
+                        </p>
+                    <?php } else { ?>
+                        <div class="box" style="padding: 0 100px">
+                            <div class="product-info">
+                                <h1><?= htmlspecialchars($product['name']) ?></h1>
+                                <p class="product-description">
+                                    <?= nl2br(htmlspecialchars($product['small_description'])) ?>
+                                </p>
+                            </div>
+                            <br>
+                            <div class="product-img" id="product-img">
+                                <img src="./images/<?= htmlspecialchars($product['image']) ?>" alt="Hình ảnh sản phẩm">
+                            </div>
+                            <br>
+                            <div class="product-detail-description">
+                                <?= nl2br(htmlspecialchars($product['description'])) ?>
+                            </div>
                         </div>
-                        <br>
-                        <div class="product-img" id="product-img">
-                            <img src="./images/<?= htmlspecialchars($product['image']) ?>" alt="Hình ảnh sản phẩm">
-                        </div>
-                        <br>
-                        <div class="product-detail-description">
-                            <?= nl2br(htmlspecialchars($product['description'])) ?>
-                        </div>
-                    </div>
 
-                    <form class="form-vote" method="post" action="./functions/ordercode.php">
-                        <div class="rate-form">
-                            <input type="hidden" name="rate" value="true">
-                            <input type="hidden" name="id" value="<?= $id ?>">
-                            <fieldset class="rating">
-                                <?php 
-                                $currentRate = $product['rate'] ?? 0;
-                                for ($i = 5; $i >= 1; $i--) {
-                                    $checked = ($currentRate == $i) ? 'checked' : '';
-                                    echo "<input type='radio' id='star$i' name='rating' value='$i' $checked />";
-                                    echo "<label class='full' for='star$i' title='Đánh giá $i sao'></label>";
-                                }
-                                ?>
-                            </fieldset>
-                        </div>
-                        <br>
-                        <div class="comment">
-                            <textarea name="comment"><?= htmlspecialchars($product['comment'] ?? '') ?></textarea>
-                        </div>
-                        <br>
-                        <div class="comment">
-                            <button class="btn-vote">Đánh giá</button>
-                        </div>
-                    </form>
-                <?php } ?>
+                        <form class="form-vote" method="post" action="./functions/ordercode.php">
+                            <div class="rate-form">
+                                <input type="hidden" name="rate" value="true">
+                                <input type="hidden" name="id" value="<?= $id ?>">
+                                <fieldset class="rating">
+                                    <?php
+                                    $currentRate = $product['rate'] ?? 0;
+                                    for ($i = 5; $i >= 1; $i--) {
+                                        $checked = ($currentRate == $i) ? 'checked' : '';
+                                        echo "<input type='radio' id='star$i' name='rating' value='$i' $checked />";
+                                        echo "<label class='full' for='star$i' title='Đánh giá $i sao'></label>";
+                                    }
+                                    ?>
+                                </fieldset>
+                            </div>
+                            <br>
+                            <div class="comment">
+                                <textarea name="comment"><?= htmlspecialchars($product['comment'] ?? '') ?></textarea>
+                            </div>
+                            <br>
+                            <div class="comment">
+                                <button class="btn-vote">Đánh giá</button>
+                            </div>
+                        </form>
+                    <?php } ?>
                 </div>
             </div>
         </div>
@@ -92,4 +119,5 @@ $product = getMyOrderVote($id);
     <script src="./assets/js/app.js"></script>
     <script src="./assets/js/index.js"></script>
 </body>
+
 </html>

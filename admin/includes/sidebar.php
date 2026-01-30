@@ -71,6 +71,14 @@ $page = substr($_SERVER['SCRIPT_NAME'], strripos($_SERVER['SCRIPT_NAME'], "/") +
         </a>
       </li>
       <li class="nav-item">
+        <a class="nav-link text-white <?= $page == "import-stock.php" || $page == "import-history.php" ? 'active bg-gradient-primary' : '' ?>" href="import-stock.php">
+          <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+            <i class="material-icons opacity-10">inventory</i>
+          </div>
+          <span class="nav-link-text ms-1">Nhập hàng</span>
+        </a>
+      </li>
+      <li class="nav-item">
         <a class="nav-link text-white <?= $page == "add-blog.php" ? 'active bg-gradient-primary' : '' ?>" href="add-blog.php">
           <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
             <i class="material-icons opacity-10">edit</i>
