@@ -375,7 +375,7 @@ ul.devided > li:last-child {
 }
 
 .hero {
-    min-height: 600px;
+    min-height: 700px;
     height: calc(100vh - (var(--top-header-size) + var(--mid-header-size) + var(--bottom-header-size)));
     padding: 0 20px;
     overflow: visible;
@@ -408,7 +408,7 @@ ul.devided > li:last-child {
     flex-direction: column;
     justify-content: center;
     height: 100%;
-    margin-top: 10px;
+    padding: 40px 20px;
     overflow: visible;
     position: relative;
     z-index: 10;
@@ -417,26 +417,38 @@ ul.devided > li:last-child {
 .info-content {
     position: relative;
     z-index: 10;
+    max-width: 550px;
+    overflow: visible;
 }
 
 .info-content h2 {
-    font-size: 70px;
-    margin: 10px 0 35px;
-    line-height: 1.2;
+    font-size: 3.5rem;
+    margin: 15px 0 25px;
+    line-height: 1.3;
+    word-wrap: break-word;
 }
 
 .info-content h3 {
     position: relative;
     z-index: 10;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    line-height: 1.4;
 }
 
 .info-content p {
     position: relative;
     z-index: 10;
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    max-height: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .info-content button {
-    margin-top: 30px;
+    margin-top: 20px;
     z-index: 15;
     position: relative;
 }
