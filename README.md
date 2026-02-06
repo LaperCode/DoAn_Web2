@@ -81,13 +81,13 @@ ZBooks là hệ thống quản lý cửa hàng sách trực tuyến được ph�
 
 **Admin:**
 
-- Email: admin@example.com
-- Password: admin123
+- Email: test@example.com
+- Password: 
 
 **Customer:**
 
-- Email: user@example.com
-- Password: user123
+- Email: lap2@gmail.com
+- Password: 
 
 ---
 
