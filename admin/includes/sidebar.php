@@ -71,11 +71,11 @@ $page = substr($_SERVER['SCRIPT_NAME'], strripos($_SERVER['SCRIPT_NAME'], "/") +
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link text-white <?= $page == "import-stock.php" || $page == "import-history.php" ? 'active bg-gradient-primary' : '' ?>" href="import-stock.php">
+        <a class="nav-link text-white <?= $page == "blog.php" ? 'active bg-gradient-primary' : '' ?>" href="blog.php">
           <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-            <i class="material-icons opacity-10">inventory</i>
+            <i class="material-icons opacity-10">receipt_long</i>
           </div>
-          <span class="nav-link-text ms-1">Nhập hàng</span>
+          <span class="nav-link-text ms-1">Tất cả bài viết</span>
         </a>
       </li>
       <li class="nav-item">
@@ -87,11 +87,11 @@ $page = substr($_SERVER['SCRIPT_NAME'], strripos($_SERVER['SCRIPT_NAME'], "/") +
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link text-white <?= $page == "blog.php" ? 'active bg-gradient-primary' : '' ?>" href="blog.php">
+        <a class="nav-link text-white <?= $page == "import-stock.php" || $page == "import-history.php" ? 'active bg-gradient-primary' : '' ?>" href="import-stock.php">
           <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-            <i class="material-icons opacity-10">receipt_long</i>
+            <i class="material-icons opacity-10">inventory</i>
           </div>
-          <span class="nav-link-text ms-1">Tất cả bài viết</span>
+          <span class="nav-link-text ms-1">Nhập hàng</span>
         </a>
       </li>
     </ul>

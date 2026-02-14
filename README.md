@@ -42,8 +42,6 @@ ZBooks là hệ thống quản lý cửa hàng sách trực tuyến được ph�
 
 **Frontend:** HTML5, CSS3, JavaScript, jQuery, Bootstrap 5, Font Awesome
 
-**Khác:** TinyMCE (Rich text editor), Alertify.js (Notifications)
-
 ---
 
 ## Cài Đặt
