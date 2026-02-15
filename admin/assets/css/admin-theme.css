@@ -94,7 +94,7 @@ body.g-sidenav-show {
 }
 
 .sidenav .nav-link:hover::before {
-    height: 70%;
+    height: 100%;
 }
 
 .sidenav .nav-link:hover .material-icons {
@@ -308,7 +308,7 @@ input[name="xem"]:active {
     border-bottom: 1px solid rgba(0, 0, 0, 0.03);
 }
 
-.table tbody tr:hover {
+.table tbody tr:hover { 
     background: rgba(100, 181, 246, 0.05);
     transform: scale(1.005);
 }
@@ -320,12 +320,26 @@ input[name="xem"]:active {
 .form-control {
     border: 1px solid #E0E0E0;
     border-radius: 8px;
+    padding: 10px 15px;
     transition: all 0.3s ease;
 }
 
 .form-control:focus {
     border-color: var(--primary-light);
     box-shadow: 0 0 0 3px rgba(100, 181, 246, 0.1);
+}
+
+/* Textarea có padding riêng */
+textarea.form-control {
+    padding: 12px 15px;
+    min-height: 100px;
+}
+
+/* Select dropdown */
+.form-select, 
+select.form-control {
+    padding: 10px 35px 10px 15px;
+    background-position: right 10px center;
 }
 
 label {

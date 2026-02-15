@@ -4,7 +4,7 @@ include("../admin/includes/header.php");
 $type = $_GET['id_order'];
 
 $orders = getOrderDetail($type);
-$total=0;
+$total = 0;
 ?>
 
 <body>
@@ -20,26 +20,27 @@ $total=0;
                     <div class="card-body px-0 pb-2">
                         <div class="table-responsive p-0">
                             <div style="padding-left: 20px">
-                                <?php foreach($orders as $order){ ?>
+                                <?php foreach ($orders as $order) { ?>
                                     Buyer Name: <?= $order['name'] ?> <br>
                                     Phone: <?= $order['phone'] ?> <br>
                                     Email: <?= $order['email'] ?><br>
                                     Address: <?= $order['address'] ?> <br>
-                                <?php break; } ?>
+                                <?php break;
+                                } ?>
                             </div>
                         </div>
 
-                            <table class="table align-items-center mb-0">
-                                <thead>
-                                    <tr>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Product Name</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Infor</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Time order</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    
-                                <?php foreach($orders as $order){ ?>
+                        <table class="table align-items-center mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Product Name</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Infor</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Time order</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                <?php foreach ($orders as $order) { ?>
                                     <tr>
                                         <td>
                                             <div class="d-flex px-2 py-1">
@@ -54,9 +55,9 @@ $total=0;
                                         </td>
                                         <td>
                                             <p class="text-xs font-weight-bold mb-0">Total Price: $
-                                                <?= 
-                                                    $total_product= $order['quantity'] * $order['selling_price'];
-                                                    $total +=$total_product;
+                                                <?=
+                                                $total_product = $order['quantity'] * $order['selling_price'];
+                                                $total += $total_product;
                                                 ?>
                                             </p>
                                             <p class="text-xs text-secondary mb-0">Quantity: <?= $order['quantity'] ?></p>
@@ -66,13 +67,13 @@ $total=0;
                                                 <?= date('d-m-Y', strtotime($order['created_at'])); ?>
                                             </span>
                                         </td>
-                                        
-                                    </tr>
-                                <?php } ?> 
 
-                                </tbody>
-                            </table>
-                            <div style="padding-left: 20px">
+                                    </tr>
+                                <?php } ?>
+
+                            </tbody>
+                        </table>
+                        <div style="padding-left: 20px">
                             <h2>Total: $<?= $total ?></h2>
                         </div>
                     </div>
