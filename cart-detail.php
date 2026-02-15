@@ -13,9 +13,10 @@ if (!isset($_SESSION['auth_user']['id'])) {
     .container.text-center.mx-auto.mt-5 {
         background: white;
         border-radius: 12px;
-        padding: 40px;
+        padding: 25px 40px 30px 40px;
         box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-        margin-bottom: 40px;
+        margin-top: 20px !important;
+        margin-bottom: 30px;
     }
 
     h1 {
@@ -121,6 +122,64 @@ if (!isset($_SESSION['auth_user']['id'])) {
         color: #7f8c8d;
         margin: 0 8px;
     }
+
+    /* Export Invoice Button */
+    .export-invoice-btn {
+        display: inline-block;
+        padding: 14px 32px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white !important;
+        text-decoration: none !important;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        cursor: pointer;
+        border: none;
+        outline: none;
+    }
+
+    .export-invoice-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    }
+
+    .export-invoice-btn:active {
+        transform: translateY(0);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+
+    .export-invoice-btn i {
+        margin-right: 8px;
+        font-size: 18px;
+    }
+
+    /* Back Button */
+    .back-to-orders-btn {
+        display: inline-block;
+        padding: 10px 20px;
+        background: #2C3E50;
+        color: white !important;
+        text-decoration: none !important;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 6px rgba(44, 62, 80, 0.3);
+    }
+
+    .back-to-orders-btn:hover {
+        background: #34495E;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(44, 62, 80, 0.5);
+    }
+
+    .back-to-orders-btn i {
+        margin-right: 8px;
+    }
 </style>
 
 <body>
@@ -158,6 +217,15 @@ if (!isset($_SESSION['auth_user']['id'])) {
                         }
                     } else $orders = [];
                     ?>
+
+                    <!-- Back Button - Outside container -->
+                    <?php if (!empty($orders)) { ?>
+                        <div style="padding-left: 15px; margin-top: 30px; margin-bottom: 10px;">
+                            <a href="./cart-status.php" class="back-to-orders-btn">
+                                ← Quay lại danh sách đơn hàng
+                            </a>
+                        </div>
+                    <?php } ?>
 
                     <div class="container text-center mx-auto mt-5">
                         <?php if (!empty($orders)) { ?>
@@ -213,6 +281,16 @@ if (!isset($_SESSION['auth_user']['id'])) {
                                         </tr>
                                     </tbody>
                                 </table>
+
+                                <!-- Nút xuất hóa đơn -->
+                                <div style="text-align: center; margin-top: 30px;">
+                                    <a href="./export-invoice.php?order_id=<?= $cart_id ?>"
+                                        class="export-invoice-btn"
+                                        target="_blank"
+                                        title="Xuất hóa đơn PDF">
+                                        <i class='bx bx-download'></i> 📄 Xuất hóa đơn
+                                    </a>
+                                </div>
                             </div>
                         <?php } else { ?>
                             <h1>Đơn hàng không tồn tại</h1>
