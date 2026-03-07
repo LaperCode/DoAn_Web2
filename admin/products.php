@@ -22,70 +22,81 @@ $offset = ($page - 1) * $limit;
                     <div class="card-header">
                         <h4>Sản phẩm</h4>
                     </div>
-                    <div class="col-md-2 text-right mt-1" style="padding-left: 1000px;">
-                        <button class="btn btn-primary" onclick="openModal()">Tìm</button>
-                    </div>
                     <div class="card-body">
-                        <table class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Tên</th>
-                                    <th>Hình ảnh</th>
-                                    <th>Số lượng</th>
-                                    <th>Trạng thái</th>
-                                    <th>Sửa</th>
-                                    <th>Xóa</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php
-                                $products = getSanPham($tensanpham, $loaisanpham, $qtymin, $qtymax, $giamin, $giamax, $trangthai, $sapxep, $theocot, $limit, $offset);
-                                $total_products = getTotalProducts($tensanpham, $loaisanpham, $qtymin, $qtymax, $giamin, $giamax, $trangthai);
-                                $total_pages = ceil($total_products / $limit);
+                        <div style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
+                            <button class="btn btn-primary" onclick="openModal()">Tìm</button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped" style="width: 100%; table-layout: fixed;">
+                                <colgroup>
+                                    <col style="width: 5%;">
+                                    <col style="width: 42%;">
+                                    <col style="width: 10%;">
+                                    <col style="width: 10%;">
+                                    <col style="width: 13%;">
+                                    <col style="width: 10%;">
+                                    <col style="width: 10%;">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Tên</th>
+                                        <th>Hình ảnh</th>
+                                        <th>Số lượng</th>
+                                        <th>Trạng thái</th>
+                                        <th>Sửa</th>
+                                        <th>Xóa</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                    $products = getSanPham($tensanpham, $loaisanpham, $qtymin, $qtymax, $giamin, $giamax, $trangthai, $sapxep, $theocot, $limit, $offset);
+                                    $total_products = getTotalProducts($tensanpham, $loaisanpham, $qtymin, $qtymax, $giamin, $giamax, $trangthai);
+                                    $total_pages = ceil($total_products / $limit);
 
-                                if (mysqli_num_rows($products) > 0) {
-                                    echo "Kết quả: " . $total_products;
-                                    foreach ($products as $item) {
-                                ?>
-                                        <tr>
-                                            <td><?= $item['id']; ?> </td>
-                                            <td><?= $item['name']; ?></td>
-                                            <td>
-                                                <img src="../images/<?= $item['image']; ?>" width="50px" height="50px" alt="<?= $item['name']; ?>">
-                                            <td>
-                                                <?php
-                                                $qty = (int)$item['qty'];
-                                                if ($qty == 0) {
-                                                    echo '<span class="badge bg-danger">Hết hàng</span>';
-                                                } elseif ($qty <= 5) {
-                                                    echo '<span class="badge bg-warning text-dark">' . $qty . '</span>';
-                                                } else {
-                                                    echo '<span class="badge bg-success">' . $qty . '</span>';
-                                                }
-                                                ?>
-                                            </td>
-                                            <td>
-                                                <?= $item['status'] == '0' ? "Hiển thị" : "Ẩn" ?>
-                                            </td>
-                                            <td>
-                                                <a href="edit-product.php?id=<?= $item['id']; ?>" class="btn btn-primary">Sửa</a>
-                                            </td>
-                                            <td>
-                                                <form action="code.php" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này không?');">
-                                                    <input type="hidden" name="product_id" value="<?= $item['id']; ?>">
-                                                    <button type="submit" name="delete_product_btn" class="btn btn-danger">Xóa </button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                <?php
+                                    if (mysqli_num_rows($products) > 0) {
+                                        echo "Kết quả: " . $total_products;
+                                        foreach ($products as $item) {
+                                    ?>
+                                            <tr>
+                                                <td><?= $item['id']; ?> </td>
+                                                <td style="word-break: break-word; white-space: normal;"><?= $item['name']; ?></td>
+                                                <td>
+                                                    <img src="../images/<?= $item['image']; ?>" width="50px" height="50px" alt="<?= $item['name']; ?>">
+                                                <td>
+                                                    <?php
+                                                    $qty = (int)$item['qty'];
+                                                    if ($qty == 0) {
+                                                        echo '<span class="badge bg-danger">Hết hàng</span>';
+                                                    } elseif ($qty <= 5) {
+                                                        echo '<span class="badge bg-warning text-dark">' . $qty . '</span>';
+                                                    } else {
+                                                        echo '<span class="badge bg-success">' . $qty . '</span>';
+                                                    }
+                                                    ?>
+                                                </td>
+                                                <td>
+                                                    <?= $item['status'] == '0' ? "Hiển thị" : "Ẩn" ?>
+                                                </td>
+                                                <td>
+                                                    <a href="edit-product.php?id=<?= $item['id']; ?>" class="btn btn-primary">Sửa</a>
+                                                </td>
+                                                <td>
+                                                    <form action="code.php" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này không?');">
+                                                        <input type="hidden" name="product_id" value="<?= $item['id']; ?>">
+                                                        <button type="submit" name="delete_product_btn" class="btn btn-danger">Xóa </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                    <?php
+                                        }
+                                    } else {
+                                        echo "<tr><td colspan='6'>Không tìm thấy sản phẩm nào</td></tr>";
                                     }
-                                } else {
-                                    echo "<tr><td colspan='6'>Không tìm thấy sản phẩm nào</td></tr>";
-                                }
-                                ?>
-                            </tbody>
-                        </table>
+                                    ?>
+                                </tbody>
+                            </table>
+                        </div><!-- end table-responsive -->
                         <!-- Phân trang -->
                         <div class="pagination" style="text-align: center; margin-top: 20px;">
                             <?php

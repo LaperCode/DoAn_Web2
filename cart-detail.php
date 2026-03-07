@@ -237,7 +237,6 @@ if (!isset($_SESSION['auth_user']['id'])) {
                                     <thead class="thead-dark">
                                         <tr>
                                             <th scope="col" class="text-center ">Sản phẩm</th>
-                                            <th scope="col" class="text-center ">Mã sản phẩm</th>
                                             <th scope="col" class="text-center ">Giá</th>
                                             <th scope="col" class="text-center ">Số lượng</th>
                                             <th scope="col" class="text-center ">Tổng cộng</th>
@@ -249,34 +248,25 @@ if (!isset($_SESSION['auth_user']['id'])) {
                                                 <td>
                                                     <center><a style="color:#0d6efd" href="./product-detail.php?slug=<?= $order['slug'] ?>" title="Sản phẩm"><?= $order['name'] ?></a></center> <br>
                                                 </td>
-                                                <td>
-                                                    <center><?= $order['slug'] ?></center>
-                                                </td>
                                                 <td class="text-right ">
-                                                    <center>$<?= $order['selling_price'] ?></center>
+                                                    <center>$<?= fmt_price($order['selling_price']) ?></center>
                                                 </td>
                                                 <td class="text-center "><?= $order['quantity'] ?></td>
                                                 <td class="text-right ">
-                                                    <center>$<?= $order['selling_price'] * $order['quantity'] ?></center>
+                                                    <center>$<?= fmt_price($order['selling_price'] * $order['quantity']) ?></center>
                                                 </td>
                                             </tr>
                                         <?php } ?>
                                         <tr class="order_summary">
-                                            <td colspan="4" class="text-center "><b>Giá sản phẩm</b></td>
+                                            <td colspan="3" class="text-center "><b>Giá sản phẩm</b></td>
                                             <td class="text-right"><b>
-                                                    <center>$<?= $order_total ?></center>
-                                                </b></td>
-                                        </tr>
-                                        <tr class="order_summary">
-                                            <td colspan="4" class="text-center "><b>Chuyển phát nhanh GHN</b></td>
-                                            <td class="text-right"><b>
-                                                    <center>$0</center>
+                                                    <center>$<?= fmt_price($order_total) ?></center>
                                                 </b></td>
                                         </tr>
                                         <tr class="order_summary order_total">
-                                            <td colspan="4" class="text-center "><b>Tổng tiền</b></td>
+                                            <td colspan="3" class="text-center "><b>Tổng tiền</b></td>
                                             <td class="text-right"><b>
-                                                    <center>$<?= $order_total ?></center>
+                                                    <center>$<?= fmt_price($order_total) ?></center>
                                                 </b></td>
                                         </tr>
                                     </tbody>
@@ -320,7 +310,7 @@ if (!isset($_SESSION['auth_user']['id'])) {
             const price = parseInt(node.find('.product-price').val());
             let total_order = parseInt(e.target.value);
             let total_price = price * total_order;
-            node.find('.total-price').html(total_price);
+            node.find('.total-price').html(total_price.toLocaleString('vi-VN'));
         })
     });
 </script>

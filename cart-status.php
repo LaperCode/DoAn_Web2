@@ -172,6 +172,77 @@ if (!isset($_SESSION['auth_user']['id'])) {
         transform: translateY(-2px);
         box-shadow: 0 4px 12px rgba(243, 156, 18, 0.4);
     }
+
+    /* Filter Bar */
+    .filter-bar {
+        display: flex;
+        gap: 24px;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        margin-bottom: 28px;
+        padding: 20px 24px;
+        background: #f8f9fa;
+        border-radius: 10px;
+        border: 1px solid #e9ecef;
+    }
+
+    .filter-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        flex: 1;
+        min-width: 160px;
+    }
+
+    .filter-group label {
+        font-size: 12px;
+        font-weight: 700;
+        color: #2C3E50;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+    }
+
+    .filter-group select {
+        padding: 9px 14px;
+        border: 1.5px solid #ced4da;
+        border-radius: 7px;
+        font-size: 14px;
+        color: #2C3E50;
+        background: white;
+        cursor: pointer;
+        outline: none;
+        transition: border-color 0.2s;
+        appearance: auto;
+    }
+
+    .filter-group select:focus,
+    .filter-group select:hover {
+        border-color: #F39C12;
+    }
+
+    .filter-clear-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 9px 16px;
+        background: #fff;
+        border: 1.5px solid #dee2e6;
+        border-radius: 7px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #6c757d;
+        text-decoration: none;
+        transition: all 0.2s;
+        white-space: nowrap;
+        align-self: flex-end;
+    }
+
+    .filter-clear-btn:hover {
+        background: #fee2e2;
+        border-color: #ef4444;
+        color: #ef4444;
+        text-decoration: none;
+    }
 </style>
 
 <body>
@@ -191,8 +262,11 @@ if (!isset($_SESSION['auth_user']['id'])) {
             <div class="box" style="padding: 0 40px">
                 <div class="product-info">
                     <?php
-                    $orders = getOrderByUserId();
-                    if (mysqli_num_rows($orders) == 0) {
+                    $sort           = isset($_GET['sort'])    ? $_GET['sort']    : 'newest';
+                    $payment_filter = isset($_GET['payment']) ? $_GET['payment'] : '';
+                    $status_filter  = isset($_GET['status'])  ? $_GET['status']  : '';
+                    $orders = getOrderByUserId($sort, $payment_filter, $status_filter);
+                    if (mysqli_num_rows($orders) == 0 && empty($payment_filter) && empty($status_filter) && ($sort === 'newest' || $sort === '')) {
                     ?>
                         <div class="cart-status-container" style="text-align: center;">
                             <h4 style="border: none;">Giỏ hàng trống</h4>
@@ -207,14 +281,48 @@ if (!isset($_SESSION['auth_user']['id'])) {
                         <div class="container my-4">
                             <div class="cart-status-container">
                                 <h4>Đơn hàng của bạn</h4>
+
+                                <!-- Filter Bar -->
+                                <form method="GET" class="filter-bar">
+                                    <div class="filter-group">
+                                        <label>Sắp xếp theo</label>
+                                        <select name="sort" onchange="this.form.submit()">
+                                            <option value="newest" <?= $sort == 'newest'     ? 'selected' : '' ?>>Mới nhất</option>
+                                            <option value="oldest" <?= $sort == 'oldest'     ? 'selected' : '' ?>>Cũ nhất</option>
+                                            <option value="price_desc" <?= $sort == 'price_desc' ? 'selected' : '' ?>>Giá cao nhất</option>
+                                            <option value="price_asc" <?= $sort == 'price_asc'  ? 'selected' : '' ?>>Giá thấp nhất</option>
+                                        </select>
+                                    </div>
+                                    <div class="filter-group">
+                                        <label>Trạng thái đơn hàng</label>
+                                        <select name="status" onchange="this.form.submit()">
+                                            <option value="" <?= $status_filter === ''  ? 'selected' : '' ?>>Tất cả</option>
+                                            <option value="2" <?= $status_filter === '2' ? 'selected' : '' ?>>Đang chuẩn bị hàng</option>
+                                            <option value="3" <?= $status_filter === '3' ? 'selected' : '' ?>>Đang giao hàng</option>
+                                            <option value="4" <?= $status_filter === '4' ? 'selected' : '' ?>>Đã giao</option>
+                                        </select>
+                                    </div>
+                                    <div class="filter-group">
+                                        <label>Phương thức thanh toán</label>
+                                        <select name="payment" onchange="this.form.submit()">
+                                            <option value="" <?= $payment_filter == ''    ? 'selected' : '' ?>>Tất cả</option>
+                                            <option value="cod" <?= $payment_filter == 'cod' ? 'selected' : '' ?>>COD</option>
+                                            <option value="bank" <?= $payment_filter == 'bank' ? 'selected' : '' ?>>Ngân hàng</option>
+                                        </select>
+                                    </div>
+                                    <?php if (($sort !== 'newest' && $sort !== '') || !empty($payment_filter) || $status_filter !== ''): ?>
+                                        <a href="./cart-status.php" class="filter-clear-btn">✕ Xóa bộ lọc</a>
+                                    <?php endif; ?>
+                                </form>
+
                                 <div class="table-responsive">
                                     <table class="table table-striped">
                                         <thead>
                                             <tr>
                                                 <th>Mã đơn hàng</th>
                                                 <th>Ngày đặt</th>
-                                                <th>Trạng thái thanh toán</th>
-                                                <th>Vận chuyển</th>
+                                                <th>Trạng thái đơn hàng</th>
+                                                <th>Phương thức thanh toán</th>
                                                 <th>Tổng tiền</th>
                                                 <th>Đánh giá</th>
                                             </tr>
@@ -258,7 +366,7 @@ if (!isset($_SESSION['auth_user']['id'])) {
                                                     <td>
                                                         $
                                                         <span class="total-price">
-                                                            <?= $order['total'] ?>
+                                                            <?= fmt_price($order['total']) ?>
                                                         </span>
                                                     </td>
                                                     <td>
@@ -299,6 +407,22 @@ if (!isset($_SESSION['auth_user']['id'])) {
 </body>
 <script>
     $(document).ready(function() {
+        // Restore scroll position after filter submit
+        const scrollKey = 'cartStatusScroll';
+        const savedScroll = sessionStorage.getItem(scrollKey);
+        if (savedScroll !== null) {
+            window.scrollTo({
+                top: parseInt(savedScroll),
+                behavior: 'instant'
+            });
+            sessionStorage.removeItem(scrollKey);
+        }
+
+        // Save scroll position before form submit
+        $('.filter-bar select').on('change', function() {
+            sessionStorage.setItem(scrollKey, window.scrollY);
+        });
+
         $('.input-number').on('change', function(e) {
             if (e.target.value == 0) {
                 e.target.value = 1;

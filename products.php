@@ -96,8 +96,8 @@ $page++;
                                                     <?= $product['name'] ?>
                                                 </div>
                                                 <div class="product-card-price">
-                                                    <span><del>$<?= $product['original_price'] ?></del></span>
-                                                    <span class="curr-price">$<?= $product['selling_price'] ?></span>
+                                                    <span><del>$<?= fmt_price($product['original_price']) ?></del></span>
+                                                    <span class="curr-price">$<?= fmt_price($product['selling_price']) ?></span>
                                                 </div>
                                             </div>
                                         </div>
@@ -108,31 +108,34 @@ $page++;
                         <div class="box">
                             <?php
                             $totalProducts = getTotalProducts($type, $search);
-                            $totalPages = ceil($totalProducts / 9); // Mỗi trang 9 sản phẩm
+                            $perPage = 9; // Mỗi trang 9 sản phẩm
+                            $totalPages = ($totalProducts > 0) ? ceil($totalProducts / $perPage) : 1;
                             $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 
-                            if ($totalProducts > 0) {
-                                echo "<div style='text-align: center; margin-bottom: 15px; color: #666; font-size: 14px;'>";
-                                echo "Hiển thị " . count($products) . " trong tổng số " . $totalProducts . " sản phẩm";
-                                echo "</div>";
-                            }
+                            // Build base query string (preserve type and search params)
+                            $queryParams = [];
+                            if (!empty($type))   $queryParams['type']   = $type;
+                            if (!empty($search)) $queryParams['search'] = $search;
 
-                            if ($totalPages > 1) {
+                            if ($totalPages >= 1) {
                                 echo "<ul class='pagination'>";
 
                                 // Previous button
                                 if ($currentPage > 1) {
-                                    echo "<li><a href='?page=" . ($currentPage - 1) . "&type=$type'>‹</a></li>";
+                                    $prevParams = array_merge($queryParams, ['page' => $currentPage - 1]);
+                                    echo "<li><a href='?" . http_build_query($prevParams) . "'>‹</a></li>";
                                 }
 
                                 for ($i = 1; $i <= $totalPages; $i++) {
                                     $active = ($i == $currentPage) ? "class='active'" : "";
-                                    echo "<li><a href='?page=$i&type=$type' $active>$i</a></li>";
+                                    $pageParams = array_merge($queryParams, ['page' => $i]);
+                                    echo "<li><a href='?" . http_build_query($pageParams) . "' $active>$i</a></li>";
                                 }
 
                                 // Next button
                                 if ($currentPage < $totalPages) {
-                                    echo "<li><a href='?page=" . ($currentPage + 1) . "&type=$type'>›</a></li>";
+                                    $nextParams = array_merge($queryParams, ['page' => $currentPage + 1]);
+                                    echo "<li><a href='?" . http_build_query($nextParams) . "'>›</a></li>";
                                 }
 
                                 echo "</ul>";

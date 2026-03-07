@@ -147,7 +147,7 @@ $users = thongkeKH($from_date, $to_date);
                                             </td>
                                             <td class="align-middle text-center">
                                                 <span class="text-secondary text-xs font-weight-bold">
-                                                    <?= $user['total_spent'] ?>$
+                                                    <?= fmt_price($user['total_spent']) ?>$
                                                 </span>
                                             </td>
                                             <td class="align-middle text-center">

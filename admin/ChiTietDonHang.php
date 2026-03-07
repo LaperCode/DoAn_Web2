@@ -49,15 +49,16 @@ $total = 0;
                                                 </div>
                                                 <div class="d-flex flex-column justify-content-center">
                                                     <h6 class="mb-0 text-sm"><?= $order['name_product'] ?></h6>
-                                                    <p class="text-xs text-secondary mb-0">Price: $<?= $order['selling_price'] ?></p>
+                                                    <p class="text-xs text-secondary mb-0">Price: $<?= fmt_price($order['selling_price']) ?></p>
                                                 </div>
                                             </div>
                                         </td>
                                         <td>
                                             <p class="text-xs font-weight-bold mb-0">Total Price: $
-                                                <?=
+                                                <?php
                                                 $total_product = $order['quantity'] * $order['selling_price'];
                                                 $total += $total_product;
+                                                echo fmt_price($total_product);
                                                 ?>
                                             </p>
                                             <p class="text-xs text-secondary mb-0">Quantity: <?= $order['quantity'] ?></p>
@@ -74,7 +75,7 @@ $total = 0;
                             </tbody>
                         </table>
                         <div style="padding-left: 20px">
-                            <h2>Total: $<?= $total ?></h2>
+                            <h2>Total: $<?= fmt_price($total) ?></h2>
                         </div>
                     </div>
                 </div>
