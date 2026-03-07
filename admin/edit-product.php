@@ -90,7 +90,7 @@ include("../admin/includes/header.php");
                                         </div>
                                         <div class="col-md-6">
                                             <br>
-                                            <label class="mb-0"><b>Quality</b></label>
+                                            <label class="mb-0"><b>Quantity</b></label>
                                             <input type="number" required name="qty" value="<?= $data['qty']; ?>" placeholder="Enter Quality" class="form-control mb-2">
                                         </div>
                                         <div class="col-md-6">

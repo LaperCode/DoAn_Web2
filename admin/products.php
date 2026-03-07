@@ -32,6 +32,7 @@ $offset = ($page - 1) * $limit;
                                     <th>ID</th>
                                     <th>Tên</th>
                                     <th>Hình ảnh</th>
+                                    <th>Số lượng</th>
                                     <th>Trạng thái</th>
                                     <th>Sửa</th>
                                     <th>Xóa</th>
@@ -52,6 +53,18 @@ $offset = ($page - 1) * $limit;
                                             <td><?= $item['name']; ?></td>
                                             <td>
                                                 <img src="../images/<?= $item['image']; ?>" width="50px" height="50px" alt="<?= $item['name']; ?>">
+                                            <td>
+                                                <?php
+                                                $qty = (int)$item['qty'];
+                                                if ($qty == 0) {
+                                                    echo '<span class="badge bg-danger">Hết hàng</span>';
+                                                } elseif ($qty <= 5) {
+                                                    echo '<span class="badge bg-warning text-dark">' . $qty . '</span>';
+                                                } else {
+                                                    echo '<span class="badge bg-success">' . $qty . '</span>';
+                                                }
+                                                ?>
+                                            </td>
                                             <td>
                                                 <?= $item['status'] == '0' ? "Hiển thị" : "Ẩn" ?>
                                             </td>
