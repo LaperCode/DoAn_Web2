@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 include("../admin/includes/header.php");
 
 // Lấy danh sách sản phẩm
@@ -176,7 +176,6 @@ $products = getAll("products");
             let currentQty = 0;
             let currentPrice = 0;
 
-            // Hiển thị thông tin sản phẩm hiện tại
             productSelect.addEventListener('change', function() {
                 const selectedOption = this.options[this.selectedIndex];
                 if (this.value) {
@@ -193,10 +192,7 @@ $products = getAll("products");
                             <p style="margin: 5px 0;"><strong style="color: #8B5A00;">📊 Tỷ lệ lợi nhuận:</strong> <span style="font-weight: 600; color: #1976D2;">${currentMargin.toFixed(2)}%</span></p>
                         </div>
                     `;
-
-                    // Set profit margin mặc định
                     profitMarginInput.value = currentMargin;
-
                     calculate();
                 } else {
                     currentInfo.innerHTML = '<small style="color: #8B5A00;">Chọn sản phẩm để xem thông tin</small>';
@@ -204,7 +200,6 @@ $products = getAll("products");
                 }
             });
 
-            // Tính toán khi thay đổi input
             [quantityInput, importPriceInput, profitMarginInput].forEach(input => {
                 input.addEventListener('input', calculate);
             });
@@ -214,18 +209,12 @@ $products = getAll("products");
                     calculationResult.style.display = 'none';
                     return;
                 }
-
                 const qtyImported = parseFloat(quantityInput.value);
                 const priceImported = parseFloat(importPriceInput.value);
                 const profitMargin = parseFloat(profitMarginInput.value);
-
-                // Công thức giá bình quân
                 const totalQty = currentQty + qtyImported;
                 const avgPrice = (currentQty * currentPrice + qtyImported * priceImported) / totalQty;
-
-                // Công thức giá bán
                 const sellingPrice = avgPrice * (1 + profitMargin / 100);
-
                 newAvgPrice.textContent = avgPrice.toFixed(2);
                 newSellingPrice.textContent = sellingPrice.toFixed(2);
                 calculationResult.style.display = 'block';

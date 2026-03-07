@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 include("../middleware/adminMiddleware.php");
 include("../config/dbcon.php");
@@ -119,10 +119,7 @@ if (isset($_POST['add_category_btn'])) {    //Thêm danh mục
     $slug = $_POST['slug']  . "-" . rand(10, 99);
     $small_description = $_POST['small_description'];
     $description = $_POST['description'];
-    $original_price = $_POST['original_price'];
-    $selling_price = $_POST['selling_price'] == '' || $_POST['selling_price'] == 0 ? $_POST['original_price'] : $_POST['selling_price'];
     $status = isset($_POST['status']) ? '1' : '0';
-    $qty = $_POST['qty'];
 
     $path = "../images";
 
@@ -130,15 +127,22 @@ if (isset($_POST['add_category_btn'])) {    //Thêm danh mục
     $old_image = $_POST['old_image'];
 
     if ($new_image != "") {
-        //$update_filename= $new_image;
         $image_ext = pathinfo($new_image, PATHINFO_EXTENSION);
         $update_filename = time() . '.' . $image_ext;
     } else {
         $update_filename = $old_image;
     }
 
+    // Đọc lại giá trị hiện tại để không bao giờ ghi đè original_price, selling_price, qty
+    $current_data = mysqli_fetch_assoc(mysqli_query($conn, "SELECT original_price, selling_price, qty FROM products WHERE id='$product_id'"));
+    $keep_original_price = $current_data['original_price'];
+    $keep_selling_price  = $current_data['selling_price'];
+    $keep_qty            = $current_data['qty'];
+
     $update_product_query = "UPDATE products SET name='$name', category_id='$category_id', slug='$slug', small_description='$small_description', description='$description',
-    original_price='$original_price', selling_price='$selling_price', status='$status', qty='$qty', image='$update_filename' WHERE id='$product_id' ";
+    status='$status', image='$update_filename',
+    original_price='$keep_original_price', selling_price='$keep_selling_price', qty='$keep_qty'
+    WHERE id='$product_id'";
     $update_product_query_run = mysqli_query($conn, $update_product_query);
 
     if ($update_product_query_run) {
