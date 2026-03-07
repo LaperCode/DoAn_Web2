@@ -67,7 +67,7 @@
                                 <p class="product-description">
                                     <?= nl2br($product['small_description']) ?>
                                 </p>
-                                <div class="product-info-price">$<?= $product['selling_price'] ?></div>
+                                <div class="product-info-price">$<?= fmt_price($product['selling_price']) ?></div>
                                 <div class="product-quantity-wrapper">
                                     <span class="product-quantity-btn" onclick="QualityChange('down')">
                                         <i class='bx bx-minus'></i>

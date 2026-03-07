@@ -1,6 +1,14 @@
 <?php
 include("./config/dbcon.php");
 
+// Format số thành dạng 10.000, 1.500.000
+if (!function_exists('fmt_price')) {
+    function fmt_price($number)
+    {
+        return number_format((float)$number, 0, ',', '.');
+    }
+}
+
 function getAllActive($table)
 {
     global $conn;
@@ -210,26 +218,55 @@ function getOrderWasBuy($cart_id)
     return $orders;
 }
 
-function getOrderByUserId()
+function getOrderByUserId($sort = 'newest', $payment_filter = '', $status_filter = '')
 {
     global $conn;
     $user_id = $_SESSION['auth_user']['id'];
-    $query =    "SELECT
-                        o.payment,
-                        SUM(od.quantity * od.selling_price) AS total,
-                        o.status,
-                        o.id,
-                        o.created_at,
-                        o.addtional
-                    FROM
-                        orders o
-                    JOIN
-                        order_detail od ON od.order_id = o.id
-                    WHERE
-                        o.user_id = '$user_id'
-                    GROUP BY
-                        o.id
-                ";
+
+    $where = "o.user_id = '$user_id'";
+    if ($payment_filter === 'cod') {
+        $where .= " AND o.payment = '1'";
+    } elseif ($payment_filter === 'bank') {
+        $where .= " AND o.payment = '0'";
+    }
+    if ($status_filter !== '') {
+        $status_val = (int)$status_filter;
+        $where .= " AND o.status = '$status_val'";
+    }
+
+    switch ($sort) {
+        case 'oldest':
+            $order_by = "o.created_at ASC";
+            break;
+        case 'price_asc':
+            $order_by = "total ASC";
+            break;
+        case 'price_desc':
+            $order_by = "total DESC";
+            break;
+        case 'newest':
+        default:
+            $order_by = "o.created_at DESC";
+            break;
+    }
+
+    $query = "SELECT
+                    o.payment,
+                    SUM(od.quantity * od.selling_price) AS total,
+                    o.status,
+                    o.id,
+                    o.created_at,
+                    o.addtional
+                FROM
+                    orders o
+                JOIN
+                    order_detail od ON od.order_id = o.id
+                WHERE
+                    $where
+                GROUP BY
+                    o.id
+                ORDER BY $order_by
+            ";
     return mysqli_query($conn, $query);
 }
 

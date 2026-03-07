@@ -1,5 +1,14 @@
 <?php
 include("../config/dbcon.php");
+
+// Format số thành dạng 10.000, 1.500.000
+if (!function_exists('fmt_price')) {
+    function fmt_price($number)
+    {
+        return number_format((float)$number, 0, ',', '.');
+    }
+}
+
 function getAll($table)
 {
     global $conn;

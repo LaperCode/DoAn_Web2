@@ -6,7 +6,8 @@ $price1 = isset($_GET["price1"]) ? trim($_GET["price1"]) : 0;
 $price2 = isset($_GET["price2"]) ? trim($_GET["price2"]) : 99999;
 $categories_selected = isset($_GET["categories"]) ? $_GET["categories"] : 0;
 $page = isset($_GET["page"]) ? (int)$_GET["page"] : 1;
-function advance_find($sql, $page = 1) {
+function advance_find($sql, $page = 1)
+{
     global $conn;
     $limit = 12;
     $offset = ($page - 1) * $limit;
@@ -45,67 +46,67 @@ if ($check) {
 
 <style>
     .advanced-search {
-    max-width: 100%;
-    background: #ffffff;
-    padding: 15px 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-}
+        max-width: 100%;
+        background: #ffffff;
+        padding: 15px 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
 
-.search-row {
-    display: flex;
-    align-items: flex-end;
-    gap: 40px;
-    flex-wrap: wrap;
-    justify-content: center;
-}
+    .search-row {
+        display: flex;
+        align-items: flex-end;
+        gap: 40px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
 
-.form-group {
-    display: flex;
-    flex-direction: column;
-    font-size: 20px;
-}
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        font-size: 20px;
+    }
 
-.form-group label {
-    margin-bottom: 6px;
-    font-weight: 600;
-}
+    .form-group label {
+        margin-bottom: 6px;
+        font-weight: 600;
+    }
 
-.form-group input,
-.form-group select {
-    height: 36px;
-    padding: 6px 20px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    min-width: 150px;
-}
+    .form-group input,
+    .form-group select {
+        height: 36px;
+        padding: 6px 20px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        min-width: 150px;
+    }
 
-.price-row {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    align-items: center;
-    gap: 15px;
-}
+    .price-row {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        align-items: center;
+        gap: 15px;
+    }
 
-.search-btn {
-    text-align: center;
-    margin-top: 20px;
-}
+    .search-btn {
+        text-align: center;
+        margin-top: 20px;
+    }
 
-.search-btn button {
-    padding: 10px 28px;
-    border: none;
-    border-radius: 10px;
-    background: #53708d;
-    color: #fff;
-    font-size: 11px;
-    cursor: pointer;
-    transition: 0.2s;
-}
+    .search-btn button {
+        padding: 10px 28px;
+        border: none;
+        border-radius: 10px;
+        background: #53708d;
+        color: #fff;
+        font-size: 11px;
+        cursor: pointer;
+        transition: 0.2s;
+    }
 
-.search-btn button:hover {
-    background: #30475d;
-}
+    .search-btn button:hover {
+        background: #30475d;
+    }
 </style>
 
 <body>
@@ -139,7 +140,7 @@ if ($check) {
                                 if (mysqli_num_rows($categories) > 0) {
                                     foreach ($categories as $item) {
                                         $selected = ($categories_selected == $item["id"]) ? "selected" : "";
-                                        echo '<option value="'.$item["id"].'" '.$selected.'>'.$item["name"].'</option>';
+                                        echo '<option value="' . $item["id"] . '" ' . $selected . '>' . $item["name"] . '</option>';
                                     }
                                 }
                                 ?>
@@ -158,7 +159,7 @@ if ($check) {
                             </div>
                         </div>
 
-                    <!-- Button -->
+                        <!-- Button -->
                         <div class="search-btn">
                             <button type="submit" name="sm">🔍 Tìm kiếm</button>
                         </div>
@@ -194,7 +195,7 @@ if ($check) {
                                                     <?php
                                                     if (isset($_SESSION['giohang'])) {
                                                         $message = $_SESSION['giohang'];
-                                                        unset($_SESSION['giohang']); 
+                                                        unset($_SESSION['giohang']);
                                                     }
                                                     ?>
                                                 </div>
@@ -202,8 +203,8 @@ if ($check) {
                                                     <?= $product['name'] ?>
                                                 </div>
                                                 <div class="product-card-price">
-                                                    <span><del>$<?= $product['original_price'] ?></del></span>
-                                                    <span class="curr-price">$<?= $product['selling_price'] ?></span>
+                                                    <span><del>$<?= fmt_price($product['original_price']) ?></del></span>
+                                                    <span class="curr-price">$<?= fmt_price($product['selling_price']) ?></span>
                                                 </div>
                                             </div>
                                         </div>
@@ -216,7 +217,7 @@ if ($check) {
                         <div class="box">
                             <?php
                             $totalProducts = getTotalProducts($type ?? "", $search ?? "");
-                            $totalPages = ceil($totalProducts / 12); 
+                            $totalPages = ceil($totalProducts / 12);
                             if ($totalPages > 1) {
                                 echo "<ul class='pagination'>";
                                 for ($i = 1; $i <= $totalPages; $i++) {
@@ -248,4 +249,5 @@ if ($check) {
         };
     </script>
 </body>
+
 </html>

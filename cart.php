@@ -347,13 +347,13 @@ include("./includes/header.php");
                                         <td>
                                             $
                                             <span>
-                                                <?= $product['selling_price'] ?>
+                                                <?= fmt_price($product['selling_price']) ?>
                                             </span>
                                         </td>
                                         <td>
                                             $
                                             <span class="total-price">
-                                                <?= $product['selling_price'] * $product['quantity'] ?>
+                                                <?= fmt_price($product['selling_price'] * $product['quantity']) ?>
                                             </span>
                                         </td>
                                         <td>
@@ -374,7 +374,7 @@ include("./includes/header.php");
                         <p style="display: block;">Tổng tiền: $<?= $total_price ?></p>
                         <button class="btn-buy" style="float: right;">Đặt hàng</button>
                     </form> -->
-                        <p style="display: block;">Tổng tiền: $<?= $total_price ?></p>
+                        <p style="display: block;">Tổng tiền: $<?= fmt_price($total_price) ?></p>
                         <a href="pay.php" class="btn-buy" style="float: right;">Thanh toán</a>
                     <?php }     ?>
                     <a href="./cart-status.php">
@@ -418,7 +418,7 @@ include("./includes/header.php");
             const price = parseInt(node.find('.product-price').val());
             let total_order = parseInt(e.target.value);
             let total_price = price * total_order;
-            node.find('.total-price').html(total_price);
+            node.find('.total-price').html(total_price.toLocaleString('vi-VN'));
         });
     });
 </script>

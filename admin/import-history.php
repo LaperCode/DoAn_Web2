@@ -77,17 +77,17 @@ $import_history = mysqli_query($conn, $import_history_query);
                                                         <?= $item['quantity_imported'] ?>
                                                     </span>
                                                 </td>
-                                                <td class="text-end"><?= number_format($item['import_price'], 2) ?> $</td>
+                                                <td class="text-end"><?= fmt_price($item['import_price']) ?> $</td>
                                                 <td class="text-center"><?= $item['old_quantity'] ?></td>
-                                                <td class="text-end"><?= number_format($item['old_original_price'], 2) ?> $</td>
+                                                <td class="text-end"><?= fmt_price($item['old_original_price']) ?> $</td>
                                                 <td class="text-end">
                                                     <strong style="color: #FF9800;">
-                                                        <?= number_format($item['new_average_price'], 2) ?> $
+                                                        <?= fmt_price($item['new_average_price']) ?> $
                                                     </strong>
                                                 </td>
                                                 <td class="text-end">
                                                     <strong style="color: #4CAF50;">
-                                                        <?= number_format($item['new_selling_price'], 2) ?> $
+                                                        <?= fmt_price($item['new_selling_price']) ?> $
                                                     </strong>
                                                 </td>
                                                 <td class="text-center">

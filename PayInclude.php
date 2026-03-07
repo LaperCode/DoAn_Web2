@@ -132,7 +132,7 @@
                                     <?= $product['name'] ?>&nbsp;<strong class="product-quantity">×&nbsp;<?= $product['quantity'] ?></strong>
                                 </td>
                                 <td class="product-total">
-                                    <span class="price-amount"><?= $product['selling_price'] ?>&nbsp;<span class="price-currencySymbol">$</span></span>
+                                    <span class="price-amount"><?= fmt_price($product['selling_price']) ?>&nbsp;<span class="price-currencySymbol">$</span></span>
                                 </td>
                             </tr>
                         <?php
@@ -148,11 +148,11 @@
                         </tr>
                         <tr class="cart-subtotal">
                             <th>Tạm tính</th>
-                            <td><span class="price-amount"><?= $total_price ?>&nbsp;<span class="price-currencySymbol">$</span></span></td>
+                            <td><span class="price-amount"><?= fmt_price($total_price) ?>&nbsp;<span class="price-currencySymbol">$</span></span></td>
                         </tr>
                         <tr class="order-total">
                             <th>Tổng</th>
-                            <td><strong><span class="price-amount"><?= $total_price ?>&nbsp;<span class="price-currencySymbol">$</span></span></strong></td>
+                            <td><strong><span class="price-amount"><?= fmt_price($total_price) ?>&nbsp;<span class="price-currencySymbol">$</span></span></strong></td>
                         </tr>
                     </tfoot>
                 </table>
@@ -189,16 +189,7 @@
                             </div>
                         </li>
 
-                        <!-- Thanh toán trực tuyến -->
-                        <li class="payment-online">
-                            <input type="radio" id="payment_method_online" value="online" name="option-payment" data-oder_button_text>
-                            <label for="payment_method_online">Thanh toán trực tuyến</label>
-                            <div class="payment-text">
-                                <p style="color: #e74c3c;">
-                                    <strong>⚠️ Chức năng đang phát triển.</strong> Vui lòng chọn phương thức thanh toán khác.
-                                </p>
-                            </div>
-                        </li>
+
                     </ul>
                     <div class="btn-order">
                         <!-- <a href="../Html/Cart.html" class="btn-order-link">
