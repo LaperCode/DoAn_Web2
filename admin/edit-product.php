@@ -17,7 +17,10 @@ include("../admin/includes/header.php");
                 ?>
                         <div class="card">
                             <div class="card-header">
-                                <h4>Edit Product
+                                <h4>Chỉnh sửa sản phẩm
+                                    <a href="product-manage.php?id=<?= $data['id'] ?>&tab=price" class="btn btn-warning btn-sm float-end ms-2">
+                                        <i class="fa fa-tag"></i> Quản lý giá &amp; tồn kho
+                                    </a>
                                     <a href="products.php" class="btn btn-danger btn-sm float-end">
                                         <i class="fa fa-arrow-left"></i> Quay lại
                                     </a>
@@ -67,16 +70,6 @@ include("../admin/includes/header.php");
                                             <label class="mb-0"><b>Description</b></label>
                                             <textarea type="text" required name="description" placeholder="Enter Description" class="form-control mb-2"><?= $data['description']; ?></textarea>
                                         </div>
-                                        <div class="col-md-6">
-                                            <br>
-                                            <label class="mb-0"><b>Original Price</b></label>
-                                            <input type="text" required name="original_price" value="<?= $data['original_price']; ?>" placeholder="Enter Original Price" class="form-control mb-2">
-                                        </div>
-                                        <div class="col-md-6">
-                                            <br>
-                                            <label class="mb-0"><b>Selling Price</b></label>
-                                            <input type="text" name="selling_price" value="<?= $data['selling_price']; ?>" placeholder="Enter Selling Price" class="form-control mb-2">
-                                        </div>
                                         <div class="col-md-12">
                                             <br>
                                             <label class="mb-0"><b>Image</b></label>
@@ -88,14 +81,30 @@ include("../admin/includes/header.php");
                                             <label for="">Preview Image</label>
                                             <img id="imagePreview" style="max-width: 30%; margin-top: 10px; display: none;">
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <br>
-                                            <label class="mb-0"><b>Quantity</b></label>
-                                            <input type="number" required name="qty" value="<?= $data['qty']; ?>" placeholder="Enter Quality" class="form-control mb-2">
+                                            <label class="mb-0"><b>Giá vốn</b> <small class="text-muted">(chỉ xem)</small></label>
+                                            <input type="text" value="<?= fmt_price($data['original_price']) ?> $" class="form-control mb-2" readonly style="background:#f8f9fa;color:#888;">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <br>
+                                            <label class="mb-0"><b>Giá bán</b> <small class="text-muted">(chỉ xem)</small></label>
+                                            <input type="text" value="<?= fmt_price($data['selling_price']) ?> $" class="form-control mb-2" readonly style="background:#f8f9fa;color:#888;">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <br>
+                                            <label class="mb-0"><b>Số lượng tồn</b> <small class="text-muted">(chỉ xem)</small></label>
+                                            <input type="text" value="<?= $data['qty'] ?>" class="form-control mb-2" readonly style="background:#f8f9fa;color:#888;">
+                                        </div>
+                                        <div class="col-md-12">
+                                            <small class="text-muted">
+                                                <i class="fa fa-info-circle"></i>
+                                                Để chỉnh sửa giá và số lượng, vui lòng dùng
+                                                <a href="manage-price.php?product_id=<?= $data['id'] ?>">Quản lý giá bán</a>
+                                                và <a href="manage-stock.php?product_id=<?= $data['id'] ?>">Quản lý tồn kho</a>.
+                                            </small>
                                         </div>
                                         <div class="col-md-6">
-                                            <br>
-                                            <br>
                                             <br>
                                             <label class="mb-0"><b>Status</b></label>
                                             <input type="checkbox" name="status" <?= $data['status'] == '0' ? '' : 'checked' ?>>
@@ -133,28 +142,6 @@ include("../admin/includes/header.php");
             imagePreview.style.display = 'block';
         } else {
             imagePreview.style.display = 'none';
-        }
-    });
-</script>
-<script>
-    document.getElementById('productForm').addEventListener('submit', function(e) {
-        const originalPrice = parseFloat(document.querySelector('input[name="original_price"]').value);
-        const sellingPrice = parseFloat(document.querySelector('input[name="selling_price"]').value || "0");
-        // Kiểm tra xem giá trị có phải số hay không 
-        if (isNaN(originalPrice) || originalPrice <= 0) {
-            alert("Giá ban đầu phải là một số lớn hơn 0.");
-            e.preventDefault(); // Ngăn không gửi form 
-            return;
-        }
-        if (isNaN(sellingPrice) || sellingPrice < 0) {
-            alert("Giá giảm phải là số không âm.");
-            e.preventDefault();
-            return;
-        }
-        if (sellingPrice > originalPrice) {
-            alert("Giá giảm không được lớn hơn giá ban đầu.");
-            e.preventDefault();
-            return;
         }
     });
 </script>
