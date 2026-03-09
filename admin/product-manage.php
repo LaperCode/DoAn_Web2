@@ -117,7 +117,18 @@ $import_logs = mysqli_query(
                         <h4 style="color: white; margin: 0;">
                             <i class="material-icons" style="vertical-align: middle;">manage_search</i>
                             Quản lý: <strong><?= htmlspecialchars($product['name']) ?></strong>
-                            <a href="products.php" class="btn btn-danger btn-sm float-end">
+                            <a href="edit-product.php?id=<?= $id ?>&<?= http_build_query(array_filter([
+                                                                        'tensanpham' => $_GET['tensanpham'] ?? '',
+                                                                        'loaisanpham' => $_GET['loaisanpham'] ?? '',
+                                                                        'qtymin' => $_GET['qtymin'] ?? '',
+                                                                        'qtymax' => $_GET['qtymax'] ?? '',
+                                                                        'giamin' => $_GET['giamin'] ?? '',
+                                                                        'giamax' => $_GET['giamax'] ?? '',
+                                                                        'trangthai' => $_GET['trangthai'] ?? '',
+                                                                        'sapxep' => $_GET['sapxep'] ?? 1,
+                                                                        'theocot' => $_GET['theocot'] ?? 'id',
+                                                                        'page' => $_GET['page'] ?? 1,
+                                                                    ])) ?>" class="btn btn-danger btn-sm float-end">
                                 <i class="fa fa-arrow-left"></i> Quay lại
                             </a>
                         </h4>

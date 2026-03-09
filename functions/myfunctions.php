@@ -30,11 +30,13 @@ function totalValue($table)
     $totalValue = mysqli_fetch_array($totalValue);
     return $totalValue['number'];
 }
-function getAllUsers()
+function getAllUsers($exclude_id = null)
 {
     global $conn;
+    $where = $exclude_id ? "WHERE `users`.`id` != " . (int)$exclude_id : "";
     $query = "SELECT `users`.*, COUNT(`order_detail`.`id`) AS `total_buy` FROM `users`
             LEFT JOIN `order_detail` ON `users`.`id` = `order_detail`.`user_id`
+            $where
             GROUP BY `users`.`id`
             ORDER BY `users`.`creat_at` DESC";
     return $query_run = mysqli_query($conn, $query);

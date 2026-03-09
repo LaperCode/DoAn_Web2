@@ -98,7 +98,7 @@ $orders = donhangKH($startDate, $endDate, $district, $city, $userid);
                                     <?php } else { ?>
                                         <?php foreach ($orders as $order) { ?>
                                             <tr>
-                                                <td>#<?= $order['id'] ?></td>
+                                                <td><strong>COSS<?= $order['id'] ?></strong></td>
                                                 <td>
                                                     <h6 class="mb-0"><?= $order['name'] ?></h6>
                                                     <p class="text-secondary mb-0"><?= $order['email'] ?></p>

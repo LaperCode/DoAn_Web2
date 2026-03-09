@@ -1,5 +1,4 @@
 <?php
-
 $page = substr($_SERVER['SCRIPT_NAME'], strripos($_SERVER['SCRIPT_NAME'], "/") + 1);
 ?>
 
@@ -23,7 +22,7 @@ $page = substr($_SERVER['SCRIPT_NAME'], strripos($_SERVER['SCRIPT_NAME'], "/") +
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link text-white <?= $page == "user.php" ? 'active bg-gradient-primary' : '' ?>" href="user.php">
+        <a class="nav-link text-white <?= $page == "user.php" || $page == "edit_user.php" || $page == "add_user.php" ? 'active bg-gradient-primary' : '' ?>" href="user.php">
           <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
             <i class="material-icons opacity-10">person</i>
           </div>
@@ -31,15 +30,15 @@ $page = substr($_SERVER['SCRIPT_NAME'], strripos($_SERVER['SCRIPT_NAME'], "/") +
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link text-white <?= $page == "order.php" ? 'active bg-gradient-primary' : '' ?>" href="order.php">
+        <a class="nav-link text-white <?= $page == "order.php" || $page == "customer-orders.php" || $page == "customer-order-details.php" || $page == "ChiTietDonHang.php" ? 'active bg-gradient-primary' : '' ?>" href="order.php">
           <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-            <i class="material-icons opacity-10">weekend</i>
+            <i class="material-icons opacity-10">receipt_long</i>
           </div>
           <span class="nav-link-text ms-1">Quản lý đơn hàng</span>
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link text-white <?= $page == "category.php" ? 'active bg-gradient-primary' : '' ?>" href="category.php">
+        <a class="nav-link text-white <?= $page == "category.php" || $page == "edit-category.php" ? 'active bg-gradient-primary' : '' ?>" href="category.php">
           <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
             <i class="material-icons opacity-10">table_view</i>
           </div>
@@ -49,15 +48,15 @@ $page = substr($_SERVER['SCRIPT_NAME'], strripos($_SERVER['SCRIPT_NAME'], "/") +
       <li class="nav-item">
         <a class="nav-link text-white <?= $page == "add-category.php" ? 'active bg-gradient-primary' : '' ?>" href="add-category.php">
           <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-            <i class="material-icons opacity-10">table_view</i>
+            <i class="material-icons opacity-10">add_circle</i>
           </div>
           <span class="nav-link-text ms-1">Thêm danh mục</span>
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link text-white <?= $page == "products.php" ? 'active bg-gradient-primary' : '' ?>" href="products.php">
+        <a class="nav-link text-white <?= $page == "products.php" || $page == "edit-product.php" || $page == "product-manage.php" ? 'active bg-gradient-primary' : '' ?>" href="products.php">
           <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-            <i class="material-icons opacity-10">table_view</i>
+            <i class="material-icons opacity-10">menu_book</i>
           </div>
           <span class="nav-link-text ms-1">Tất cả sản phẩm</span>
         </a>
@@ -65,15 +64,15 @@ $page = substr($_SERVER['SCRIPT_NAME'], strripos($_SERVER['SCRIPT_NAME'], "/") +
       <li class="nav-item">
         <a class="nav-link text-white <?= $page == "add-product.php" ? 'active bg-gradient-primary' : '' ?>" href="add-product.php">
           <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-            <i class="material-icons opacity-10">table_view</i>
+            <i class="material-icons opacity-10">add_circle</i>
           </div>
           <span class="nav-link-text ms-1">Thêm sản phẩm</span>
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link text-white <?= $page == "blog.php" ? 'active bg-gradient-primary' : '' ?>" href="blog.php">
+        <a class="nav-link text-white <?= $page == "blog.php" || $page == "edit-blog.php" ? 'active bg-gradient-primary' : '' ?>" href="blog.php">
           <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-            <i class="material-icons opacity-10">receipt_long</i>
+            <i class="material-icons opacity-10">article</i>
           </div>
           <span class="nav-link-text ms-1">Tất cả bài viết</span>
         </a>
@@ -110,11 +109,15 @@ $page = substr($_SERVER['SCRIPT_NAME'], strripos($_SERVER['SCRIPT_NAME'], "/") +
           <span class="nav-link-text ms-1">Quản lý tồn kho</span>
         </a>
       </li>
+
     </ul>
   </div>
+
+  <!-- Footer: Đăng xuất -->
   <div class="sidenav-footer position-absolute w-100 bottom-0 ">
     <div class="mx-3">
       <a class="btn bg-gradient-primary mt-4 w-100" href="../logout.php" type="button">Đăng xuất</a>
     </div>
   </div>
+
 </aside>

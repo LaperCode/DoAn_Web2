@@ -12,6 +12,18 @@ $theocot = isset($_GET['theocot']) ? $_GET['theocot'] : "id";
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $limit = 10;
 $offset = ($page - 1) * $limit;
+
+$query_string = http_build_query([
+    'tensanpham' => $tensanpham,
+    'loaisanpham' => $loaisanpham,
+    'qtymin' => $qtymin,
+    'qtymax' => $qtymax,
+    'giamin' => $giamin,
+    'giamax' => $giamax,
+    'trangthai' => $trangthai,
+    'sapxep' => $sapxep,
+    'theocot' => $theocot
+]);
 ?>
 
 <body>
@@ -79,7 +91,7 @@ $offset = ($page - 1) * $limit;
                                                     <?= $item['status'] == '0' ? "Hiển thị" : "Ẩn" ?>
                                                 </td>
                                                 <td>
-                                                    <a href="edit-product.php?id=<?= $item['id']; ?>" class="btn btn-primary">Sửa</a>
+                                                    <a href="edit-product.php?id=<?= $item['id']; ?>&<?= $query_string ?>&page=<?= $page ?>" class="btn btn-primary">Sửa</a>
                                                 </td>
                                                 <td>
                                                     <form action="code.php" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này không?');">
@@ -100,17 +112,6 @@ $offset = ($page - 1) * $limit;
                         <!-- Phân trang -->
                         <div class="pagination" style="text-align: center; margin-top: 20px;">
                             <?php
-                            $query_string = http_build_query([
-                                'tensanpham' => $tensanpham,
-                                'loaisanpham' => $loaisanpham,
-                                'qtymin' => $qtymin,
-                                'qtymax' => $qtymax,
-                                'giamin' => $giamin,
-                                'giamax' => $giamax,
-                                'trangthai' => $trangthai,
-                                'sapxep' => $sapxep,
-                                'theocot' => $theocot
-                            ]);
 
                             // Nút "Trước"
                             if ($page > 1) {
@@ -167,191 +168,304 @@ $offset = ($page - 1) * $limit;
     </div>
 </body>
 <style>
-    /* Modal Styles */
-    .modal {
+    /* ===== SEARCH MODAL ===== */
+    #invoiceModal {
         display: none;
         position: fixed;
-        z-index: 1000;
+        z-index: 1050;
         left: 0;
         top: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
+        background-color: rgba(0, 0, 0, 0.45);
         overflow: auto;
     }
 
-    .modal-content {
-        background-color: #fff;
-        margin: 5% auto;
-        padding: 20px;
-        border: 1px solid #888;
-        width: 80%;
-        max-width: 800px;
-        border-radius: 8px;
+    #invoiceModal .modal-content {
+        background: #fff;
+        margin: 4% auto;
+        padding: 0;
+        border: none;
+        width: 90%;
+        max-width: 860px;
+        border-radius: 12px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
         font-family: 'Roboto', sans-serif;
         position: relative;
+        overflow: hidden;
     }
 
-    .modal-content h2 {
-        text-align: center;
-        font-size: 24px;
-        margin-bottom: 20px;
+    #invoiceModal .modal-header-custom {
+        background: linear-gradient(90deg, #FF9800 0%, #81C784 100%);
+        padding: 18px 28px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
     }
 
-    .modal-content .info div {
-        margin: 10px 0;
-        font-size: 16px;
+    #invoiceModal .modal-header-custom h2 {
+        color: #fff;
+        font-size: 20px;
+        font-weight: 700;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
     }
 
-    .modal-content .info label {
+    #invoiceModal .modal-header-custom .close {
+        color: #fff;
+        font-size: 26px;
         font-weight: bold;
-        display: inline-block;
-        width: 120px;
+        cursor: pointer;
+        line-height: 1;
+        opacity: 0.85;
+        position: static;
     }
 
-    .modal-content table {
+    #invoiceModal .modal-header-custom .close:hover {
+        opacity: 1;
+    }
+
+    #invoiceModal .modal-body-custom {
+        padding: 24px 28px 8px;
+    }
+
+    #invoiceModal .filter-section-title {
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: #F57C00;
+        margin: 4px 0 12px;
+        padding-bottom: 6px;
+        border-bottom: 2px solid #FFE0B2;
+    }
+
+    #invoiceModal .form-group-custom {
+        margin-bottom: 18px;
+    }
+
+    #invoiceModal .form-group-custom label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #344054;
+        margin-bottom: 5px;
+        display: block;
+    }
+
+    #invoiceModal .form-group-custom label i {
+        color: #FF9800;
+        margin-right: 4px;
+    }
+
+    #invoiceModal .form-control-custom {
         width: 100%;
-        border-collapse: collapse;
-        margin: 20px 0;
+        padding: 8px 12px;
+        font-size: 13.5px;
+        border: 1.5px solid #d0d5dd;
+        border-radius: 7px;
+        background: #f9fafb;
+        color: #1d2939;
+        transition: border-color 0.2s, box-shadow 0.2s;
+        outline: none;
     }
 
-    .modal-content th,
-    .modal-content td {
-        border: 1px solid #ddd;
-        padding: 8px;
-        text-align: center;
+    #invoiceModal .form-control-custom:focus {
+        border-color: #FF9800;
+        box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.15);
+        background: #fff;
     }
 
-    .modal-content th {
-        background-color: #f2f2f2;
-        font-size: 16px;
+    #invoiceModal .range-group {
+        display: flex;
+        align-items: center;
+        gap: 8px;
     }
 
-    .modal-content td {
+    #invoiceModal .range-group input {
+        flex: 1;
+    }
+
+    #invoiceModal .range-separator {
+        color: #6c757d;
+        font-size: 13px;
+        white-space: nowrap;
+        font-weight: 500;
+    }
+
+    #invoiceModal .modal-footer-custom {
+        padding: 16px 28px 20px;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        border-top: 1px solid #f0f0f0;
+    }
+
+    #invoiceModal .btn-reset {
+        padding: 9px 22px;
         font-size: 14px;
+        border-radius: 7px;
+        border: 1.5px solid #d0d5dd;
+        background: #fff;
+        color: #344054;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.15s;
+        display: flex;
+        align-items: center;
+        gap: 6px;
     }
 
-    .modal-content .total {
-        text-align: right;
-        font-size: 18px;
-        font-weight: bold;
-        margin-top: 10px;
+    #invoiceModal .btn-reset:hover {
+        background: #f5f5f5;
     }
 
-    .modal-buttons {
-        text-align: center;
-        margin-top: 20px;
-    }
-
-    .modal-buttons button {
-        padding: 10px 20px;
-        margin: 0 10px;
+    #invoiceModal .btn-search {
+        padding: 9px 28px;
+        font-size: 14px;
+        border-radius: 10px;
         border: none;
-        border-radius: 4px;
+        background: linear-gradient(90deg, #FF9800 0%, #81C784 100%);
+        color: #fff;
+        font-weight: 700;
         cursor: pointer;
-        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(255, 140, 0, 0.3);
+        display: flex;
+        align-items: center;
+        gap: 6px;
     }
 
-    .modal-buttons .download-btn {
-        background-color: #28a745;
-        color: white;
-    }
-
-    .modal-buttons .close-btn {
-        background-color: #dc3545;
-        color: white;
-    }
-
-    .modal-buttons button:hover {
-        opacity: 0.8;
-    }
-
-    .close {
-        position: absolute;
-        top: 10px;
-        right: 15px;
-        font-size: 24px;
-        font-weight: bold;
-        color: #333;
-        cursor: pointer;
-    }
-
-    .close:hover {
-        color: #dc3545;
+    #invoiceModal .btn-search:hover {
+        opacity: 1;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 25px rgba(255, 140, 0, 0.5);
+        background: linear-gradient(90deg, #81C784 0%, #FF9800 100%);
     }
 </style>
-<!-- Invoice Modal -->
-<div id="invoiceModal" class="modal">
+
+<!-- Search Modal -->
+<div id="invoiceModal">
     <div class="modal-content">
-        <span class="close" onclick="closeModal()">×</span>
-        <h2>Tìm kiếm sản phẩm</h2>
-        <form method="GET" action="./products.php" style="margin: 20px;" id="form_tim">
-            <div class="row">
-                <div class="col-md-2">
-                    <label for="tenSP"><b>Tên sản phẩm:</b></label>
-                    <input type="text" id="tenSP" name="tensanpham" value="<?= htmlspecialchars($tensanpham) ?>" class="form-control border border-primary shadow-sm bg-light" />
+        <!-- Header -->
+        <div class="modal-header-custom">
+            <h2><i class="fa fa-search"></i> Tìm kiếm sản phẩm</h2>
+            <span class="close" onclick="closeModal()">×</span>
+        </div>
+
+        <form method="GET" action="./products.php" id="form_tim">
+            <div class="modal-body-custom">
+
+                <!-- ROW 1: Tên + Loại -->
+                <p class="filter-section-title"><i class="fa fa-info-circle"></i> Thông tin sản phẩm</p>
+                <div class="row g-3 mb-2">
+                    <div class="col-md-6">
+                        <div class="form-group-custom">
+                            <label for="tenSP"><i class="fa fa-book"></i> Tên sản phẩm</label>
+                            <input type="text" id="tenSP" name="tensanpham"
+                                value="<?= htmlspecialchars($tensanpham) ?>"
+                                placeholder="Nhập tên sản phẩm..."
+                                class="form-control-custom" />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group-custom">
+                            <label for="LSP"><i class="fa fa-tag"></i> Loại sản phẩm</label>
+                            <select id="LSP" name="loaisanpham" class="form-control-custom">
+                                <option value="-1" <?= $loaisanpham == "-1" ? "selected" : "" ?>>-- Tất cả loại --</option>
+                                <?php
+                                $categories = getAll("categories");
+                                if (mysqli_num_rows($categories) > 0) {
+                                    foreach ($categories as $item) { ?>
+                                        <option value="<?= $item['id']; ?>" <?= $loaisanpham == $item['id'] ? "selected" : "" ?>><?= $item['name'] ?></option>
+                                <?php }
+                                } ?>
+                            </select>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-2">
-                    <label for="LSP"><b>Loại sản phẩm:</b></label>
-                    <select id="LSP" name="loaisanpham" class="form-control border border-primary shadow-sm bg-light">
-                        <option value="-1" <?= $loaisanpham == "-1" ? "selected" : "" ?>>Tất cả</option>
-                        <?php
-                        $categories = getAll("categories");
-                        if (mysqli_num_rows($categories) > 0) {
-                            foreach ($categories as $item) {
-                        ?>
-                                <option value="<?= $item['id']; ?>" <?= $loaisanpham == $item['id'] ? "selected" : "" ?>><?= $item['name'] ?></option>
-                        <?php
-                            }
-                        } else {
-                            echo "No Category available";
-                        }
-                        ?>
-                    </select>
+
+                <!-- ROW 2: SL tồn + Giá bán -->
+                <p class="filter-section-title"><i class="fa fa-filter"></i> Lọc theo số lượng & giá</p>
+                <div class="row g-3 mb-2">
+                    <div class="col-md-6">
+                        <div class="form-group-custom">
+                            <label><i class="fa fa-cubes"></i> Số lượng tồn</label>
+                            <div class="range-group">
+                                <input type="number" id="SLmin" name="qtymin" min="0"
+                                    value="<?= htmlspecialchars($qtymin) ?>"
+                                    placeholder="Từ" class="form-control-custom" />
+                                <span class="range-separator">—</span>
+                                <input type="number" id="SLmax" name="qtymax" min="0"
+                                    value="<?= htmlspecialchars($qtymax) ?>"
+                                    placeholder="Đến" class="form-control-custom" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group-custom">
+                            <label><i class="fa fa-dollar-sign"></i> Giá bán (VNĐ)</label>
+                            <div class="range-group">
+                                <input type="number" id="Pricemin" name="giamin" min="0"
+                                    value="<?= htmlspecialchars($giamin) ?>"
+                                    placeholder="Từ" class="form-control-custom" />
+                                <span class="range-separator">—</span>
+                                <input type="number" id="Pricemax" name="giamax" min="0"
+                                    value="<?= htmlspecialchars($giamax) ?>"
+                                    placeholder="Đến" class="form-control-custom" />
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-2">
-                    <label for="SLmin"><b>SL tồn từ:</b></label>
-                    <input type="number" id="SLmin" name="qtymin" min="0" value="<?= htmlspecialchars($qtymin) ?>" class="form-control border border-primary shadow-sm bg-light" />
+
+                <!-- ROW 3: Trạng thái + Sắp xếp ID + Theo cột -->
+                <p class="filter-section-title"><i class="fa fa-sort-amount-down"></i> Trạng thái & Sắp xếp</p>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <div class="form-group-custom">
+                            <label for="status"><i class="fa fa-eye"></i> Trạng thái</label>
+                            <select id="status" name="trangthai" class="form-control-custom">
+                                <option value="-1" <?= $trangthai == "-1" ? "selected" : "" ?>>-- Tất cả --</option>
+                                <option value="0" <?= $trangthai == "0" ? "selected" : "" ?>>Hiển thị</option>
+                                <option value="1" <?= $trangthai == "1" ? "selected" : "" ?>>Đã ẩn</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group-custom">
+                            <label for="by"><i class="fa fa-columns"></i> Sắp xếp theo cột</label>
+                            <select id="by" name="theocot" class="form-control-custom">
+                                <option value="id" <?= $theocot == "id" ? "selected" : "" ?>>ID sản phẩm</option>
+                                <option value="category_id" <?= $theocot == "category_id" ? "selected" : "" ?>>Loại sản phẩm</option>
+                                <option value="qty" <?= $theocot == "qty" ? "selected" : "" ?>>Số lượng tồn</option>
+                                <option value="selling_price" <?= $theocot == "selling_price" ? "selected" : "" ?>>Giá bán</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group-custom">
+                            <label for="sort"><i class="fa fa-sort"></i> Thứ tự sắp xếp ID</label>
+                            <select id="sort" name="sapxep" class="form-control-custom">
+                                <option value="1" <?= $sapxep == "1" ? "selected" : "" ?>>Tăng dần (A → Z)</option>
+                                <option value="2" <?= $sapxep == "2" ? "selected" : "" ?>>Giảm dần (Z → A)</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-2">
-                    <label for="SLmax"><b>SL tồn đến:</b></label>
-                    <input type="number" id="SLmax" name="qtymax" min="0" value="<?= htmlspecialchars($qtymax) ?>" class="form-control border border-primary shadow-sm bg-light" />
-                </div>
-                <div class="col-md-2">
-                    <label for="Pricemin"><b>Giá bán từ:</b></label>
-                    <input type="number" id="Pricemin" name="giamin" min="0" value="<?= htmlspecialchars($giamin) ?>" class="form-control border border-primary shadow-sm bg-light" />
-                </div>
-                <div class="col-md-2">
-                    <label for="Pricemax"><b>Giá bán đến:</b></label>
-                    <input type="number" id="Pricemax" name="giamax" min="0" value="<?= htmlspecialchars($giamax) ?>" class="form-control border border-primary shadow-sm bg-light" />
-                </div>
-                <div class="col-md-2">
-                    <label for="status"><b>Trạng thái:</b></label>
-                    <select id="status" name="trangthai" class="form-control border border-primary shadow-sm bg-light">
-                        <option value="-1" <?= $trangthai == "-1" ? "selected" : "" ?>>Tất cả</option>
-                        <option value="0" <?= $trangthai == "0" ? "selected" : "" ?>>Hiển thị</option>
-                        <option value="1" <?= $trangthai == "1" ? "selected" : "" ?>>Đã ẩn</option>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <label for="sort"><b>Sắp xếp:</b></label>
-                    <select id="sort" name="sapxep" class="form-control border border-primary shadow-sm bg-light">
-                        <option value="1" <?= $sapxep == "1" ? "selected" : "" ?>>Tăng dần</option>
-                        <option value="2" <?= $sapxep == "2" ? "selected" : "" ?>>Giảm dần</option>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <label for="by"><b>Theo cột:</b></label>
-                    <select id="by" name="theocot" class="form-control border border-primary shadow-sm bg-light">
-                        <option value="id" <?= $theocot == "id" ? "selected" : "" ?>>Sản phẩm</option>
-                        <option value="category_id" <?= $theocot == "category_id" ? "selected" : "" ?>>Loại sản phẩm</option>
-                        <option value="qty" <?= $theocot == "qty" ? "selected" : "" ?>>Số lượng tồn</option>
-                        <option value="selling_price" <?= $theocot == "selling_price" ? "selected" : "" ?>>Giá bán</option>
-                    </select>
-                </div>
-            </div>
-            <div class="modal-buttons">
-                <button type="submit" class="download-btn">OK</button>
+
+            </div><!-- end modal-body-custom -->
+
+            <!-- Footer buttons -->
+            <div class="modal-footer-custom">
+                <button type="button" class="btn-reset" onclick="resetForm()">
+                    <i class="fa fa-undo"></i> Đặt lại
+                </button>
+                <button type="submit" class="btn-search">
+                    <i class="fa fa-search"></i> Tìm kiếm
+                </button>
             </div>
         </form>
     </div>
@@ -365,27 +479,38 @@ $offset = ($page - 1) * $limit;
         document.getElementById('invoiceModal').style.display = 'none';
     }
 
+    function resetForm() {
+        document.getElementById('tenSP').value = '';
+        document.getElementById('LSP').value = '-1';
+        document.getElementById('SLmin').value = '';
+        document.getElementById('SLmax').value = '';
+        document.getElementById('Pricemin').value = '';
+        document.getElementById('Pricemax').value = '';
+        document.getElementById('status').value = '-1';
+        document.getElementById('by').value = 'id';
+        document.getElementById('sort').value = '1';
+    }
+
     document.querySelector('#form_tim').addEventListener('submit', function(e) {
         const qtyMin = parseInt(document.getElementById('SLmin').value) || 0;
         const qtyMax = parseInt(document.getElementById('SLmax').value) || 0;
         const priceMin = parseInt(document.getElementById('Pricemin').value) || 0;
         const priceMax = parseInt(document.getElementById('Pricemax').value) || 0;
 
-        // Kiểm tra min <= max
-        if (qtyMax < qtyMin) {
-            alert('Số lượng đến không được nhỏ hơn số lượng từ.');
+        if (document.getElementById('SLmax').value !== '' && qtyMax < qtyMin) {
+            alert('⚠️ Số lượng "Đến" không được nhỏ hơn số lượng "Từ".');
             e.preventDefault();
             return;
         }
 
-        if (priceMax < priceMin) {
-            alert('Giá bán đến không được nhỏ hơn giá bán từ.');
+        if (document.getElementById('Pricemax').value !== '' && priceMax < priceMin) {
+            alert('⚠️ Giá bán "Đến" không được nhỏ hơn giá bán "Từ".');
             e.preventDefault();
             return;
         }
     });
 
-    // Close modal when clicking outside the modal content
+    // Đóng modal khi click ra ngoài
     window.onclick = function(event) {
         const modal = document.getElementById('invoiceModal');
         if (event.target === modal) {
