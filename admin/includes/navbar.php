@@ -1,5 +1,7 @@
 <?php
 $page = substr($_SERVER['SCRIPT_NAME'], strripos($_SERVER['SCRIPT_NAME'], "/") + 1);
+$admin_name  = $_SESSION['auth_user']['name'] ?? 'Admin';
+$admin_email = $_SESSION['auth_user']['email'] ?? '';
 ?>
 <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" navbar-scroll="true">
   <div class="container-fluid py-1 px-3">
@@ -37,6 +39,11 @@ $page = substr($_SERVER['SCRIPT_NAME'], strripos($_SERVER['SCRIPT_NAME'], "/") +
     </nav>
     <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
       <div class="ms-md-auto pe-md-3 d-flex align-items-center">
+        <div class="text-end">
+          <span style="font-size:13px; font-weight:700; color:#344054;"><?= htmlspecialchars($admin_name) ?></span>
+          <br>
+          <span style="font-size:11.5px; color:#6c757d;"><?= htmlspecialchars($admin_email) ?></span>
+        </div>
       </div>
     </div>
   </div>

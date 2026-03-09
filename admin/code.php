@@ -152,9 +152,33 @@ if (isset($_POST['add_category_btn'])) {    //Thêm danh mục
                 unlink("../images/" . $old_image);
             }
         }
-        redirect("edit-product.php?id=$product_id", "Cập nhật sản phẩm thành công");
+        $back_params = http_build_query(array_filter([
+            'tensanpham' => $_POST['back_tensanpham'] ?? '',
+            'loaisanpham' => $_POST['back_loaisanpham'] ?? '',
+            'qtymin' => $_POST['back_qtymin'] ?? '',
+            'qtymax' => $_POST['back_qtymax'] ?? '',
+            'giamin' => $_POST['back_giamin'] ?? '',
+            'giamax' => $_POST['back_giamax'] ?? '',
+            'trangthai' => $_POST['back_trangthai'] ?? '',
+            'sapxep' => $_POST['back_sapxep'] ?? '1',
+            'theocot' => $_POST['back_theocot'] ?? 'id',
+            'page' => $_POST['back_page'] ?? '1',
+        ]));
+        redirect("edit-product.php?id=$product_id&$back_params", "Cập nhật sản phẩm thành công");
     } else {
-        redirect("edit-product.php?id=$product_id", "Đã xảy ra lỗi");
+        $back_params = http_build_query(array_filter([
+            'tensanpham' => $_POST['back_tensanpham'] ?? '',
+            'loaisanpham' => $_POST['back_loaisanpham'] ?? '',
+            'qtymin' => $_POST['back_qtymin'] ?? '',
+            'qtymax' => $_POST['back_qtymax'] ?? '',
+            'giamin' => $_POST['back_giamin'] ?? '',
+            'giamax' => $_POST['back_giamax'] ?? '',
+            'trangthai' => $_POST['back_trangthai'] ?? '',
+            'sapxep' => $_POST['back_sapxep'] ?? '1',
+            'theocot' => $_POST['back_theocot'] ?? 'id',
+            'page' => $_POST['back_page'] ?? '1',
+        ]));
+        redirect("edit-product.php?id=$product_id&$back_params", "Đã xảy ra lỗi");
     }
 } else if (isset($_POST['delete_product_btn'])) {   //Xóa sản phẩm
     $product_id = mysqli_real_escape_string($conn, $_POST['product_id']);

@@ -18,16 +18,48 @@ include("../admin/includes/header.php");
                         <div class="card">
                             <div class="card-header">
                                 <h4>Chỉnh sửa sản phẩm
-                                    <a href="product-manage.php?id=<?= $data['id'] ?>&tab=price" class="btn btn-warning btn-sm float-end ms-2">
+                                    <a href="product-manage.php?id=<?= $data['id'] ?>&tab=price&<?= http_build_query(array_filter([
+                                                                                                    'tensanpham' => $_GET['tensanpham'] ?? '',
+                                                                                                    'loaisanpham' => $_GET['loaisanpham'] ?? '',
+                                                                                                    'qtymin' => $_GET['qtymin'] ?? '',
+                                                                                                    'qtymax' => $_GET['qtymax'] ?? '',
+                                                                                                    'giamin' => $_GET['giamin'] ?? '',
+                                                                                                    'giamax' => $_GET['giamax'] ?? '',
+                                                                                                    'trangthai' => $_GET['trangthai'] ?? '',
+                                                                                                    'sapxep' => $_GET['sapxep'] ?? 1,
+                                                                                                    'theocot' => $_GET['theocot'] ?? 'id',
+                                                                                                    'page' => $_GET['page'] ?? 1,
+                                                                                                ])) ?>" class="btn btn-warning btn-sm float-end ms-2">
                                         <i class="fa fa-tag"></i> Quản lý giá &amp; tồn kho
                                     </a>
-                                    <a href="products.php" class="btn btn-danger btn-sm float-end">
+                                    <a href="products.php?<?= http_build_query(array_filter([
+                                                                'tensanpham' => $_GET['tensanpham'] ?? '',
+                                                                'loaisanpham' => $_GET['loaisanpham'] ?? '',
+                                                                'qtymin' => $_GET['qtymin'] ?? '',
+                                                                'qtymax' => $_GET['qtymax'] ?? '',
+                                                                'giamin' => $_GET['giamin'] ?? '',
+                                                                'giamax' => $_GET['giamax'] ?? '',
+                                                                'trangthai' => $_GET['trangthai'] ?? '',
+                                                                'sapxep' => $_GET['sapxep'] ?? 1,
+                                                                'theocot' => $_GET['theocot'] ?? 'id',
+                                                                'page' => $_GET['page'] ?? 1,
+                                                            ])) ?>" class="btn btn-danger btn-sm float-end">
                                         <i class="fa fa-arrow-left"></i> Quay lại
                                     </a>
                                 </h4>
                             </div>
                             <div class="card-body">
                                 <form id="productForm" action="code.php" method="POST" enctype="multipart/form-data"><!-- Uploads image -->
+                                    <input type="hidden" name="back_tensanpham" value="<?= htmlspecialchars($_GET['tensanpham'] ?? '') ?>">
+                                    <input type="hidden" name="back_loaisanpham" value="<?= htmlspecialchars($_GET['loaisanpham'] ?? '') ?>">
+                                    <input type="hidden" name="back_qtymin" value="<?= htmlspecialchars($_GET['qtymin'] ?? '') ?>">
+                                    <input type="hidden" name="back_qtymax" value="<?= htmlspecialchars($_GET['qtymax'] ?? '') ?>">
+                                    <input type="hidden" name="back_giamin" value="<?= htmlspecialchars($_GET['giamin'] ?? '') ?>">
+                                    <input type="hidden" name="back_giamax" value="<?= htmlspecialchars($_GET['giamax'] ?? '') ?>">
+                                    <input type="hidden" name="back_trangthai" value="<?= htmlspecialchars($_GET['trangthai'] ?? '') ?>">
+                                    <input type="hidden" name="back_sapxep" value="<?= htmlspecialchars($_GET['sapxep'] ?? '1') ?>">
+                                    <input type="hidden" name="back_theocot" value="<?= htmlspecialchars($_GET['theocot'] ?? 'id') ?>">
+                                    <input type="hidden" name="back_page" value="<?= htmlspecialchars($_GET['page'] ?? '1') ?>">
                                     <div class="row">
                                         <div class="col-md-12">
                                             <label class="mb-0"><b>Select Category</b></label>
