@@ -33,7 +33,7 @@ $import_history = mysqli_query($conn, $import_history_query);
                         <h4 style="color: white; margin: 0;">
                             <i class="material-icons" style="vertical-align: middle;">history</i>
                             Lịch sử nhập hàng
-                            <a href="import-stock.php" class="btn btn-danger btn-sm float-end">
+                            <a href="import-manage.php" class="btn btn-danger btn-sm float-end">
                                 <i class="fa fa-arrow-left"></i> Quay lại
                             </a>
                         </h4>

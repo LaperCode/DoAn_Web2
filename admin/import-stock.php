@@ -3,9 +3,47 @@ include("../admin/includes/header.php");
 
 // Lấy danh sách sản phẩm
 $products = getAll("products");
+$selected_product_id = isset($_GET['product_id']) ? (int)$_GET['product_id'] : 0;
+$productOptions = '';
+if (mysqli_num_rows($products) > 0) {
+    foreach ($products as $item) {
+        $selected_attr = ($selected_product_id && $selected_product_id === (int)$item['id']) ? ' selected' : '';
+        $productOptions .= '<option value="' . $item['id'] . '"'
+            . ' data-qty="' . $item['qty'] . '"'
+            . ' data-price="' . $item['original_price'] . '"'
+            . ' data-selling="' . $item['selling_price'] . '"'
+            . ' data-margin="' . $item['profit_margin'] . '"' . $selected_attr . '>'
+            . htmlspecialchars($item['name'])
+            . '</option>';
+    }
+}
 ?>
 
 <body>
+    <style>
+        .btn-remove-item {
+            background: #fff;
+            color: #e53935;
+            border: 1.5px solid #ef5350;
+            padding: 6px 14px;
+            border-radius: 999px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all .2s ease;
+        }
+
+        .btn-remove-item:hover {
+            background: #ffebee;
+            border-color: #e53935;
+            color: #c62828;
+        }
+
+        .btn-remove-item:focus {
+            box-shadow: 0 0 0 0.2rem rgba(229, 57, 53, 0.2);
+        }
+    </style>
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
@@ -13,11 +51,8 @@ $products = getAll("products");
                     <div class="card-header" style="background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);">
                         <h4 style="color: white; margin: 0;">
                             <i class="material-icons" style="vertical-align: middle;">inventory</i>
-                            Nhập hàng vào kho
-                            <a href="import-history.php" class="btn btn-light btn-sm float-end" style="margin-left: 10px;">
-                                <i class="fa fa-history"></i> Lịch sử nhập
-                            </a>
-                            <a href="products.php" class="btn btn-danger btn-sm float-end">
+                            Thêm phiếu nhập
+                            <a href="import-manage.php" class="btn btn-light btn-sm float-end" style="margin-left: 10px;">
                                 <i class="fa fa-arrow-left"></i> Quay lại
                             </a>
                         </h4>
@@ -34,102 +69,67 @@ $products = getAll("products");
                             </ul>
                         </div>
 
-                        <form id="import-stock-form" action="code.php" method="POST">
-                            <input type="hidden" name="import_stock" value="true">
+                        <form id="import-receipt-form" action="code.php" method="POST">
+                            <input type="hidden" name="import_receipt" value="true">
 
-                            <div class="row">
-                                <!-- Chọn sản phẩm -->
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label class="form-label"><b>Chọn sản phẩm <span style="color: red;">*</span></b></label>
-                                        <select name="product_id" id="product_id" class="form-select" required>
-                                            <option value="">-- Chọn sản phẩm --</option>
-                                            <?php
-                                            if (mysqli_num_rows($products) > 0) {
-                                                foreach ($products as $item) {
-                                            ?>
-                                                    <option
-                                                        value="<?= $item['id'] ?>"
-                                                        data-qty="<?= $item['qty'] ?>"
-                                                        data-price="<?= $item['original_price'] ?>"
-                                                        data-selling="<?= $item['selling_price'] ?>"
-                                                        data-margin="<?= $item['profit_margin'] ?>">
-                                                        <?= $item['name'] ?>
-                                                    </option>
-                                            <?php
-                                                }
-                                            }
-                                            ?>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <!-- Thông tin sản phẩm hiện tại -->
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label class="form-label"><b>Thông tin hiện tại</b></label>
-                                        <div id="current-info" style="background: linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 100%); padding: 15px; border-radius: 8px; border-left: 4px solid #FF9800; color: #E65100; min-height: 120px;">
-                                            <small style="color: #8B5A00;">Chọn sản phẩm để xem thông tin</small>
+                            <div id="items-container">
+                                <div class="import-item mb-4" data-index="0" style="border: 1px solid #FFE0B2; border-radius: 10px; padding: 16px; background: #fff;">
+                                    <div class="row g-3 align-items-end">
+                                        <div class="col-md-4">
+                                            <label class="form-label"><b>Chọn sản phẩm <span style="color: red;">*</span></b></label>
+                                            <select name="product_id[]" class="form-select product-select" required>
+                                                <option value="">-- Chọn sản phẩm --</option>
+                                                <?= $productOptions ?>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label class="form-label"><b>Số lượng <span style="color: red;">*</span></b></label>
+                                            <input type="number" name="quantity_imported[]" class="form-control quantity-input" min="1" step="1" required placeholder="SL">
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label class="form-label"><b>Giá nhập/sp <span style="color: red;">*</span></b></label>
+                                            <input type="number" name="import_price[]" class="form-control import-price-input" min="0" step="0.01" required placeholder="Giá">
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label class="form-label"><b>Tỷ lệ LN (%) <span style="color: red;">*</span></b></label>
+                                            <input type="number" name="profit_margin[]" class="form-control margin-input" min="0" max="100" step="0.01" value="20" required>
+                                        </div>
+                                        <div class="col-md-2 text-end">
+                                            <button type="button" class="btn btn-remove-item remove-item" style="display: none;">
+                                                <i class="fa fa-trash"></i> Xóa
+                                            </button>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
 
-                            <div class="row">
-                                <!-- Số lượng nhập -->
-                                <div class="col-md-4">
-                                    <div class="mb-3">
-                                        <label class="form-label"><b>Số lượng nhập <span style="color: red;">*</span></b></label>
-                                        <input type="number" name="quantity_imported" id="quantity_imported"
-                                            class="form-control" min="1" step="1" required
-                                            placeholder="Nhập số lượng">
-                                    </div>
-                                </div>
-
-                                <!-- Giá nhập -->
-                                <div class="col-md-4">
-                                    <div class="mb-3">
-                                        <label class="form-label"><b>Giá nhập/sp <span style="color: red;">*</span></b></label>
-                                        <input type="number" name="import_price" id="import_price"
-                                            class="form-control" min="0" step="0.01" required
-                                            placeholder="Nhập giá">
-                                    </div>
-                                </div>
-
-                                <!-- Tỷ lệ lợi nhuận -->
-                                <div class="col-md-4">
-                                    <div class="mb-3">
-                                        <label class="form-label"><b>Tỷ lệ lợi nhuận (%) <span style="color: red;">*</span></b></label>
-                                        <input type="number" name="profit_margin" id="profit_margin"
-                                            class="form-control" min="0" max="100" step="0.01"
-                                            value="20" required
-                                            placeholder="Ví dụ: 20">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Kết quả tính toán tự động -->
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div id="calculation-result" style="display: none; background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%); padding: 20px; border-radius: 8px; border-left: 4px solid #4CAF50;">
-                                        <h5 style="color: #2E7D32; margin-bottom: 15px;">
-                                            <i class="fa fa-check-circle"></i> <strong>Kết quả tính toán:</strong>
-                                        </h5>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <p style="color: #1B5E20; font-size: 16px; margin-bottom: 8px;">
+                                    <div class="row mt-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label"><b>Thông tin hiện tại</b></label>
+                                            <div class="current-info" style="background: linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 100%); padding: 15px; border-radius: 8px; border-left: 4px solid #FF9800; color: #E65100; min-height: 110px;">
+                                                <small style="color: #8B5A00;">Chọn sản phẩm để xem thông tin</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label"><b>Kết quả tính toán</b></label>
+                                            <div class="calc-result" style="display: none; background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%); padding: 15px; border-radius: 8px; border-left: 4px solid #4CAF50;">
+                                                <p style="color: #1B5E20; font-size: 15px; margin-bottom: 6px;">
                                                     <strong>Giá nhập bình quân mới:</strong>
-                                                    <span id="new-avg-price" style="color: #FF6F00; font-weight: 700; font-size: 18px;">0</span> $
+                                                    <span class="new-avg-price" style="color: #FF6F00; font-weight: 700; font-size: 16px;">0</span> $
                                                 </p>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <p style="color: #1B5E20; font-size: 16px; margin-bottom: 8px;">
+                                                <p style="color: #1B5E20; font-size: 15px; margin-bottom: 0;">
                                                     <strong>Giá bán mới:</strong>
-                                                    <span id="new-selling-price" style="color: #388E3C; font-weight: 700; font-size: 18px;">0</span> $
+                                                    <span class="new-selling-price" style="color: #388E3C; font-weight: 700; font-size: 16px;">0</span> $
                                                 </p>
                                             </div>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <button type="button" class="btn btn-outline-warning" id="add-item">
+                                        <i class="fa fa-plus"></i> Thêm sản phẩm
+                                    </button>
                                 </div>
                             </div>
 
@@ -139,7 +139,7 @@ $products = getAll("products");
                                     <div class="mb-3">
                                         <label class="form-label"><b>Ghi chú</b></label>
                                         <textarea name="note" class="form-control" rows="3"
-                                            placeholder="Nhập ghi chú về lần nhập hàng này (tùy chọn)"></textarea>
+                                            placeholder="Nhập ghi chú cho phiếu nhập (tùy chọn)"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -147,9 +147,9 @@ $products = getAll("products");
                             <div class="row">
                                 <div class="col-md-12">
                                     <button type="submit" class="btn btn-primary">
-                                        <i class="fa fa-save"></i> Xác nhận nhập hàng
+                                        <i class="fa fa-save"></i> Lưu phiếu nhập
                                     </button>
-                                    <a href="products.php" class="btn btn-secondary">
+                                    <a href="import-manage.php" class="btn btn-secondary">
                                         <i class="fa fa-times"></i> Hủy
                                     </a>
                                 </div>
@@ -162,63 +162,162 @@ $products = getAll("products");
     </div>
 
     <script>
+        const productOptionsHtml = <?= json_encode($productOptions) ?>;
+        const preselectedProductId = <?= (int)$selected_product_id ?>;
+
         // JavaScript để tính toán tự động
         document.addEventListener('DOMContentLoaded', function() {
-            const productSelect = document.getElementById('product_id');
-            const quantityInput = document.getElementById('quantity_imported');
-            const importPriceInput = document.getElementById('import_price');
-            const profitMarginInput = document.getElementById('profit_margin');
-            const currentInfo = document.getElementById('current-info');
-            const calculationResult = document.getElementById('calculation-result');
-            const newAvgPrice = document.getElementById('new-avg-price');
-            const newSellingPrice = document.getElementById('new-selling-price');
+            const itemsContainer = document.getElementById('items-container');
+            const addItemBtn = document.getElementById('add-item');
 
-            let currentQty = 0;
-            let currentPrice = 0;
+            function bindRow(row) {
+                const productSelect = row.querySelector('.product-select');
+                const quantityInput = row.querySelector('.quantity-input');
+                const importPriceInput = row.querySelector('.import-price-input');
+                const profitMarginInput = row.querySelector('.margin-input');
+                const currentInfo = row.querySelector('.current-info');
+                const calculationResult = row.querySelector('.calc-result');
+                const newAvgPrice = row.querySelector('.new-avg-price');
+                const newSellingPrice = row.querySelector('.new-selling-price');
+                const removeBtn = row.querySelector('.remove-item');
 
-            productSelect.addEventListener('change', function() {
-                const selectedOption = this.options[this.selectedIndex];
-                if (this.value) {
-                    currentQty = parseFloat(selectedOption.getAttribute('data-qty'));
-                    currentPrice = parseFloat(selectedOption.getAttribute('data-price'));
-                    const currentSelling = parseFloat(selectedOption.getAttribute('data-selling'));
-                    const currentMargin = parseFloat(selectedOption.getAttribute('data-margin'));
+                let currentQty = 0;
+                let currentPrice = 0;
 
-                    currentInfo.innerHTML = `
-                        <div style="color: #E65100;">
-                            <p style="margin: 5px 0;"><strong style="color: #8B5A00;">📦 Số lượng tồn:</strong> <span style="font-weight: 600; color: #F57C00;">${currentQty} sp</span></p>
-                            <p style="margin: 5px 0;"><strong style="color: #8B5A00;">💰 Giá nhập hiện tại:</strong> <span style="font-weight: 600; color: #F57C00;">${currentPrice.toFixed(2)} $</span></p>
-                            <p style="margin: 5px 0;"><strong style="color: #8B5A00;">💵 Giá bán hiện tại:</strong> <span style="font-weight: 600; color: #388E3C;">${currentSelling.toFixed(2)} $</span></p>
-                            <p style="margin: 5px 0;"><strong style="color: #8B5A00;">📊 Tỷ lệ lợi nhuận:</strong> <span style="font-weight: 600; color: #1976D2;">${currentMargin.toFixed(2)}%</span></p>
-                        </div>
-                    `;
-                    profitMarginInput.value = currentMargin;
-                    calculate();
-                } else {
-                    currentInfo.innerHTML = '<small style="color: #8B5A00;">Chọn sản phẩm để xem thông tin</small>';
-                    calculationResult.style.display = 'none';
+                productSelect.addEventListener('change', function() {
+                    const selectedOption = this.options[this.selectedIndex];
+                    if (this.value) {
+                        currentQty = parseFloat(selectedOption.getAttribute('data-qty'));
+                        currentPrice = parseFloat(selectedOption.getAttribute('data-price'));
+                        const currentSelling = parseFloat(selectedOption.getAttribute('data-selling'));
+                        const currentMargin = parseFloat(selectedOption.getAttribute('data-margin'));
+
+                        currentInfo.innerHTML = `
+                            <div style="color: #E65100;">
+                                <p style="margin: 5px 0;"><strong style="color: #8B5A00;">📦 Số lượng tồn:</strong> <span style="font-weight: 600; color: #F57C00;">${currentQty} sp</span></p>
+                                <p style="margin: 5px 0;"><strong style="color: #8B5A00;">💰 Giá nhập hiện tại:</strong> <span style="font-weight: 600; color: #F57C00;">${currentPrice.toFixed(2)} $</span></p>
+                                <p style="margin: 5px 0;"><strong style="color: #8B5A00;">💵 Giá bán hiện tại:</strong> <span style="font-weight: 600; color: #388E3C;">${currentSelling.toFixed(2)} $</span></p>
+                                <p style="margin: 5px 0;"><strong style="color: #8B5A00;">📊 Tỷ lệ lợi nhuận:</strong> <span style="font-weight: 600; color: #1976D2;">${currentMargin.toFixed(2)}%</span></p>
+                            </div>
+                        `;
+                        profitMarginInput.value = currentMargin;
+                        calculate();
+                    } else {
+                        currentInfo.innerHTML = '<small style="color: #8B5A00;">Chọn sản phẩm để xem thông tin</small>';
+                        calculationResult.style.display = 'none';
+                    }
+                });
+
+                if (preselectedProductId && !productSelect.value) {
+                    productSelect.value = preselectedProductId;
+                    productSelect.dispatchEvent(new Event('change'));
                 }
-            });
 
-            [quantityInput, importPriceInput, profitMarginInput].forEach(input => {
-                input.addEventListener('input', calculate);
-            });
+                [quantityInput, importPriceInput, profitMarginInput].forEach(input => {
+                    input.addEventListener('input', calculate);
+                });
 
-            function calculate() {
-                if (!productSelect.value || !quantityInput.value || !importPriceInput.value || !profitMarginInput.value) {
-                    calculationResult.style.display = 'none';
-                    return;
+                function calculate() {
+                    if (!productSelect.value || !quantityInput.value || !importPriceInput.value || !profitMarginInput.value) {
+                        calculationResult.style.display = 'none';
+                        return;
+                    }
+                    const qtyImported = parseFloat(quantityInput.value);
+                    const priceImported = parseFloat(importPriceInput.value);
+                    const profitMargin = parseFloat(profitMarginInput.value);
+                    const totalQty = currentQty + qtyImported;
+                    const avgPrice = (currentQty * currentPrice + qtyImported * priceImported) / totalQty;
+                    const sellingPrice = avgPrice * (1 + profitMargin / 100);
+                    newAvgPrice.textContent = avgPrice.toFixed(2);
+                    newSellingPrice.textContent = sellingPrice.toFixed(2);
+                    calculationResult.style.display = 'block';
                 }
-                const qtyImported = parseFloat(quantityInput.value);
-                const priceImported = parseFloat(importPriceInput.value);
-                const profitMargin = parseFloat(profitMarginInput.value);
-                const totalQty = currentQty + qtyImported;
-                const avgPrice = (currentQty * currentPrice + qtyImported * priceImported) / totalQty;
-                const sellingPrice = avgPrice * (1 + profitMargin / 100);
-                newAvgPrice.textContent = avgPrice.toFixed(2);
-                newSellingPrice.textContent = sellingPrice.toFixed(2);
-                calculationResult.style.display = 'block';
+
+                if (removeBtn) {
+                    removeBtn.onclick = function() {
+                        row.remove();
+                        refreshRemoveButtons();
+                    };
+                }
             }
+
+            function refreshRemoveButtons() {
+                const rows = itemsContainer.querySelectorAll('.import-item');
+                rows.forEach((row, index) => {
+                    const removeBtn = row.querySelector('.remove-item');
+                    if (removeBtn) {
+                        removeBtn.style.display = rows.length > 1 ? 'inline-block' : 'none';
+                    }
+                    row.setAttribute('data-index', index);
+                });
+            }
+
+            function addRow() {
+                const row = document.createElement('div');
+                row.className = 'import-item mb-4';
+                row.style.border = '1px solid #FFE0B2';
+                row.style.borderRadius = '10px';
+                row.style.padding = '16px';
+                row.style.background = '#fff';
+                row.innerHTML = `
+                    <div class="row g-3 align-items-end">
+                        <div class="col-md-4">
+                            <label class="form-label"><b>Chọn sản phẩm <span style=\"color: red;\">*</span></b></label>
+                            <select name="product_id[]" class="form-select product-select" required>
+                                <option value="">-- Chọn sản phẩm --</option>
+                                ${productOptionsHtml}
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label"><b>Số lượng <span style=\"color: red;\">*</span></b></label>
+                            <input type="number" name="quantity_imported[]" class="form-control quantity-input" min="1" step="1" required placeholder="SL">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label"><b>Giá nhập/sp <span style=\"color: red;\">*</span></b></label>
+                            <input type="number" name="import_price[]" class="form-control import-price-input" min="0" step="0.01" required placeholder="Giá">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label"><b>Tỷ lệ LN (%) <span style=\"color: red;\">*</span></b></label>
+                            <input type="number" name="profit_margin[]" class="form-control margin-input" min="0" max="100" step="0.01" value="20" required>
+                        </div>
+                        <div class="col-md-2 text-end">
+                            <button type="button" class="btn btn-remove-item remove-item">
+                                <i class="fa fa-trash"></i> Xóa
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <label class="form-label"><b>Thông tin hiện tại</b></label>
+                            <div class="current-info" style="background: linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 100%); padding: 15px; border-radius: 8px; border-left: 4px solid #FF9800; color: #E65100; min-height: 110px;">
+                                <small style="color: #8B5A00;">Chọn sản phẩm để xem thông tin</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label"><b>Kết quả tính toán</b></label>
+                            <div class="calc-result" style="display: none; background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%); padding: 15px; border-radius: 8px; border-left: 4px solid #4CAF50;">
+                                <p style="color: #1B5E20; font-size: 15px; margin-bottom: 6px;">
+                                    <strong>Giá nhập bình quân mới:</strong>
+                                    <span class="new-avg-price" style="color: #FF6F00; font-weight: 700; font-size: 16px;">0</span> $
+                                </p>
+                                <p style="color: #1B5E20; font-size: 15px; margin-bottom: 0;">
+                                    <strong>Giá bán mới:</strong>
+                                    <span class="new-selling-price" style="color: #388E3C; font-weight: 700; font-size: 16px;">0</span> $
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                itemsContainer.appendChild(row);
+                bindRow(row);
+                refreshRemoveButtons();
+            }
+
+            bindRow(itemsContainer.querySelector('.import-item'));
+            refreshRemoveButtons();
+
+            addItemBtn.addEventListener('click', addRow);
         });
     </script>
 </body>

@@ -86,11 +86,11 @@ $page = substr($_SERVER['SCRIPT_NAME'], strripos($_SERVER['SCRIPT_NAME'], "/") +
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link text-white <?= $page == "import-stock.php" || $page == "import-history.php" ? 'active bg-gradient-primary' : '' ?>" href="import-stock.php">
+        <a class="nav-link text-white <?= $page == "import-manage.php" || $page == "import-stock.php" || $page == "import-receipt-detail.php" ? 'active bg-gradient-primary' : '' ?>" href="import-manage.php">
           <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
             <i class="material-icons opacity-10">inventory</i>
           </div>
-          <span class="nav-link-text ms-1">Nhập hàng</span>
+          <span class="nav-link-text ms-1">Quản lý nhập hàng</span>
         </a>
       </li>
       <li class="nav-item">
@@ -112,6 +112,21 @@ $page = substr($_SERVER['SCRIPT_NAME'], strripos($_SERVER['SCRIPT_NAME'], "/") +
 
     </ul>
   </div>
+
+  <script>
+    (function() {
+      const sidebar = document.getElementById('sidenav-collapse-main');
+      if (!sidebar) return;
+      const storageKey = 'adminSidebarScrollTop';
+      const saved = sessionStorage.getItem(storageKey);
+      if (saved !== null) {
+        sidebar.scrollTop = parseInt(saved, 10);
+      }
+      sidebar.addEventListener('scroll', function() {
+        sessionStorage.setItem(storageKey, sidebar.scrollTop.toString());
+      });
+    })();
+  </script>
 
   <!-- Footer: Đăng xuất -->
   <div class="sidenav-footer position-absolute w-100 bottom-0 ">

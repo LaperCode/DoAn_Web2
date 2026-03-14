@@ -56,16 +56,6 @@ include("../admin/includes/header.php");
                                     <label class="mb-0"><b>Mô tả</b></label>
                                     <textarea type="text" required name="description" placeholder="Nhập mô tả" class="form-control mb-2"></textarea>
                                 </div>
-                                <div class="col-md-6">
-                                    <br>
-                                    <label class="mb-0"><b>Giá ban đầu</b></label>
-                                    <input type="text" required name="original_price" placeholder="Nhập giá" class="form-control mb-2">
-                                </div>
-                                <div class="col-md-6">
-                                    <br>
-                                    <label class="mb-0"><b>Giảm giá</b></label>
-                                    <input type="text" name="selling_price" placeholder="Nhập tiền đã giảm" class="form-control mb-2">
-                                </div>
                                 <div class="col-md-12">
                                     <br>
                                     <label class="mb-0"><b>Hình ảnh</b></label>
@@ -101,26 +91,4 @@ include("../admin/includes/header.php");
     });
 </script>
 
-<script>
-    document.getElementById('productForm').addEventListener('submit', function(e) {
-        const originalPrice = parseFloat(document.querySelector('input[name="original_price"]').value);
-        const sellingPrice = parseFloat(document.querySelector('input[name="selling_price"]').value || "0");
-        // Kiểm tra xem giá trị có phải số hay không 
-        if (isNaN(originalPrice) || originalPrice <= 0) {
-            alert("Giá ban đầu phải là một số lớn hơn 0.");
-            e.preventDefault(); // Ngăn không gửi form 
-            return;
-        }
-        if (isNaN(sellingPrice) || sellingPrice < 0) {
-            alert("Giá giảm phải là số không âm.");
-            e.preventDefault();
-            return;
-        }
-        if (sellingPrice > originalPrice) {
-            alert("Giá giảm không được lớn hơn giá ban đầu.");
-            e.preventDefault();
-            return;
-        }
-    });
-</script>
 <?php include("../admin/includes/footer.php"); ?>
