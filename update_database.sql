@@ -19,6 +19,7 @@ USE zbook_db;
 -- Table: import_history (Lịch sử nhập hàng)
 CREATE TABLE IF NOT EXISTS `import_history` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `receipt_id` INT(11) DEFAULT NULL,
   `product_id` INT(11) NOT NULL,
   `quantity_imported` INT(11) NOT NULL,
   `import_price` DECIMAL(10,2) NOT NULL,
@@ -31,10 +32,31 @@ CREATE TABLE IF NOT EXISTS `import_history` (
   `note` TEXT,
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
+    KEY `receipt_id` (`receipt_id`),
   KEY `product_id` (`product_id`),
   KEY `admin_id` (`admin_id`),
   KEY `created_at` (`created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Table: import_receipts (Phiếu nhập hàng)
+CREATE TABLE IF NOT EXISTS `import_receipts` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `code` VARCHAR(20) DEFAULT NULL,
+    `admin_id` INT(11) NOT NULL,
+    `note` TEXT,
+    `total_value` DECIMAL(12,2) DEFAULT 0,
+    `total_quantity` INT(11) DEFAULT 0,
+    `total_items` INT(11) DEFAULT 0,
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    KEY `admin_id` (`admin_id`),
+    KEY `created_at` (`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Add receipt_id column to import_history if not exists
+ALTER TABLE `import_history`
+ADD COLUMN IF NOT EXISTS `receipt_id` INT(11) DEFAULT NULL,
+ADD INDEX IF NOT EXISTS `receipt_id` (`receipt_id`);
 
 -- Add profit_margin column to products table (if not exists)
 ALTER TABLE `products` 

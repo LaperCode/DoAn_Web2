@@ -138,7 +138,7 @@ include("../admin/includes/header.php");
                                         </div>
                                         <div class="col-md-6">
                                             <br>
-                                            <label class="mb-0"><b>Status</b></label>
+                                            <label class="mb-0"><b>Ẩn</b></label>
                                             <input type="checkbox" name="status" <?= $data['status'] == '0' ? '' : 'checked' ?>>
                                         </div>
                                         <div class="col-md-12">

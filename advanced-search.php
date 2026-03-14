@@ -152,9 +152,11 @@ if ($check) {
                             <label>Giá ($)</label>
                             <div class="price-row">
                                 <div>
-                                    <input type="number" name="price1" style="width: 80px;" value="<?= $price1 ?>">
+                                    <input type="hidden" name="price1" id="price1" value="<?= htmlspecialchars($price1) ?>">
+                                    <input type="hidden" name="price2" id="price2" value="<?= htmlspecialchars($price2) ?>">
+                                    <input type="text" id="price1_display" style="width: 80px;" inputmode="numeric" value="">
                                     <span style="width: 20px;">~</span>
-                                    <input type="number" name="price2" style="width: 80px;" value="<?= $price2 ?>">
+                                    <input type="text" id="price2_display" style="width: 80px;" inputmode="numeric" value="">
                                 </div>
                             </div>
                         </div>
@@ -216,8 +218,16 @@ if ($check) {
                         <!-- Pagination -->
                         <div class="box">
                             <?php
-                            $totalProducts = getTotalProducts($type ?? "", $search ?? "");
-                            $totalPages = ceil($totalProducts / 12);
+                            if ($check) {
+                                $countSql = str_replace('SELECT *', 'SELECT COUNT(*) as total', $tmp);
+                                $countRes = mysqli_query($conn, $countSql);
+                                $countRow = mysqli_fetch_assoc($countRes);
+                                $totalProducts = (int)($countRow['total'] ?? 0);
+                            } else {
+                                $totalProducts = getTotalProducts($type ?? "", $search ?? "");
+                            }
+
+                            $totalPages = max(1, ceil($totalProducts / 12));
                             if ($totalPages > 1) {
                                 echo "<ul class='pagination'>";
                                 for ($i = 1; $i <= $totalPages; $i++) {
@@ -247,6 +257,39 @@ if ($check) {
                 alert("<?= addslashes($message); ?>");
             <?php } ?>
         };
+    </script>
+    <script>
+        const pricePairs = [{
+                hidden: document.getElementById('price1'),
+                display: document.getElementById('price1_display')
+            },
+            {
+                hidden: document.getElementById('price2'),
+                display: document.getElementById('price2_display')
+            }
+        ];
+
+        const toRawNumber = (value) => value.replace(/[^0-9]/g, '');
+        const toFormatted = (value) => (value ? Number(value).toLocaleString('vi-VN') : '');
+
+        pricePairs.forEach(pair => {
+            if (!pair.hidden || !pair.display) return;
+
+            pair.display.value = toFormatted(pair.hidden.value);
+
+            pair.display.addEventListener('input', () => {
+                const raw = toRawNumber(pair.display.value);
+                pair.hidden.value = raw;
+            });
+
+            pair.display.addEventListener('focus', () => {
+                pair.display.value = pair.hidden.value;
+            });
+
+            pair.display.addEventListener('blur', () => {
+                pair.display.value = toFormatted(pair.hidden.value);
+            });
+        });
     </script>
 </body>
 

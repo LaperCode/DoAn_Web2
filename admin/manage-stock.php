@@ -7,10 +7,14 @@ $all_products = [];
 while ($row = mysqli_fetch_assoc($all_products_res)) {
     $all_products[] = $row;
 }
-
 // Sản phẩm đang chọn
 $selected_id = isset($_GET['product_id']) ? (int)$_GET['product_id'] : 0;
 $product     = null;
+
+$active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'all';
+if (!in_array($active_tab, ['all', 'check', 'report'], true)) {
+    $active_tab = 'all';
+}
 
 if ($selected_id) {
     $res     = getByID("products", $selected_id);
@@ -25,21 +29,22 @@ $qty_at_date    = null;
 $imported_total = 0;
 $exported_total = 0;
 
-if ($product && $check_date) {
+if ($check_date) {
+    $product_filter = $product ? "AND product_id='$id'" : "";
     $q_in = mysqli_query(
         $conn,
         "SELECT COALESCE(SUM(quantity_imported),0) as total
          FROM import_history
-         WHERE product_id='$id' AND DATE(created_at) <= '$check_date'"
+         WHERE DATE(created_at) <= '$check_date' $product_filter"
     );
     if ($r = mysqli_fetch_assoc($q_in)) $imported_total = (int)$r['total'];
 
     $q_out = mysqli_query(
         $conn,
-        "SELECT COALESCE(SUM(oi.quantity),0) as total
-         FROM order_items oi
-         INNER JOIN orders o ON oi.order_id = o.id
-         WHERE oi.product_id='$id' AND DATE(o.created_at) <= '$check_date'"
+        "SELECT COALESCE(SUM(od.quantity),0) as total
+         FROM order_detail od
+         INNER JOIN orders o ON od.order_id = o.id
+         WHERE DATE(o.created_at) <= '$check_date'" . ($product ? " AND od.product_id='$id'" : "")
     );
     if ($r = mysqli_fetch_assoc($q_out)) $exported_total = (int)$r['total'];
 
@@ -52,25 +57,24 @@ $range_to     = isset($_GET['range_to'])   ? $_GET['range_to']   : '';
 $total_import = 0;
 $total_export = 0;
 
-if ($product && $range_from && $range_to) {
+if ($range_from && $range_to) {
+    $product_filter = $product ? "AND product_id='$id'" : "";
     $q_import = mysqli_query(
         $conn,
         "SELECT COALESCE(SUM(quantity_imported),0) as total
-         FROM import_history
-         WHERE product_id='$id'
-           AND DATE(created_at) >= '$range_from'
-           AND DATE(created_at) <= '$range_to'"
+                 FROM import_history
+                 WHERE DATE(created_at) >= '$range_from'
+                     AND DATE(created_at) <= '$range_to' $product_filter"
     );
     if ($r = mysqli_fetch_assoc($q_import)) $total_import = (int)$r['total'];
 
     $q_export = mysqli_query(
         $conn,
-        "SELECT COALESCE(SUM(oi.quantity),0) as total
-         FROM order_items oi
-         INNER JOIN orders o ON oi.order_id = o.id
-         WHERE oi.product_id='$id'
-           AND DATE(o.created_at) >= '$range_from'
-           AND DATE(o.created_at) <= '$range_to'"
+        "SELECT COALESCE(SUM(od.quantity),0) as total
+                 FROM order_detail od
+                 INNER JOIN orders o ON od.order_id = o.id
+                 WHERE DATE(o.created_at) >= '$range_from'
+                     AND DATE(o.created_at) <= '$range_to'" . ($product ? " AND od.product_id='$id'" : "")
     );
     if ($r = mysqli_fetch_assoc($q_export)) $total_export = (int)$r['total'];
 }
@@ -269,210 +273,226 @@ while ($ls = mysqli_fetch_assoc($low_stock_res)) $low_stock_list[] = $ls;
                             </div>
                         <?php endif; ?>
 
-                        <!-- Chọn sản phẩm -->
-                        <div class="stock-card" style="border: 1.5px solid #DBEAFE;">
-                            <div class="stock-card-title" style="color:#1565C0;">
-                                <i class="material-icons" style="font-size:20px;">search</i>
-                                Chọn sản phẩm để xem tồn kho
-                            </div>
-                            <div class="stock-select-wrap">
-                                <select onchange="window.location='manage-stock.php?product_id='+this.value+(this.value?'':'')">
-                                    <option value="">— Chọn sản phẩm —</option>
-                                    <?php foreach ($all_products as $p): ?>
-                                        <option value="<?= $p['id'] ?>" <?= $selected_id == $p['id'] ? 'selected' : '' ?>>
-                                            <?= htmlspecialchars($p['name']) ?>
-                                            <?php if ($p['qty'] == 0): ?> ❌ Hết hàng
-                                            <?php elseif ($p['qty'] < 10): ?> ⚠️ Còn <?= $p['qty'] ?>
-                                            <?php endif; ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-                        </div>
+                        <!-- Tabs điều hướng -->
+                        <ul class="nav nav-tabs" style="margin-bottom:16px;">
+                            <li class="nav-item">
+                                <a class="nav-link <?= $active_tab === 'all' ? 'active' : '' ?>" href="manage-stock.php?tab=all">Tồn kho hiện tại</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link <?= $active_tab === 'check' ? 'active' : '' ?>" href="manage-stock.php?tab=check">Tra cứu tồn kho tại thời điểm</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link <?= $active_tab === 'report' ? 'active' : '' ?>" href="manage-stock.php?tab=report">Báo cáo nhập – xuất</a>
+                            </li>
+                        </ul>
 
-                        <?php if ($product): ?>
-
-                            <?php
-                            $current_qty  = (int)$product['qty'];
-                            if ($current_qty >= 10) {
-                                $s_color = '#1B5E20';
-                                $s_bg = '#E8F5E9';
-                                $s_border = '#4CAF50';
-                                $s_icon = '📦';
-                                $s_label = 'Còn hàng';
-                                $s_icon_bg = '#C8E6C9';
-                            } elseif ($current_qty > 0) {
-                                $s_color = '#E65100';
-                                $s_bg = '#FFF3E0';
-                                $s_border = '#FF9800';
-                                $s_icon = '⚠️';
-                                $s_label = 'Sắp hết hàng';
-                                $s_icon_bg = '#FFE0B2';
-                            } else {
-                                $s_color = '#B71C1C';
-                                $s_bg = '#FFEBEE';
-                                $s_border = '#EF5350';
-                                $s_icon = '🚫';
-                                $s_label = 'Hết hàng';
-                                $s_icon_bg = '#FFCDD2';
-                            }
-                            ?>
-
-                            <!-- Tồn kho hiện tại -->
-                            <div class="stat-box" style="background:<?= $s_bg ?>;border:2px solid <?= $s_border ?>;margin-bottom:24px;">
-                                <div class="stat-icon" style="background:<?= $s_icon_bg ?>;font-size:28px;"><?= $s_icon ?></div>
-                                <div style="flex:1;">
-                                    <div class="stat-label" style="color:<?= $s_color ?>;">Tồn kho hiện tại</div>
-                                    <div style="font-size:13px;color:#555;margin-bottom:2px;font-weight:500;"><?= htmlspecialchars($product['name']) ?></div>
-                                    <div style="display:flex;align-items:baseline;gap:10px;">
-                                        <span class="stat-value" style="color:<?= $s_color ?>;"><?= $current_qty ?></span>
-                                        <span style="font-size:15px;color:<?= $s_color ?>;font-weight:600;">sản phẩm</span>
-                                        <span style="background:<?= $s_border ?>;color:#fff;padding:3px 12px;border-radius:20px;font-size:13px;font-weight:700;"><?= $s_label ?></span>
+                        <div class="tab-content">
+                            <!-- Tab: Tồn kho hiện tại -->
+                            <div class="tab-pane fade <?= $active_tab === 'all' ? 'show active' : '' ?>" id="tab-all">
+                                <div class="stock-card" style="border: 1.5px solid #DBEAFE;">
+                                    <div class="stock-card-title" style="color:#1565C0;">
+                                        <i class="material-icons" style="font-size:20px;">inventory_2</i>
+                                        Danh sách tồn kho tất cả sản phẩm
                                     </div>
-                                    <?php if ($current_qty < 10 && $current_qty > 0): ?>
-                                        <div style="font-size:12px;color:#8D6E63;margin-top:6px;">💡 Cần nhập thêm hàng để đảm bảo tồn kho!</div>
+                                    <div class="table-responsive" style="border:1.5px solid #DBEAFE;border-radius:10px;overflow:hidden;padding-bottom:0;">
+                                        <style>
+                                            .stock-table,
+                                            .stock-table th,
+                                            .stock-table td {
+                                                border: 1px solid #DBEAFE !important;
+                                            }
+
+                                            .stock-table {
+                                                table-layout: fixed;
+                                                width: 100%;
+                                                margin-bottom: 0;
+                                            }
+
+                                            .stock-table td:nth-child(2) {
+                                                word-break: break-word;
+                                                white-space: normal;
+                                            }
+
+                                            .stock-table tbody tr:last-child td {
+                                                border-bottom: 1px solid #DBEAFE !important;
+                                            }
+                                        </style>
+                                        <table class="table table-bordered table-hover stock-table">
+                                            <thead style="background:#E3F2FD;color:#0D47A1;">
+                                                <tr>
+                                                    <th style="width:60px;">STT</th>
+                                                    <th>Sản phẩm</th>
+                                                    <th style="width:120px;">Tồn kho</th>
+                                                    <th style="width:160px;">Trạng thái</th>
+                                                    <th style="width:140px;">Thao tác</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <?php
+                                                $idx = 1;
+                                                foreach ($all_products as $p):
+                                                    $qty = (int)$p['qty'];
+                                                    if ($qty >= 10) {
+                                                        $badge_bg = '#4CAF50';
+                                                        $label = 'Còn hàng';
+                                                    } elseif ($qty > 0) {
+                                                        $badge_bg = '#FF9800';
+                                                        $label = 'Sắp hết';
+                                                    } else {
+                                                        $badge_bg = '#EF5350';
+                                                        $label = 'Hết hàng';
+                                                    }
+                                                ?>
+                                                    <tr>
+                                                        <td class="text-center"><?= $idx++ ?></td>
+                                                        <td><?= htmlspecialchars($p['name']) ?></td>
+                                                        <td class="text-center" style="font-weight:700;">
+                                                            <?= $qty ?>
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <span style="background:<?= $badge_bg ?>;color:#fff;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;">
+                                                                <?= $label ?>
+                                                            </span>
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <a href="import-stock.php?product_id=<?= $p['id'] ?>" class="btn btn-sm btn-primary">
+                                                                <i class="fa fa-plus"></i> Nhập hàng
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                <?php endforeach; ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Tab: Tra cứu tồn kho tại thời điểm -->
+                            <div class="tab-pane fade <?= $active_tab === 'check' ? 'show active' : '' ?>" id="tab-check">
+                                <div class="tool-box">
+                                    <div class="tool-title">
+                                        <i class="material-icons" style="font-size:18px;">event</i>
+                                        Tra cứu tồn kho tại thời điểm
+                                    </div>
+                                    <form method="GET" action="manage-stock.php">
+                                        <input type="hidden" name="tab" value="check">
+                                        <?php if ($range_from): ?><input type="hidden" name="range_from" value="<?= $range_from ?>"><?php endif; ?>
+                                        <?php if ($range_to): ?><input type="hidden" name="range_to" value="<?= $range_to ?>"><?php endif; ?>
+                                        <label style="font-size:12px;font-weight:600;color:#555;margin-bottom:6px;display:block;">Chọn ngày muốn tra cứu</label>
+                                        <div style="display:flex;gap:8px;">
+                                            <input type="date" name="check_date" class="form-control"
+                                                value="<?= $check_date ?>" max="<?= date('Y-m-d') ?>"
+                                                style="border-color:#BFDBFE;font-size:14px;border-radius:8px;">
+                                            <button type="submit" class="btn" style="font-weight:700;white-space:nowrap;padding:0 18px;border-radius:8px;background:linear-gradient(135deg,#FFA726,#F57C00);border:none;color:#fff;">
+                                                TRA CỨU
+                                            </button>
+                                        </div>
+                                    </form>
+
+                                    <?php if ($check_date && $qty_at_date !== null): ?>
+                                        <?php
+                                        $qd = max(0, $qty_at_date);
+                                        if ($qd >= 10) {
+                                            $qd_c = '#1B5E20';
+                                            $qd_bg = '#E8F5E9';
+                                            $qd_bd = '#4CAF50';
+                                            $qd_lbl = 'Còn hàng';
+                                        } elseif ($qd > 0) {
+                                            $qd_c = '#E65100';
+                                            $qd_bg = '#FFF3E0';
+                                            $qd_bd = '#FF9800';
+                                            $qd_lbl = 'Sắp hết';
+                                        } else {
+                                            $qd_c = '#B71C1C';
+                                            $qd_bg = '#FFEBEE';
+                                            $qd_bd = '#EF5350';
+                                            $qd_lbl = 'Hết hàng';
+                                        }
+                                        ?>
+                                        <div class="result-box" style="background:<?= $qd_bg ?>;border:1.5px solid <?= $qd_bd ?>;">
+                                            <div>
+                                                <div class="result-label" style="color:<?= $qd_c ?>;">Tồn kho ngày <?= $check_date ?></div>
+                                                <div class="result-num" style="color:<?= $qd_c ?>;"><?= $qd ?> <span style="font-size:16px;font-weight:600;">sản phẩm</span></div>
+                                                <div class="result-detail">Tổng nhập: <strong><?= $imported_total ?></strong> &nbsp;|&nbsp; Tổng bán: <strong><?= $exported_total ?></strong></div>
+                                            </div>
+                                            <span style="background:<?= $qd_bd ?>;color:#fff;padding:4px 14px;border-radius:20px;font-size:13px;font-weight:700;margin-left:auto;white-space:nowrap;"><?= $qd_lbl ?></span>
+                                        </div>
+                                    <?php elseif ($check_date): ?>
+                                        <div style="margin-top:12px;padding:10px 14px;background:#F5F5F5;border-radius:8px;font-size:13px;color:#888;">
+                                            Không có dữ liệu cho ngày này.
+                                        </div>
                                     <?php endif; ?>
                                 </div>
-                                <a href="import-stock.php" style="background:#1976D2;color:#fff;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:700;text-decoration:none;white-space:nowrap;">
-                                    <i class="fa fa-plus"></i> Nhập hàng
-                                </a>
                             </div>
 
-                            <!-- 2 công cụ tra cứu -->
-                            <div class="row g-3">
-
-                                <!-- Tra cứu tồn kho tại thời điểm -->
-                                <div class="col-md-6">
-                                    <div class="tool-box">
-                                        <div class="tool-title">
-                                            <i class="material-icons" style="font-size:18px;">event</i>
-                                            Tra cứu tồn kho tại thời điểm
-                                        </div>
-                                        <form method="GET" action="manage-stock.php">
-                                            <input type="hidden" name="product_id" value="<?= $id ?>">
-                                            <?php if ($range_from): ?><input type="hidden" name="range_from" value="<?= $range_from ?>"><?php endif; ?>
-                                            <?php if ($range_to): ?><input type="hidden" name="range_to" value="<?= $range_to ?>"><?php endif; ?>
-                                            <label style="font-size:12px;font-weight:600;color:#555;margin-bottom:6px;display:block;">Chọn ngày muốn tra cứu</label>
-                                            <div style="display:flex;gap:8px;">
-                                                <input type="date" name="check_date" class="form-control"
-                                                    value="<?= $check_date ?>" max="<?= date('Y-m-d') ?>"
-                                                    style="border-color:#BFDBFE;font-size:14px;border-radius:8px;">
-                                                <button type="submit" class="btn" style="font-weight:700;white-space:nowrap;padding:0 18px;border-radius:8px;background:linear-gradient(135deg,#FFA726,#F57C00);border:none;color:#fff;">
-                                                    TRA CỨU
-                                                </button>
-                                            </div>
-                                        </form>
-
-                                        <?php if ($check_date && $qty_at_date !== null): ?>
-                                            <?php
-                                            $qd = max(0, $qty_at_date);
-                                            if ($qd >= 10) {
-                                                $qd_c = '#1B5E20';
-                                                $qd_bg = '#E8F5E9';
-                                                $qd_bd = '#4CAF50';
-                                                $qd_lbl = 'Còn hàng';
-                                            } elseif ($qd > 0) {
-                                                $qd_c = '#E65100';
-                                                $qd_bg = '#FFF3E0';
-                                                $qd_bd = '#FF9800';
-                                                $qd_lbl = 'Sắp hết';
-                                            } else {
-                                                $qd_c = '#B71C1C';
-                                                $qd_bg = '#FFEBEE';
-                                                $qd_bd = '#EF5350';
-                                                $qd_lbl = 'Hết hàng';
-                                            }
-                                            ?>
-                                            <div class="result-box" style="background:<?= $qd_bg ?>;border:1.5px solid <?= $qd_bd ?>;">
-                                                <div>
-                                                    <div class="result-label" style="color:<?= $qd_c ?>;">Tồn kho ngày <?= $check_date ?></div>
-                                                    <div class="result-num" style="color:<?= $qd_c ?>;"><?= $qd ?> <span style="font-size:16px;font-weight:600;">sản phẩm</span></div>
-                                                    <div class="result-detail">Tổng nhập: <strong><?= $imported_total ?></strong> &nbsp;|&nbsp; Tổng bán: <strong><?= $exported_total ?></strong></div>
-                                                </div>
-                                                <span style="background:<?= $qd_bd ?>;color:#fff;padding:4px 14px;border-radius:20px;font-size:13px;font-weight:700;margin-left:auto;white-space:nowrap;"><?= $qd_lbl ?></span>
-                                            </div>
-                                        <?php elseif ($check_date): ?>
-                                            <div style="margin-top:12px;padding:10px 14px;background:#F5F5F5;border-radius:8px;font-size:13px;color:#888;">
-                                                Không có dữ liệu cho ngày này.
-                                            </div>
-                                        <?php endif; ?>
+                            <!-- Tab: Báo cáo nhập - xuất theo khoảng thời gian -->
+                            <div class="tab-pane fade <?= $active_tab === 'report' ? 'show active' : '' ?>" id="tab-report">
+                                <div class="tool-box">
+                                    <div class="tool-title">
+                                        <i class="material-icons" style="font-size:18px;">bar_chart</i>
+                                        Báo cáo nhập – xuất theo khoảng thời gian
                                     </div>
-                                </div>
-
-                                <!-- Báo cáo nhập - xuất theo khoảng thời gian -->
-                                <div class="col-md-6">
-                                    <div class="tool-box">
-                                        <div class="tool-title">
-                                            <i class="material-icons" style="font-size:18px;">bar_chart</i>
-                                            Báo cáo nhập – xuất theo khoảng thời gian
-                                        </div>
-                                        <form method="GET" action="manage-stock.php">
-                                            <input type="hidden" name="product_id" value="<?= $id ?>">
-                                            <?php if ($check_date): ?><input type="hidden" name="check_date" value="<?= $check_date ?>"><?php endif; ?>
-                                            <div class="row g-2 mb-3">
-                                                <div class="col-6">
-                                                    <label style="font-size:12px;font-weight:600;color:#555;margin-bottom:6px;display:block;">
-                                                        <i class="material-icons" style="font-size:14px;vertical-align:middle;">arrow_forward</i> Từ ngày
-                                                    </label>
-                                                    <input type="date" name="range_from" class="form-control"
-                                                        value="<?= $range_from ?>" style="border-color:#BFDBFE;font-size:14px;">
-                                                </div>
-                                                <div class="col-6">
-                                                    <label style="font-size:12px;font-weight:600;color:#555;margin-bottom:6px;display:block;">
-                                                        <i class="material-icons" style="font-size:14px;vertical-align:middle;">arrow_back</i> Đến ngày
-                                                    </label>
-                                                    <input type="date" name="range_to" class="form-control"
-                                                        value="<?= $range_to ?>" max="<?= date('Y-m-d') ?>"
-                                                        style="border-color:#BFDBFE;font-size:14px;">
-                                                </div>
+                                    <form method="GET" action="manage-stock.php">
+                                        <input type="hidden" name="tab" value="report">
+                                        <?php if ($check_date): ?><input type="hidden" name="check_date" value="<?= $check_date ?>"><?php endif; ?>
+                                        <div class="row g-2 mb-3">
+                                            <div class="col-6">
+                                                <label style="font-size:12px;font-weight:600;color:#555;margin-bottom:6px;display:block;">
+                                                    <i class="material-icons" style="font-size:14px;vertical-align:middle;">arrow_forward</i> Từ ngày
+                                                </label>
+                                                <input type="date" name="range_from" class="form-control"
+                                                    value="<?= $range_from ?>" style="border-color:#BFDBFE;font-size:14px;">
                                             </div>
-                                            <button type="submit" class="btn w-100" style="font-weight:700;background:linear-gradient(135deg,#FFA726,#F57C00);border:none;color:#fff;border-radius:8px;padding:10px;">
-                                                <i class="material-icons" style="font-size:16px;vertical-align:middle;">search</i> XEM BÁO CÁO
-                                            </button>
-                                        </form>
+                                            <div class="col-6">
+                                                <label style="font-size:12px;font-weight:600;color:#555;margin-bottom:6px;display:block;">
+                                                    <i class="material-icons" style="font-size:14px;vertical-align:middle;">arrow_back</i> Đến ngày
+                                                </label>
+                                                <input type="date" name="range_to" class="form-control"
+                                                    value="<?= $range_to ?>" max="<?= date('Y-m-d') ?>"
+                                                    style="border-color:#BFDBFE;font-size:14px;">
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn w-100" style="font-weight:700;background:linear-gradient(135deg,#FFA726,#F57C00);border:none;color:#fff;border-radius:8px;padding:10px;">
+                                            <i class="material-icons" style="font-size:16px;vertical-align:middle;">search</i> XEM BÁO CÁO
+                                        </button>
+                                    </form>
 
-                                        <?php if ($range_from && $range_to): ?>
-                                            <div style="margin-top:16px;">
-                                                <div class="row g-2">
-                                                    <div class="col-6">
-                                                        <div style="background:#EFF6FF;border:1.5px solid #BFDBFE;border-radius:10px;padding:14px;text-align:center;">
-                                                            <div style="font-size:11px;color:#1565C0;font-weight:700;text-transform:uppercase;margin-bottom:4px;">📥 Tổng nhập</div>
-                                                            <div style="font-size:30px;font-weight:800;color:#1565C0;"><?= $total_import ?></div>
-                                                            <div style="font-size:11px;color:#64748B;">sản phẩm</div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <div style="background:#FFF0F0;border:1.5px solid #FECACA;border-radius:10px;padding:14px;text-align:center;">
-                                                            <div style="font-size:11px;color:#B91C1C;font-weight:700;text-transform:uppercase;margin-bottom:4px;">📤 Tổng xuất</div>
-                                                            <div style="font-size:30px;font-weight:800;color:#B91C1C;"><?= $total_export ?></div>
-                                                            <div style="font-size:11px;color:#64748B;">sản phẩm</div>
-                                                        </div>
+                                    <?php if ($range_from && $range_to): ?>
+                                        <div style="margin-top:16px;">
+                                            <div class="row g-2">
+                                                <div class="col-6">
+                                                    <div style="background:#EFF6FF;border:1.5px solid #BFDBFE;border-radius:10px;padding:14px;text-align:center;">
+                                                        <div style="font-size:11px;color:#1565C0;font-weight:700;text-transform:uppercase;margin-bottom:4px;">📥 Tổng nhập</div>
+                                                        <div style="font-size:30px;font-weight:800;color:#1565C0;"><?= $total_import ?></div>
+                                                        <div style="font-size:11px;color:#64748B;">sản phẩm</div>
                                                     </div>
                                                 </div>
-                                                <?php $diff = $total_import - $total_export; ?>
-                                                <div style="margin-top:10px;background:<?= $diff >= 0 ? '#F0FDF4' : '#FFF0F0' ?>;border:1.5px solid <?= $diff >= 0 ? '#BBF7D0' : '#FECACA' ?>;border-radius:10px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;">
-                                                    <span style="font-size:13px;color:#475569;font-weight:600;">
-                                                        Chênh lệch &nbsp;<span style="color:#94A3B8;font-weight:400;">(<?= $range_from ?> → <?= $range_to ?>)</span>
-                                                    </span>
-                                                    <span style="font-size:20px;font-weight:800;color:<?= $diff >= 0 ? '#15803D' : '#B91C1C' ?>;">
-                                                        <?= ($diff >= 0 ? '+' : '') . $diff ?>
-                                                    </span>
+                                                <div class="col-6">
+                                                    <div style="background:#FFF0F0;border:1.5px solid #FECACA;border-radius:10px;padding:14px;text-align:center;">
+                                                        <div style="font-size:11px;color:#B91C1C;font-weight:700;text-transform:uppercase;margin-bottom:4px;">📤 Tổng xuất</div>
+                                                        <div style="font-size:30px;font-weight:800;color:#B91C1C;"><?= $total_export ?></div>
+                                                        <div style="font-size:11px;color:#64748B;">sản phẩm</div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        <?php endif; ?>
-                                    </div>
-                                </div>
-                            </div><!-- row -->
-
-                        <?php else: ?>
-                            <div style="background:#EFF6FF;border:1.5px solid #BFDBFE;border-radius:12px;padding:20px 24px;display:flex;align-items:center;gap:14px;">
-                                <i class="material-icons" style="font-size:32px;color:#1976D2;">info</i>
-                                <div>
-                                    <div style="font-size:15px;font-weight:700;color:#1E40AF;">Chưa chọn sản phẩm</div>
-                                    <div style="font-size:13px;color:#3B82F6;margin-top:2px;">Vui lòng chọn sản phẩm ở trên để xem thông tin tồn kho.</div>
+                                            <?php $diff = $total_import - $total_export; ?>
+                                            <div style="margin-top:10px;background:<?= $diff >= 0 ? '#F0FDF4' : '#FFF0F0' ?>;border:1.5px solid <?= $diff >= 0 ? '#BBF7D0' : '#FECACA' ?>;border-radius:10px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;">
+                                                <span style="font-size:13px;color:#475569;font-weight:600;">
+                                                    Chênh lệch &nbsp;<span style="color:#94A3B8;font-weight:400;">(<?= $range_from ?> → <?= $range_to ?>)</span>
+                                                </span>
+                                                <span style="font-size:20px;font-weight:800;color:<?= $diff >= 0 ? '#15803D' : '#B91C1C' ?>;">
+                                                    <?= ($diff >= 0 ? '+' : '') . $diff ?>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    <?php elseif ($range_from || $range_to): ?>
+                                        <div style="margin-top:12px;padding:10px 14px;background:#F5F5F5;border-radius:8px;font-size:13px;color:#888;">
+                                            Vui lòng chọn đủ khoảng thời gian để xem báo cáo.
+                                        </div>
+                                    <?php endif; ?>
                                 </div>
                             </div>
-                        <?php endif; ?>
+                        </div>
 
                     </div><!-- card-body -->
                 </div><!-- card -->

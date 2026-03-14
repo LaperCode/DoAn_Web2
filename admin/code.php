@@ -85,10 +85,11 @@ if (isset($_POST['add_category_btn'])) {    //Thêm danh mục
     $slug = $_POST['slug']  . "-" . rand(10, 99);
     $small_description = $_POST['small_description'];
     $description = $_POST['description'];
-    $original_price = $_POST['original_price'];
-    $selling_price = $_POST['selling_price'] == '' || $_POST['selling_price'] == 0 ? $_POST['original_price'] : $_POST['selling_price'];
+    $original_price = 0;
+    $selling_price = 0;
     $status = isset($_POST['status']) ? '1' : '0';
-    $qty = 100;
+    $qty = 0;
+    $profit_margin = 0;
     $image = $_FILES['image']['name'];
 
     $path = "../images";
@@ -97,8 +98,8 @@ if (isset($_POST['add_category_btn'])) {    //Thêm danh mục
 
     // Validate input fields
     if ($name != "" && $slug != "" && $description != "") {
-        $product_query = "INSERT INTO products (category_id,name,slug,small_description,description,original_price,selling_price,image,qty,status) VALUES 
-        ('$category_id','$name','$slug','$small_description','$description','$original_price','$selling_price','$filename','$qty','$status')";
+        $product_query = "INSERT INTO products (category_id,name,slug,small_description,description,original_price,selling_price,profit_margin,image,qty,status) VALUES 
+    ('$category_id','$name','$slug','$small_description','$description','$original_price','$selling_price','$profit_margin','$filename','$qty','$status')";
 
         $product_query_run = mysqli_query($conn, $product_query);
 
@@ -364,7 +365,7 @@ if (isset($_POST['add_category_btn'])) {    //Thêm danh mục
             $insert_history_run = mysqli_query($conn, $insert_history_query);
 
             if ($insert_history_run) {
-                redirect("import-history.php", "Nhập hàng thành công! Giá bình quân mới: " . number_format($new_average_price, 2) . " $");
+                redirect("import-manage.php", "Nhập hàng thành công! Giá bình quân mới: " . number_format($new_average_price, 2) . " $");
             } else {
                 redirect("import-stock.php", "Lỗi khi lưu lịch sử nhập hàng");
             }
@@ -373,6 +374,108 @@ if (isset($_POST['add_category_btn'])) {    //Thêm danh mục
         }
     } else {
         redirect("import-stock.php", "Không tìm thấy sản phẩm");
+    }
+} else if (isset($_POST['import_receipt'])) {  // NHẬP HÀNG NHIỀU SẢN PHẨM THEO PHIẾU
+    $product_ids = isset($_POST['product_id']) ? $_POST['product_id'] : [];
+    $quantities = isset($_POST['quantity_imported']) ? $_POST['quantity_imported'] : [];
+    $import_prices = isset($_POST['import_price']) ? $_POST['import_price'] : [];
+    $profit_margins = isset($_POST['profit_margin']) ? $_POST['profit_margin'] : [];
+    $note = isset($_POST['note']) ? mysqli_real_escape_string($conn, trim($_POST['note'])) : '';
+    $admin_id = $_SESSION['auth_user']['id'];
+
+    $items = [];
+    foreach ($product_ids as $index => $product_id) {
+        $product_id = (int)$product_id;
+        $quantity = isset($quantities[$index]) ? (int)$quantities[$index] : 0;
+        $import_price = isset($import_prices[$index]) ? (float)$import_prices[$index] : 0;
+        $profit_margin = isset($profit_margins[$index]) ? (float)$profit_margins[$index] : 0;
+
+        if ($product_id > 0 && $quantity > 0 && $import_price >= 0) {
+            $items[] = [
+                'product_id' => $product_id,
+                'quantity' => $quantity,
+                'import_price' => $import_price,
+                'profit_margin' => $profit_margin
+            ];
+        }
+    }
+
+    if (count($items) === 0) {
+        redirect("import-stock.php", "Vui lòng chọn ít nhất 1 sản phẩm để nhập");
+    }
+
+    mysqli_begin_transaction($conn);
+
+    try {
+        $total_value = 0;
+        $total_quantity = 0;
+        $total_items = count($items);
+
+        foreach ($items as $item) {
+            $total_value += $item['quantity'] * $item['import_price'];
+            $total_quantity += $item['quantity'];
+        }
+
+        $insert_receipt_query = "INSERT INTO import_receipts (code, admin_id, note, total_value, total_quantity, total_items) 
+            VALUES ('', '$admin_id', '$note', '$total_value', '$total_quantity', '$total_items')";
+
+        if (!mysqli_query($conn, $insert_receipt_query)) {
+            throw new Exception('Không thể tạo phiếu nhập');
+        }
+
+        $receipt_id = mysqli_insert_id($conn);
+        $receipt_code = 'PN' . str_pad($receipt_id, 3, '0', STR_PAD_LEFT);
+        mysqli_query($conn, "UPDATE import_receipts SET code = '$receipt_code' WHERE id = '$receipt_id'");
+
+        foreach ($items as $item) {
+            $product_id = $item['product_id'];
+            $quantity_imported = $item['quantity'];
+            $import_price = $item['import_price'];
+            $profit_margin = $item['profit_margin'];
+
+            $product_query = "SELECT qty, original_price FROM products WHERE id = '$product_id'";
+            $product_result = mysqli_query($conn, $product_query);
+
+            if (!$product_result || mysqli_num_rows($product_result) === 0) {
+                throw new Exception('Không tìm thấy sản phẩm');
+            }
+
+            $product = mysqli_fetch_array($product_result);
+            $old_quantity = $product['qty'];
+            $old_original_price = $product['original_price'];
+
+            $new_total_quantity = $old_quantity + $quantity_imported;
+            $new_average_price = ($old_quantity * $old_original_price + $quantity_imported * $import_price) / $new_total_quantity;
+            $new_selling_price = $new_average_price * (1 + $profit_margin / 100);
+
+            $update_product_query = "UPDATE products SET 
+                qty = '$new_total_quantity',
+                original_price = '$new_average_price',
+                selling_price = '$new_selling_price',
+                profit_margin = '$profit_margin'
+                WHERE id = '$product_id'";
+
+            if (!mysqli_query($conn, $update_product_query)) {
+                throw new Exception('Lỗi khi cập nhật sản phẩm');
+            }
+
+            $insert_history_query = "INSERT INTO import_history 
+                (receipt_id, product_id, quantity_imported, import_price, old_quantity, old_original_price, 
+                 new_average_price, new_selling_price, profit_margin, admin_id, note) 
+                VALUES 
+                ('$receipt_id', '$product_id', '$quantity_imported', '$import_price', '$old_quantity', '$old_original_price',
+                 '$new_average_price', '$new_selling_price', '$profit_margin', '$admin_id', '$note')";
+
+            if (!mysqli_query($conn, $insert_history_query)) {
+                throw new Exception('Lỗi khi lưu lịch sử nhập hàng');
+            }
+        }
+
+        mysqli_commit($conn);
+        redirect("import-manage.php", "Tạo phiếu nhập thành công (#$receipt_code)");
+    } catch (Exception $e) {
+        mysqli_rollback($conn);
+        redirect("import-stock.php", "Có lỗi xảy ra: " . $e->getMessage());
     }
 } {
     header('Location: ./index.php');
