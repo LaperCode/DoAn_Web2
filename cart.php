@@ -285,12 +285,31 @@ include("./includes/header.php");
         color: white;
         font-weight: 600;
         transition: all 0.3s ease;
+        white-space: nowrap;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+    }
+
+    .btn-buy.btn-update {
+        font-size: 15px;
+        padding: 8px 14px;
+        min-width: 90px;
     }
 
     .btn-buy:hover {
         background-color: #E67E22;
         transform: translateY(-2px);
         box-shadow: 0 4px 12px rgba(243, 156, 18, 0.3);
+    }
+
+    .price-cell {
+        white-space: nowrap;
+        text-align: center;
+        font-weight: 600;
+        color: #2C3E50;
+        min-width: 90px;
     }
 </style>
 
@@ -344,23 +363,17 @@ include("./includes/header.php");
                                                 <button type="button" class="qty-btn qty-plus">+</button>
                                             </div>
                                         </td>
-                                        <td>
-                                            $
-                                            <span>
-                                                <?= fmt_price($product['selling_price']) ?>
-                                            </span>
+                                        <td class="price-cell">
+                                            $<?= fmt_price($product['selling_price']) ?>
                                         </td>
-                                        <td>
-                                            $
-                                            <span class="total-price">
-                                                <?= fmt_price($product['selling_price'] * $product['quantity']) ?>
-                                            </span>
+                                        <td class="price-cell">
+                                            $<span class="total-price"><?= fmt_price($product['selling_price'] * $product['quantity']) ?></span>
                                         </td>
                                         <td>
                                             <a class="btn-buy" style="font-size: 15px; background-color: #fc8d8b" href="./functions/ordercode.php?deleteID=<?= $product['id'] ?>">Xóa</a>
                                         </td>
                                         <td>
-                                            <button class="btn-buy">Cập nhật</button>
+                                            <button class="btn-buy btn-update">Cập nhật</button>
                                         </td>
                                     </form>
                                 </tr>
