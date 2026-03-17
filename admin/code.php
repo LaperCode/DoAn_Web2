@@ -309,6 +309,19 @@ if (isset($_POST['add_category_btn'])) {    //Thêm danh mục
 } else if (isset($_GET['order'])) { //Cập nhật trạng thái đơn hàng
     $order_id   = $_GET['id'];
     $type       = $_GET['order'];
+    $current_status = null;
+    $status_result = mysqli_query($conn, "SELECT `status` FROM `orders` WHERE `id` = '$order_id'");
+    if ($status_result && mysqli_num_rows($status_result) > 0) {
+        $current_status = mysqli_fetch_assoc($status_result)['status'];
+    }
+
+    if ($type == 5 && $current_status !== '5') {
+        $restore_query = "UPDATE `products` p
+                          JOIN `order_detail` od ON p.id = od.product_id
+                          SET p.qty = p.qty + od.quantity
+                          WHERE od.order_id = '$order_id'";
+        mysqli_query($conn, $restore_query);
+    }
     $query =    "UPDATE `orders` SET `status` = '$type'
                 WHERE `id` = '$order_id'";
     mysqli_query($conn, $query);

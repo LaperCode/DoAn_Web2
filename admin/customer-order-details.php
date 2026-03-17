@@ -15,7 +15,7 @@ $total = 0;
                     <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                         <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
                             <h6 class="text-white text-capitalize ps-3">Chi tiết đơn hàng: COSS<?= $type ?>
-                                <a href="javascript:history.back()" class="btn btn-danger btn-sm float-end me-3">
+                                <a href="./order.php" class="btn btn-danger btn-sm float-end me-3">
                                     <i class="fa fa-arrow-left"></i> Quay lại
                                 </a>
                             </h6>
@@ -30,12 +30,16 @@ $total = 0;
                                     Email: <?= $order['email'] ?><br>
                                     Address: <?= $order['address'] ?> <br>
                                     Status: <?php
-                                            if ($order['status'] == 2) {
+                                            if ($order['status'] == 1) {
+                                                echo '<span class="badge badge-sm bg-gradient-warning">Pending</span>';
+                                            } else if ($order['status'] == 2) {
                                                 echo '<span class="badge badge-sm bg-gradient-primary">Booked</span>';
                                             } else if ($order['status'] == 3) {
                                                 echo '<span class="badge badge-sm bg-gradient-info">Delivering</span>';
                                             } else if ($order['status'] == 4) {
                                                 echo '<span class="badge badge-sm bg-gradient-success">Success</span>';
+                                            } else if ($order['status'] == 5) {
+                                                echo '<span class="badge badge-sm bg-gradient-danger">Cancelled</span>';
                                             }
                                             ?>
                                     update to:
