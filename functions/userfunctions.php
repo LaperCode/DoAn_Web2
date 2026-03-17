@@ -256,7 +256,7 @@ function getOrderByUserId($sort = 'newest', $payment_filter = '', $status_filter
                     o.status,
                     o.id,
                     o.created_at,
-                    o.addtional
+                    o.additional
                 FROM
                     orders o
                 JOIN

@@ -389,7 +389,7 @@ header('Content-Type: text/html; charset=utf-8');
                     }
                     ?>
                 </p>
-                <p><strong>Ghi chú:</strong> <?= htmlspecialchars($order['addtional']) ?: 'Không có' ?></p>
+                <p><strong>Ghi chú:</strong> <?= htmlspecialchars($order['additional'] ?? '') ?: 'Không có' ?></p>
             </div>
         </div>
 

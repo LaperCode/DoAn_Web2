@@ -441,7 +441,8 @@ while ($ls = mysqli_fetch_assoc($low_stock_res)) $low_stock_list[] = $ls;
                                                     <i class="material-icons" style="font-size:14px;vertical-align:middle;">arrow_forward</i> Từ ngày
                                                 </label>
                                                 <input type="date" name="range_from" class="form-control"
-                                                    value="<?= $range_from ?>" style="border-color:#BFDBFE;font-size:14px;">
+                                                    value="<?= $range_from ?>" max="<?= date('Y-m-d') ?>"
+                                                    style="border-color:#BFDBFE;font-size:14px;">
                                             </div>
                                             <div class="col-6">
                                                 <label style="font-size:12px;font-weight:600;color:#555;margin-bottom:6px;display:block;">

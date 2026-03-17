@@ -6,8 +6,10 @@ $startDate = isset($_GET['start_date']) ? $_GET['start_date'] : "";
 $endDate = isset($_GET['end_date']) ? $_GET['end_date'] : "";
 $district = isset($_GET['district']) ? $_GET['district'] : "";
 $city = isset($_GET['city']) ? $_GET['city'] : "";
+$ward = isset($_GET['ward']) ? $_GET['ward'] : "";
+$wardSort = isset($_GET['ward_sort']) ? $_GET['ward_sort'] : "";
 
-$orders = getAllOrder($type, $startDate, $endDate, $district, $city);
+$orders = getAllOrder($type, $startDate, $endDate, $district, $city, $ward, $wardSort);
 ?>
 
 <body>
@@ -43,16 +45,28 @@ $orders = getAllOrder($type, $startDate, $endDate, $district, $city);
                                         <input type="text" id="city" name="city" class="form-control" value="<?= $city ?>">
                                     </div>
                                     <div class="col-md-2">
+                                        <label for="ward">Phường:</label>
+                                        <input type="text" id="ward" name="ward" class="form-control" value="<?= $ward ?>">
+                                    </div>
+                                    <div class="col-md-2">
                                         <label for="type">Trạng thái:</label>
                                         <select id="type" name="type" class="form-control">
                                             <option value="-1" <?= ($type == -1) ? 'selected' : '' ?>>Tất cả</option>
-                                            <option value="1" <?= ($type == 1) ? 'selected' : '' ?>>Chờ xác nhận</option>
                                             <option value="2" <?= ($type == 2) ? 'selected' : '' ?>>Đã đặt</option>
                                             <option value="3" <?= ($type == 3) ? 'selected' : '' ?>>Đang giao</option>
                                             <option value="4" <?= ($type == 4) ? 'selected' : '' ?>>Hoàn tất</option>
+                                            <option value="5" <?= ($type == 5) ? 'selected' : '' ?>>Đã huỷ</option>
                                         </select>
                                     </div>
-                                    <div class="col-md-2 text-right mt-4">
+                                    <div class="col-md-2">
+                                        <label for="ward_sort">Sắp xếp theo phường:</label>
+                                        <select id="ward_sort" name="ward_sort" class="form-control">
+                                            <option value="" <?= ($wardSort == '') ? 'selected' : '' ?>>Mặc định</option>
+                                            <option value="asc" <?= ($wardSort == 'asc') ? 'selected' : '' ?>>A → Z</option>
+                                            <option value="desc" <?= ($wardSort == 'desc') ? 'selected' : '' ?>>Z → A</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-12 text-right mt-4">
                                         <button type="submit" class="btn btn-primary">Lọc</button>
                                     </div>
                                 </div>
@@ -67,6 +81,7 @@ $orders = getAllOrder($type, $startDate, $endDate, $district, $city);
                                         <th>Địa chỉ</th>
                                         <th class="text-center">Trạng thái</th>
                                         <th class="text-center">Thời gian đặt</th>
+                                        <th class="text-center">Thao tác</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -96,9 +111,19 @@ $orders = getAllOrder($type, $startDate, $endDate, $district, $city);
                                                 elseif ($order['status'] == 2) echo '<span class="badge bg-primary">Đã đặt</span>';
                                                 elseif ($order['status'] == 3) echo '<span class="badge bg-info">Đang giao</span>';
                                                 elseif ($order['status'] == 4) echo '<span class="badge bg-success">Hoàn tất</span>';
+                                                elseif ($order['status'] == 5) echo '<span class="badge bg-danger">Đã huỷ</span>';
                                                 ?>
                                             </td>
                                             <td class="text-center"><?= date('d-m-Y', strtotime($order['created_at'])); ?></td>
+                                            <td class="text-center">
+                                                <?php if ($order['status'] != 4 && $order['status'] != 5) { ?>
+                                                    <a href="./code.php?order=5&id=<?= $order['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Huỷ đơn hàng này?');">
+                                                        <i class="fas fa-times"></i> Huỷ
+                                                    </a>
+                                                <?php } else { ?>
+                                                    <span class="text-secondary">-</span>
+                                                <?php } ?>
+                                            </td>
                                         </tr>
                                     <?php } ?>
                                 </tbody>

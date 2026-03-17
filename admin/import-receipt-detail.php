@@ -53,7 +53,7 @@ $receipt_code = $receipt['code'] ? $receipt['code'] : ('PN' . str_pad($receipt['
                         </div>
 
                         <?php if (!empty($receipt['note'])) { ?>
-                            <div class="alert alert-info">
+                            <div class="alert" style="background: #1976D2; color: #fff; border-left: 6px solid #0D47A1; font-weight: 600;">
                                 <strong>Ghi chú:</strong> <?= nl2br(htmlspecialchars($receipt['note'])) ?>
                             </div>
                         <?php } ?>

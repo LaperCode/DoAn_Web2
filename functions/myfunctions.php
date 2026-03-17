@@ -43,10 +43,10 @@ function getAllUsers($exclude_id = null)
 }
 
 // order
-function getAllOrder($status = -1, $from_date = null, $to_date = null, $district = null, $city = null)
+function getAllOrder($status = -1, $from_date = null, $to_date = null, $district = null, $city = null, $ward = null, $ward_sort = null)
 {
     global $conn;
-    $query = "SELECT `orders`.*, COUNT(`order_detail`.`id`) AS `quantity`,
+    $query = "SELECT `orders`.*, COALESCE(SUM(`order_detail`.`quantity`), 0) AS `quantity`,
                      `users`.`name`, `users`.`email`, `users`.`phone`, `users`.`address` 
               FROM `orders`
               JOIN `users` ON `orders`.`user_id` = `users`.`id`
@@ -73,7 +73,20 @@ function getAllOrder($status = -1, $from_date = null, $to_date = null, $district
         $query .= " AND `users`.`address` LIKE '%$city%'";
     }
 
-    $query .= " GROUP BY `orders`.`id` ORDER BY `orders`.`id` DESC";
+    // Lọc theo địa điểm giao hàng (phường)
+    if (!empty($ward)) {
+        $query .= " AND `users`.`address` LIKE '%$ward%'";
+    }
+
+    $query .= " GROUP BY `orders`.`id`";
+
+    if ($ward_sort === 'asc') {
+        $query .= " ORDER BY `users`.`address` ASC";
+    } elseif ($ward_sort === 'desc') {
+        $query .= " ORDER BY `users`.`address` DESC";
+    } else {
+        $query .= " ORDER BY `orders`.`id` DESC";
+    }
 
     return mysqli_query($conn, $query);
 }
@@ -138,7 +151,7 @@ function thongkeKH($from_date = null, $to_date = null)
 function donhangKH($from_date = null, $to_date = null, $district = null, $city = null, $userid)
 {
     global $conn;
-    $query = "SELECT `orders`.*, COUNT(`order_detail`.`id`) AS `quantity`,
+    $query = "SELECT `orders`.*, COALESCE(SUM(`order_detail`.`quantity`), 0) AS `quantity`,
                      `users`.`name`, `users`.`email`, `users`.`phone`, `users`.`address` 
               FROM `orders`
               JOIN `users` ON `orders`.`user_id` = `users`.`id`
