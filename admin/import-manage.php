@@ -6,7 +6,7 @@ $to_date = isset($_GET['to_date']) ? mysqli_real_escape_string($conn, $_GET['to_
 
 $where_conditions = [];
 if (!empty($from_date) && !empty($to_date)) {
-    $where_conditions[] = "DATE(ir.created_at) BETWEEN '$from_date' AND '$to_date'";
+    $where_conditions[] = "ir.import_date BETWEEN '$from_date' AND '$to_date'";
 }
 
 $where_sql = '';
@@ -20,12 +20,13 @@ $receipt_query = "SELECT
     ir.total_quantity,
     ir.total_items,
     ir.total_value,
+    ir.import_date,
     ir.created_at,
     u.name AS admin_name
 FROM import_receipts ir
 LEFT JOIN users u ON ir.admin_id = u.id
 $where_sql
-ORDER BY ir.created_at DESC";
+ORDER BY ir.import_date DESC, ir.id DESC";
 
 $receipts = mysqli_query($conn, $receipt_query);
 ?>
@@ -118,7 +119,7 @@ $receipts = mysqli_query($conn, $receipt_query);
                                             <tr class="receipt-row">
                                                 <td class="text-center"><?= $index++ ?></td>
                                                 <td class="text-center" style="color: #c05a56; font-weight: 700;">#<?= htmlspecialchars($receipt_code) ?></td>
-                                                <td class="text-center"><?= date('d-m-Y', strtotime($receipt['created_at'])) ?></td>
+                                                <td class="text-center"><?= $receipt['import_date'] ? date('d-m-Y', strtotime($receipt['import_date'])) : date('d-m-Y', strtotime($receipt['created_at'])) ?></td>
                                                 <td>
                                                     <?= (int)$receipt['total_quantity'] ?> sản phẩm<br>
                                                     <small style="color: #6d5c5b;"><?= (int)$receipt['total_items'] ?> mặt hàng</small>

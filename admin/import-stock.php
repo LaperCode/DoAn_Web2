@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 include("../admin/includes/header.php");
 
 // Lấy danh sách sản phẩm
@@ -133,9 +133,17 @@ if (mysqli_num_rows($products) > 0) {
                                 </div>
                             </div>
 
-                            <!-- Ghi chú -->
+                            <!-- Ngày nhập & Ghi chú -->
                             <div class="row">
-                                <div class="col-md-12">
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label class="form-label"><b>Ngày nhập <span style="color: red;">*</span></b></label>
+                                        <input type="date" name="import_date" class="form-control" required
+                                            value="<?= date('Y-m-d') ?>"
+                                            max="<?= date('Y-m-d') ?>">
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
                                     <div class="mb-3">
                                         <label class="form-label"><b>Ghi chú</b></label>
                                         <textarea name="note" class="form-control" rows="3"
