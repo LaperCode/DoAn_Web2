@@ -375,10 +375,29 @@ while ($ls = mysqli_fetch_assoc($low_stock_res)) $low_stock_list[] = $ls;
                                         Tra cứu tồn kho tại thời điểm
                                     </div>
                                     <form method="GET" action="manage-stock.php">
+                                        <div class="col-md-4">
+                                            <label style="font-size:15px;font-weight:600;color:#555;margin:6px;display:block;">Chọn sản phẩm</label>
+                                            <select name="product_id" class="form-select product-select">
+                                                <option value="">-- Chọn sản phẩm --</option>
+                                                <?php 
+                                                // Kiểm tra xem mảng sản phẩm có dữ liệu không trước khi lặp
+                                                if (!empty($all_products)): 
+                                                    foreach ($all_products as $p): 
+                                                        // Kiểm tra ID để giữ trạng thái đã chọn (Selected)
+                                                        $is_selected = ($selected_id == $p['id']) ? 'selected' : '';?>
+                                                    <option value="<?= $p['id'] ?>" <?= $is_selected ?>>
+                                                        <?= htmlspecialchars($p['name']) ?>
+                                                    </option>
+                                                <?php 
+                                                    endforeach; 
+                                                endif; 
+                                                ?>
+                                            </select>
+                                        </div>
                                         <input type="hidden" name="tab" value="check">
                                         <?php if ($range_from): ?><input type="hidden" name="range_from" value="<?= $range_from ?>"><?php endif; ?>
                                         <?php if ($range_to): ?><input type="hidden" name="range_to" value="<?= $range_to ?>"><?php endif; ?>
-                                        <label style="font-size:12px;font-weight:600;color:#555;margin-bottom:6px;display:block;">Chọn ngày muốn tra cứu</label>
+                                        <label style="font-size:15px;font-weight:600;color:#555;margin:6px;display:block;">Chọn ngày muốn tra cứu</label>
                                         <div style="display:flex;gap:8px;">
                                             <input type="date" name="check_date" class="form-control"
                                                 value="<?= $check_date ?>" max="<?= date('Y-m-d') ?>"
