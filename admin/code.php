@@ -433,8 +433,9 @@ if (isset($_POST['add_category_btn'])) {    //Thêm danh mục
             $total_quantity += $item['quantity'];
         }
 
-        $insert_receipt_query = "INSERT INTO import_receipts (code, admin_id, note, total_value, total_quantity, total_items, import_date) 
-            VALUES ('', '$admin_id', '$note', '$total_value', '$total_quantity', '$total_items', '$import_date')";
+        // Tạo phiếu với status = 0 (Chờ nhập hàng), KHÔNG cập nhật kho ngay
+        $insert_receipt_query = "INSERT INTO import_receipts (code, admin_id, note, total_value, total_quantity, total_items, import_date, status) 
+            VALUES ('', '$admin_id', '$note', '$total_value', '$total_quantity', '$total_items', '$import_date', 0)";
 
         if (!mysqli_query($conn, $insert_receipt_query)) {
             throw new Exception('Không thể tạo phiếu nhập');
@@ -444,6 +445,7 @@ if (isset($_POST['add_category_btn'])) {    //Thêm danh mục
         $receipt_code = 'PN' . str_pad($receipt_id, 3, '0', STR_PAD_LEFT);
         mysqli_query($conn, "UPDATE import_receipts SET code = '$receipt_code' WHERE id = '$receipt_id'");
 
+        // Lưu chi tiết từng mặt hàng vào import_history (chỉ ghi nhận, chưa cập nhật products)
         foreach ($items as $item) {
             $product_id = $item['product_id'];
             $quantity_imported = $item['quantity'];
@@ -461,20 +463,12 @@ if (isset($_POST['add_category_btn'])) {    //Thêm danh mục
             $old_quantity = $product['qty'];
             $old_original_price = $product['original_price'];
 
+            // Tính toán trước (để lưu làm tham chiếu), nhưng CHƯA UPDATE products
             $new_total_quantity = $old_quantity + $quantity_imported;
-            $new_average_price = ($old_quantity * $old_original_price + $quantity_imported * $import_price) / $new_total_quantity;
+            $new_average_price = $new_total_quantity > 0
+                ? ($old_quantity * $old_original_price + $quantity_imported * $import_price) / $new_total_quantity
+                : $import_price;
             $new_selling_price = $new_average_price * (1 + $profit_margin / 100);
-
-            $update_product_query = "UPDATE products SET 
-                qty = '$new_total_quantity',
-                original_price = '$new_average_price',
-                selling_price = '$new_selling_price',
-                profit_margin = '$profit_margin'
-                WHERE id = '$product_id'";
-
-            if (!mysqli_query($conn, $update_product_query)) {
-                throw new Exception('Lỗi khi cập nhật sản phẩm');
-            }
 
             $insert_history_query = "INSERT INTO import_history 
                 (receipt_id, product_id, quantity_imported, import_price, old_quantity, old_original_price, 
@@ -489,10 +483,89 @@ if (isset($_POST['add_category_btn'])) {    //Thêm danh mục
         }
 
         mysqli_commit($conn);
-        redirect("import-manage.php", "Tạo phiếu nhập thành công (#$receipt_code)");
+        redirect("import-manage.php", "Tạo phiếu nhập thành công (#$receipt_code) — Chờ xác nhận nhập kho");
     } catch (Exception $e) {
         mysqli_rollback($conn);
         redirect("import-stock.php", "Có lỗi xảy ra: " . $e->getMessage());
+    }
+
+} else if (isset($_POST['update_receipt_status'])) {  // XÁC NHẬN / HỦY PHIẾU NHẬP
+    $receipt_id = (int)($_POST['receipt_id'] ?? 0);
+    $new_status  = (int)($_POST['new_status']  ?? -1);
+
+    if ($receipt_id <= 0 || !in_array($new_status, [1, 2])) {
+        redirect("import-manage.php", "Yêu cầu không hợp lệ");
+    }
+
+    // Lấy phiếu hiện tại — chỉ cho phép thay đổi khi đang ở status = 0
+    $receipt_res = mysqli_query($conn, "SELECT * FROM import_receipts WHERE id = '$receipt_id'");
+    if (!$receipt_res || mysqli_num_rows($receipt_res) === 0) {
+        redirect("import-manage.php", "Không tìm thấy phiếu nhập");
+    }
+    $receipt = mysqli_fetch_assoc($receipt_res);
+
+    if ((int)$receipt['status'] !== 0) {
+        redirect("import-manage.php", "Phiếu đã được xử lý, không thể thay đổi trạng thái");
+    }
+
+    mysqli_begin_transaction($conn);
+
+    try {
+        if ($new_status === 1) {
+            // XÁC NHẬN: cập nhật kho từ import_history
+            $history_res = mysqli_query($conn,
+                "SELECT * FROM import_history WHERE receipt_id = '$receipt_id'"
+            );
+
+            while ($h = mysqli_fetch_assoc($history_res)) {
+                $product_id        = (int)$h['product_id'];
+                $quantity_imported = (int)$h['quantity_imported'];
+                $import_price      = (float)$h['import_price'];
+                $profit_margin     = (float)$h['profit_margin'];
+
+                // Lấy giá trị tồn kho HIỆN TẠI (thời điểm xác nhận)
+                $prod_res = mysqli_query($conn, "SELECT qty, original_price FROM products WHERE id = '$product_id'");
+                if (!$prod_res || mysqli_num_rows($prod_res) === 0) {
+                    throw new Exception("Không tìm thấy sản phẩm ID=$product_id");
+                }
+                $prod = mysqli_fetch_assoc($prod_res);
+                $cur_qty   = (int)$prod['qty'];
+                $cur_price = (float)$prod['original_price'];
+
+                $new_qty   = $cur_qty + $quantity_imported;
+                $new_avg   = $new_qty > 0
+                    ? ($cur_qty * $cur_price + $quantity_imported * $import_price) / $new_qty
+                    : $import_price;
+                $new_sell  = $new_avg * (1 + $profit_margin / 100);
+
+                $upd = "UPDATE products SET 
+                    qty = '$new_qty',
+                    original_price = '$new_avg',
+                    selling_price = '$new_sell',
+                    profit_margin = '$profit_margin'
+                    WHERE id = '$product_id'";
+                if (!mysqli_query($conn, $upd)) {
+                    throw new Exception("Lỗi cập nhật sản phẩm ID=$product_id");
+                }
+            }
+        }
+        // status = 2 (Hủy): không động đến products
+
+        if (!mysqli_query($conn, "UPDATE import_receipts SET status = '$new_status' WHERE id = '$receipt_id'")) {
+            throw new Exception("Lỗi cập nhật trạng thái phiếu");
+        }
+
+        mysqli_commit($conn);
+        $msg = $new_status === 1
+            ? "Đã xác nhận nhập kho thành công (#" . $receipt['code'] . ")"
+            : "Đã hủy phiếu nhập (#" . $receipt['code'] . ")";
+
+        // Nếu request đến từ trang chi tiết thì redirect về đó, ngược lại về danh sách
+        $ref = isset($_POST['redirect_to']) ? $_POST['redirect_to'] : 'import-manage.php';
+        redirect($ref, $msg);
+    } catch (Exception $e) {
+        mysqli_rollback($conn);
+        redirect("import-manage.php", "Có lỗi xảy ra: " . $e->getMessage());
     }
 } {
     header('Location: ./index.php');
