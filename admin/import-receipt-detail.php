@@ -39,7 +39,8 @@ $receipt_code = $receipt['code'] ? $receipt['code'] : ('PN' . str_pad($receipt['
                             <div class="col-md-6">
                                 <div style="background: #FFF3E0; padding: 15px; border-radius: 8px; border-left: 4px solid #FF9800;">
                                     <p><strong>Mã phiếu:</strong> #<?= htmlspecialchars($receipt_code) ?></p>
-                                    <p><strong>Ngày nhập:</strong> <?= date('d/m/Y H:i', strtotime($receipt['created_at'])) ?></p>
+                                    <p><strong>Ngày nhập:</strong> <?= $receipt['import_date'] ? date('d/m/Y', strtotime($receipt['import_date'])) : date('d/m/Y', strtotime($receipt['created_at'])) ?></p>
+                                    <p><strong>Ngày tạo:</strong> <?= date('d/m/Y H:i', strtotime($receipt['created_at'])) ?></p>
                                     <p><strong>Admin nhập:</strong> <?= htmlspecialchars($receipt['admin_name'] ?? 'N/A') ?></p>
                                 </div>
                             </div>

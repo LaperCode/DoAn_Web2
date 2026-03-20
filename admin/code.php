@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 include("../middleware/adminMiddleware.php");
 include("../config/dbcon.php");
@@ -395,6 +395,10 @@ if (isset($_POST['add_category_btn'])) {    //Thêm danh mục
     $profit_margins = isset($_POST['profit_margin']) ? $_POST['profit_margin'] : [];
     $note = isset($_POST['note']) ? mysqli_real_escape_string($conn, trim($_POST['note'])) : '';
     $admin_id = $_SESSION['auth_user']['id'];
+    // Ngày nhập do người dùng chọn, fallback về ngày hiện tại
+    $import_date = isset($_POST['import_date']) && !empty($_POST['import_date'])
+        ? mysqli_real_escape_string($conn, $_POST['import_date'])
+        : date('Y-m-d');
 
     $items = [];
     foreach ($product_ids as $index => $product_id) {
@@ -429,8 +433,8 @@ if (isset($_POST['add_category_btn'])) {    //Thêm danh mục
             $total_quantity += $item['quantity'];
         }
 
-        $insert_receipt_query = "INSERT INTO import_receipts (code, admin_id, note, total_value, total_quantity, total_items) 
-            VALUES ('', '$admin_id', '$note', '$total_value', '$total_quantity', '$total_items')";
+        $insert_receipt_query = "INSERT INTO import_receipts (code, admin_id, note, total_value, total_quantity, total_items, import_date) 
+            VALUES ('', '$admin_id', '$note', '$total_value', '$total_quantity', '$total_items', '$import_date')";
 
         if (!mysqli_query($conn, $insert_receipt_query)) {
             throw new Exception('Không thể tạo phiếu nhập');
