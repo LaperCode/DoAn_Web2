@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 include("../admin/includes/header.php");
 
 // Lấy danh sách sản phẩm
@@ -30,12 +30,15 @@ $imported_total = 0;
 $exported_total = 0;
 
 if ($check_date) {
-    $product_filter = $product ? "AND product_id='$id'" : "";
+    $product_filter = $product ? "AND ih.product_id='$id'" : "";
     $q_in = mysqli_query(
         $conn,
-        "SELECT COALESCE(SUM(quantity_imported),0) as total
-         FROM import_history
-         WHERE DATE(created_at) <= '$check_date' $product_filter"
+        "SELECT COALESCE(SUM(ih.quantity_imported),0) as total
+         FROM import_history ih
+         INNER JOIN import_receipts ir ON ih.receipt_id = ir.id
+         WHERE DATE(ir.import_date) <= '$check_date'
+           AND ir.status = 1
+           $product_filter"
     );
     if ($r = mysqli_fetch_assoc($q_in)) $imported_total = (int)$r['total'];
 
@@ -58,13 +61,16 @@ $total_import = 0;
 $total_export = 0;
 
 if ($range_from && $range_to) {
-    $product_filter = $product ? "AND product_id='$id'" : "";
+    $product_filter = $product ? "AND ih.product_id='$id'" : "";
     $q_import = mysqli_query(
         $conn,
-        "SELECT COALESCE(SUM(quantity_imported),0) as total
-                 FROM import_history
-                 WHERE DATE(created_at) >= '$range_from'
-                     AND DATE(created_at) <= '$range_to' $product_filter"
+        "SELECT COALESCE(SUM(ih.quantity_imported),0) as total
+                 FROM import_history ih
+                 INNER JOIN import_receipts ir ON ih.receipt_id = ir.id
+                 WHERE ir.import_date >= '$range_from'
+                     AND ir.import_date <= '$range_to'
+                     AND ir.status = 1
+                     $product_filter"
     );
     if ($r = mysqli_fetch_assoc($q_import)) $total_import = (int)$r['total'];
 
@@ -400,7 +406,7 @@ while ($ls = mysqli_fetch_assoc($low_stock_res)) $low_stock_list[] = $ls;
                                         <label style="font-size:15px;font-weight:600;color:#555;margin:6px;display:block;">Chọn ngày muốn tra cứu</label>
                                         <div style="display:flex;gap:8px;">
                                             <input type="date" name="check_date" class="form-control"
-                                                value="<?= $check_date ?>" max="<?= date('Y-m-d') ?>"
+                                                value="<?= $check_date ?>"
                                                 style="border-color:#BFDBFE;font-size:14px;border-radius:8px;">
                                             <button type="submit" class="btn" style="font-weight:700;white-space:nowrap;padding:0 18px;border-radius:8px;background:linear-gradient(135deg,#FFA726,#F57C00);border:none;color:#fff;">
                                                 TRA CỨU
@@ -460,7 +466,7 @@ while ($ls = mysqli_fetch_assoc($low_stock_res)) $low_stock_list[] = $ls;
                                                     <i class="material-icons" style="font-size:14px;vertical-align:middle;">arrow_forward</i> Từ ngày
                                                 </label>
                                                 <input type="date" name="range_from" class="form-control"
-                                                    value="<?= $range_from ?>" max="<?= date('Y-m-d') ?>"
+                                                    value="<?= $range_from ?>"
                                                     style="border-color:#BFDBFE;font-size:14px;">
                                             </div>
                                             <div class="col-6">
@@ -468,7 +474,7 @@ while ($ls = mysqli_fetch_assoc($low_stock_res)) $low_stock_list[] = $ls;
                                                     <i class="material-icons" style="font-size:14px;vertical-align:middle;">arrow_back</i> Đến ngày
                                                 </label>
                                                 <input type="date" name="range_to" class="form-control"
-                                                    value="<?= $range_to ?>" max="<?= date('Y-m-d') ?>"
+                                                    value="<?= $range_to ?>" 
                                                     style="border-color:#BFDBFE;font-size:14px;">
                                             </div>
                                         </div>

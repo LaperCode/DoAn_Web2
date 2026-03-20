@@ -192,22 +192,23 @@ CREATE TABLE `import_receipts` (
   `total_quantity` int(11) DEFAULT 0,
   `total_items` int(11) DEFAULT 0,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `import_date` date DEFAULT NULL COMMENT 'Ng\u00e0y nh\u1eadp h\u00e0ng do ng\u01b0\u1eddi d\u00f9ng ch\u1ecdn'
+  `import_date` date DEFAULT NULL COMMENT 'Ng\u00e0y nh\u1eadp h\u00e0ng do ng\u01b0\u1eddi d\u00f9ng ch\u1ecdn',
+  `status` tinyint(1) NOT NULL DEFAULT 0 COMMENT '0=Ch\u1edd nh\u1eadp, 1=\u0110\u00e3 nh\u1eadp, 2=\u0110\u00e3 h\u1ee7y'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `import_receipts`
 --
 
-INSERT INTO `import_receipts` (`id`, `code`, `admin_id`, `note`, `total_value`, `total_quantity`, `total_items`, `created_at`, `import_date`) VALUES
-(1, 'PN001', 57, 'Lưu cho hàng mới', 1776.00, 12, 1, '2026-03-14 08:09:22', '2026-03-14'),
-(2, 'PN002', 57, 'Test nhập 2 hàng', 15680.00, 52, 2, '2026-03-14 08:10:46', '2026-03-14'),
-(3, 'PN003', 57, 'Nhập test 4 loại hàng', 26120.00, 82, 4, '2026-03-14 08:27:41', '2026-03-14'),
-(4, 'PN004', 57, 'Nhập lich su...', 2000.00, 50, 1, '2026-03-15 13:00:09', '2026-03-15'),
-(5, 'PN005', 57, 'Nhập lich su... pt2', 2250.00, 45, 1, '2026-03-15 13:14:33', '2026-03-15'),
-(6, 'PN006', 57, '', 6380.00, 55, 2, '2026-03-15 13:17:47', '2026-03-15'),
-(7, 'PN007', 57, 'Nhập 22', 4400.00, 20, 1, '2026-03-15 13:22:23', '2026-03-15'),
-(8, 'PN008', 57, 'Nhập jkk vol23 và vol16', 4600.00, 60, 2, '2026-03-16 03:22:42', '2026-03-16');
+INSERT INTO `import_receipts` (`id`, `code`, `admin_id`, `note`, `total_value`, `total_quantity`, `total_items`, `created_at`, `import_date`, `status`) VALUES
+(1, 'PN001', 57, 'Lưu cho hàng mới', 1776.00, 12, 1, '2026-03-14 08:09:22', '2026-03-14', 1),
+(2, 'PN002', 57, 'Test nhập 2 hàng', 15680.00, 52, 2, '2026-03-14 08:10:46', '2026-03-14', 1),
+(3, 'PN003', 57, 'Nhập test 4 loại hàng', 26120.00, 82, 4, '2026-03-14 08:27:41', '2026-03-14', 1),
+(4, 'PN004', 57, 'Nhập lich su...', 2000.00, 50, 1, '2026-03-15 13:00:09', '2026-03-15', 1),
+(5, 'PN005', 57, 'Nhập lich su... pt2', 2250.00, 45, 1, '2026-03-15 13:14:33', '2026-03-15', 1),
+(6, 'PN006', 57, '', 6380.00, 55, 2, '2026-03-15 13:17:47', '2026-03-15', 1),
+(7, 'PN007', 57, 'Nhập 22', 4400.00, 20, 1, '2026-03-15 13:22:23', '2026-03-15', 1),
+(8, 'PN008', 57, 'Nhập jkk vol23 và vol16', 4600.00, 60, 2, '2026-03-16 03:22:42', '2026-03-16', 1);
 
 -- --------------------------------------------------------
 

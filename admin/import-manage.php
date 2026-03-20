@@ -22,6 +22,7 @@ $receipt_query = "SELECT
     ir.total_value,
     ir.import_date,
     ir.created_at,
+    ir.status,
     u.name AS admin_name
 FROM import_receipts ir
 LEFT JOIN users u ON ir.admin_id = u.id
@@ -106,7 +107,8 @@ $receipts = mysqli_query($conn, $receipt_query);
                                         <th style="width: 140px;">Ngày nhập</th>
                                         <th>Số lượng sản phẩm</th>
                                         <th style="width: 160px;">Tổng giá trị</th>
-                                        <th style="width: 110px;">Thao tác</th>
+                                        <th style="width: 130px;">Trạng thái</th>
+                                        <th style="width: 150px;">Thao tác</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -127,9 +129,45 @@ $receipts = mysqli_query($conn, $receipt_query);
                                                 <td class="text-end" style="font-weight: 600; color: #6d8b3f;">
                                                     <?= fmt_price($receipt['total_value']) ?> $
                                                 </td>
+                                                <?php
+                                                $st = (int)$receipt['status'];
+                                                if ($st === 0) {
+                                                    $badge_bg  = '#FFA726'; $badge_color = '#fff'; $badge_label = 'Chờ nhập';
+                                                } elseif ($st === 1) {
+                                                    $badge_bg  = '#43A047'; $badge_color = '#fff'; $badge_label = 'Đã nhập';
+                                                } else {
+                                                    $badge_bg  = '#E53935'; $badge_color = '#fff'; $badge_label = 'Đã hủy';
+                                                }
+                                                ?>
                                                 <td class="text-center">
-                                                    <a class="btn btn-sm btn-primary" href="import-receipt-detail.php?id=<?= $receipt['id'] ?>">
-                                                        <i class="fa fa-eye"></i> Xem
+                                                    <span style="background:<?= $badge_bg ?>;color:<?= $badge_color ?>;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700;white-space:nowrap;">
+                                                        <?= $badge_label ?>
+                                                    </span>
+                                                </td>
+                                                <td class="text-center" style="white-space:nowrap;">
+                                                    <?php if ($st === 0): ?>
+                                                    <form method="POST" action="code.php" style="display:inline-block;margin:1px;" onsubmit="return confirm('Xác nhận nhập kho phiếu #<?= htmlspecialchars($receipt_code) ?>?')">
+                                                        <input type="hidden" name="update_receipt_status" value="1">
+                                                        <input type="hidden" name="receipt_id" value="<?= $receipt['id'] ?>">
+                                                        <input type="hidden" name="new_status" value="1">
+                                                        <button type="submit" title="Xác nhận nhập kho"
+                                                            style="width:32px;height:32px;border-radius:50%;border:none;background:#43A047;color:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;">
+                                                            <i class="material-icons" style="font-size:16px;">check</i>
+                                                        </button>
+                                                    </form>
+                                                    <form method="POST" action="code.php" style="display:inline-block;margin:1px;" onsubmit="return confirm('Hủy phiếu #<?= htmlspecialchars($receipt_code) ?>?')">
+                                                        <input type="hidden" name="update_receipt_status" value="1">
+                                                        <input type="hidden" name="receipt_id" value="<?= $receipt['id'] ?>">
+                                                        <input type="hidden" name="new_status" value="2">
+                                                        <button type="submit" title="Hủy phiếu"
+                                                            style="width:32px;height:32px;border-radius:50%;border:none;background:#E53935;color:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;">
+                                                            <i class="material-icons" style="font-size:16px;">close</i>
+                                                        </button>
+                                                    </form>
+                                                    <?php endif; ?>
+                                                    <a href="import-receipt-detail.php?id=<?= $receipt['id'] ?>" title="Xem chi tiết"
+                                                        style="width:32px;height:32px;border-radius:50%;background:#1976D2;color:#fff;display:inline-flex;align-items:center;justify-content:center;margin:1px;text-decoration:none;">
+                                                        <i class="material-icons" style="font-size:16px;">visibility</i>
                                                     </a>
                                                 </td>
                                             </tr>
@@ -138,7 +176,7 @@ $receipts = mysqli_query($conn, $receipt_query);
                                     } else {
                                         ?>
                                         <tr>
-                                            <td colspan="6" class="text-center" style="color: #6d5c5b;">Chưa có phiếu nhập nào.</td>
+                                            <td colspan="7" class="text-center" style="color: #6d5c5b;">Chưa có phiếu nhập nào.</td>
                                         </tr>
                                     <?php } ?>
                                 </tbody>

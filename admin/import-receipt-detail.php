@@ -26,12 +26,34 @@ $receipt_code = $receipt['code'] ? $receipt['code'] : ('PN' . str_pad($receipt['
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header" style="background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);">
-                        <h4 style="color: white; margin: 0;">
+                        <h4 style="color: white; margin: 0; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
                             <i class="material-icons" style="vertical-align: middle;">receipt_long</i>
                             Chi tiết phiếu nhập #<?= htmlspecialchars($receipt_code) ?>
-                            <a href="import-manage.php" class="btn btn-light btn-sm float-end">
+                            <span style="margin-left:auto; display:flex; gap:6px; align-items:center;">
+                            <?php if ((int)$receipt['status'] === 0): ?>
+                            <form method="POST" action="code.php" style="display:inline;" onsubmit="return confirm('Xác nhận nhập kho phiếu #<?= htmlspecialchars($receipt_code) ?>?')">
+                                <input type="hidden" name="update_receipt_status" value="1">
+                                <input type="hidden" name="receipt_id" value="<?= $receipt['id'] ?>">
+                                <input type="hidden" name="new_status" value="1">
+                                <input type="hidden" name="redirect_to" value="import-receipt-detail.php?id=<?= $receipt['id'] ?>">
+                                <button type="submit" class="btn btn-success btn-sm">
+                                    <i class="fa fa-check"></i> Xác nhận nhập kho
+                                </button>
+                            </form>
+                            <form method="POST" action="code.php" style="display:inline;" onsubmit="return confirm('Hủy phiếu #<?= htmlspecialchars($receipt_code) ?>?')">
+                                <input type="hidden" name="update_receipt_status" value="1">
+                                <input type="hidden" name="receipt_id" value="<?= $receipt['id'] ?>">
+                                <input type="hidden" name="new_status" value="2">
+                                <input type="hidden" name="redirect_to" value="import-receipt-detail.php?id=<?= $receipt['id'] ?>">
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                    <i class="fa fa-times"></i> Hủy phiếu
+                                </button>
+                            </form>
+                            <?php endif; ?>
+                            <a href="import-manage.php" class="btn btn-light btn-sm">
                                 <i class="fa fa-arrow-left"></i> Quay lại
                             </a>
+                            </span>
                         </h4>
                     </div>
                     <div class="card-body">
@@ -42,6 +64,15 @@ $receipt_code = $receipt['code'] ? $receipt['code'] : ('PN' . str_pad($receipt['
                                     <p><strong>Ngày nhập:</strong> <?= $receipt['import_date'] ? date('d/m/Y', strtotime($receipt['import_date'])) : date('d/m/Y', strtotime($receipt['created_at'])) ?></p>
                                     <p><strong>Ngày tạo:</strong> <?= date('d/m/Y H:i', strtotime($receipt['created_at'])) ?></p>
                                     <p><strong>Admin nhập:</strong> <?= htmlspecialchars($receipt['admin_name'] ?? 'N/A') ?></p>
+                                    <?php
+                                    $st = (int)$receipt['status'];
+                                    if ($st === 0) { $sb='#FFA726'; $sl='Chờ nhập hàng'; }
+                                    elseif ($st === 1) { $sb='#43A047'; $sl='Đã nhập hàng'; }
+                                    else { $sb='#E53935'; $sl='Đã hủy'; }
+                                    ?>
+                                    <p><strong>Trạng thái:</strong>
+                                        <span style="background:<?= $sb ?>;color:#fff;padding:3px 12px;border-radius:20px;font-size:12px;font-weight:700;"><?= $sl ?></span>
+                                    </p>
                                 </div>
                             </div>
                             <div class="col-md-6">
