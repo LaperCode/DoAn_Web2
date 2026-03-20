@@ -28,30 +28,58 @@ $check_date     = isset($_GET['check_date'])  ? $_GET['check_date']  : '';
 $qty_at_date    = null;
 $imported_total = 0;
 $exported_total = 0;
+if ($check_date && $product) {
+    // 1. Tổng nhập đến ngày T (để hiển thị thống kê)
+    $q_in = mysqli_query($conn, "
+        SELECT COALESCE(SUM(ih.quantity_imported),0) as total
+        FROM import_history ih
+        INNER JOIN import_receipts ir ON ih.receipt_id = ir.id
+        WHERE ih.product_id='$id'
+          AND ir.status = 1
+          AND ir.import_date <= '$check_date'
+    ");
+    $imported_total = (int)mysqli_fetch_assoc($q_in)['total'];
 
-if ($check_date) {
-    $product_filter = $product ? "AND ih.product_id='$id'" : "";
-    $q_in = mysqli_query(
-        $conn,
-        "SELECT COALESCE(SUM(ih.quantity_imported),0) as total
-         FROM import_history ih
-         INNER JOIN import_receipts ir ON ih.receipt_id = ir.id
-         WHERE DATE(ir.import_date) <= '$check_date'
-           AND ir.status = 1
-           $product_filter"
-    );
-    if ($r = mysqli_fetch_assoc($q_in)) $imported_total = (int)$r['total'];
+    // 2. Tổng xuất đến ngày T (chỉ tính đơn hợp lệ: status != 5)
+    $q_out = mysqli_query($conn, "
+        SELECT COALESCE(SUM(od.quantity),0) as total
+        FROM order_detail od
+        INNER JOIN orders o ON od.order_id = o.id
+        WHERE od.product_id='$id'
+          AND o.status != 5
+          AND DATE(o.created_at) <= '$check_date'
+    ");
+    $exported_total = (int)mysqli_fetch_assoc($q_out)['total'];
 
-    $q_out = mysqli_query(
-        $conn,
-        "SELECT COALESCE(SUM(od.quantity),0) as total
-         FROM order_detail od
-         INNER JOIN orders o ON od.order_id = o.id
-         WHERE DATE(o.created_at) <= '$check_date'" . ($product ? " AND od.product_id='$id'" : "")
-    );
-    if ($r = mysqli_fetch_assoc($q_out)) $exported_total = (int)$r['total'];
+    // 3. Tính lượng nhập SAU ngày T
+    $q_in_after = mysqli_query($conn, "
+        SELECT COALESCE(SUM(ih.quantity_imported),0) as total
+        FROM import_history ih
+        INNER JOIN import_receipts ir ON ih.receipt_id = ir.id
+        WHERE ih.product_id='$id'
+          AND ir.status = 1
+          AND ir.import_date > '$check_date'
+    ");
+    $imported_after = (int)mysqli_fetch_assoc($q_in_after)['total'];
 
-    $qty_at_date = $imported_total - $exported_total;
+    // 4. Tính lượng xuất SAU ngày T
+    $q_out_after = mysqli_query($conn, "
+        SELECT COALESCE(SUM(od.quantity),0) as total
+        FROM order_detail od
+        INNER JOIN orders o ON od.order_id = o.id
+        WHERE od.product_id='$id'
+          AND o.status != 5
+          AND DATE(o.created_at) > '$check_date'
+    ");
+    $exported_after = (int)mysqli_fetch_assoc($q_out_after)['total'];
+
+    // 5. CÔNG THỨC TINH NGƯỢC
+    // Tồn kho quá khứ = Tồn kho hiện tại - (Lượng đã nhập vào sau đó) + (Lượng đã xuất ra sau đó)
+    $current_qty = (int)$product['qty'];
+    $qty_at_date = $current_qty - $imported_after + $exported_after;
+} elseif ($check_date) {
+    // Nếu người dùng chọn ngày nhưng chưa chọn sản phẩm
+    $qty_at_date = null;
 }
 
 // Báo cáo nhập - xuất theo khoảng thời gian
@@ -80,6 +108,7 @@ if ($range_from && $range_to) {
                  FROM order_detail od
                  INNER JOIN orders o ON od.order_id = o.id
                  WHERE DATE(o.created_at) >= '$range_from'
+                     AND o.status != 5
                      AND DATE(o.created_at) <= '$range_to'" . ($product ? " AND od.product_id='$id'" : "")
     );
     if ($r = mysqli_fetch_assoc($q_export)) $total_export = (int)$r['total'];
