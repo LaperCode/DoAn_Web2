@@ -91,8 +91,9 @@ if (mysqli_num_rows($products) > 0) {
                                             <input type="number" name="import_price[]" class="form-control import-price-input" min="0" step="0.01" required placeholder="Giá">
                                         </div>
                                         <div class="col-md-2">
-                                            <label class="form-label"><b>Tỷ lệ LN (%) <span style="color: red;">*</span></b></label>
-                                            <input type="number" name="profit_margin[]" class="form-control margin-input" min="0" max="100" step="0.01" value="20" required>
+                                            <label class="form-label"><b>Tỷ lệ LN (%)</b></label>
+                                            <input type="hidden" name="profit_margin[]" class="margin-input" value="20">
+                                            <div class="form-control bg-light margin-display" style="height: 38px; display: flex; align-items: center;">20%</div>
                                         </div>
                                         <div class="col-md-2 text-end">
                                             <button type="button" class="btn btn-remove-item remove-item" style="display: none;">
@@ -187,6 +188,7 @@ if (mysqli_num_rows($products) > 0) {
                 const calculationResult = row.querySelector('.calc-result');
                 const newAvgPrice = row.querySelector('.new-avg-price');
                 const newSellingPrice = row.querySelector('.new-selling-price');
+                const marginDisplay = row.querySelector('.margin-display');
                 const removeBtn = row.querySelector('.remove-item');
 
                 let currentQty = 0;
@@ -209,6 +211,9 @@ if (mysqli_num_rows($products) > 0) {
                             </div>
                         `;
                         profitMarginInput.value = currentMargin;
+                        if (marginDisplay) {
+                            marginDisplay.textContent = `${currentMargin.toFixed(2)}%`;
+                        }
                         calculate();
                     } else {
                         currentInfo.innerHTML = '<small style="color: #8B5A00;">Chọn sản phẩm để xem thông tin</small>';
@@ -232,7 +237,7 @@ if (mysqli_num_rows($products) > 0) {
                     }
                     const qtyImported = parseFloat(quantityInput.value);
                     const priceImported = parseFloat(importPriceInput.value);
-                    const profitMargin = parseFloat(profitMarginInput.value);
+                    const profitMargin = parseFloat(profitMarginInput.value || 20);
                     const totalQty = currentQty + qtyImported;
                     const avgPrice = (currentQty * currentPrice + qtyImported * priceImported) / totalQty;
                     const sellingPrice = avgPrice * (1 + profitMargin / 100);
@@ -285,8 +290,9 @@ if (mysqli_num_rows($products) > 0) {
                             <input type="number" name="import_price[]" class="form-control import-price-input" min="0" step="0.01" required placeholder="Giá">
                         </div>
                         <div class="col-md-2">
-                            <label class="form-label"><b>Tỷ lệ LN (%) <span style=\"color: red;\">*</span></b></label>
-                            <input type="number" name="profit_margin[]" class="form-control margin-input" min="0" max="100" step="0.01" value="20" required>
+                            <label class="form-label"><b>Tỷ lệ LN (%)</b></label>
+                            <input type="hidden" name="profit_margin[]" class="margin-input" value="20">
+                            <div class="form-control bg-light margin-display" style="height: 38px; display: flex; align-items: center;">20%</div>
                         </div>
                         <div class="col-md-2 text-end">
                             <button type="button" class="btn btn-remove-item remove-item">

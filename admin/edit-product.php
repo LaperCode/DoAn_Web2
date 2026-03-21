@@ -18,20 +18,6 @@ include("../admin/includes/header.php");
                         <div class="card">
                             <div class="card-header">
                                 <h4>Chỉnh sửa sản phẩm
-                                    <a href="product-manage.php?id=<?= $data['id'] ?>&tab=price&<?= http_build_query(array_filter([
-                                                                                                    'tensanpham' => $_GET['tensanpham'] ?? '',
-                                                                                                    'loaisanpham' => $_GET['loaisanpham'] ?? '',
-                                                                                                    'qtymin' => $_GET['qtymin'] ?? '',
-                                                                                                    'qtymax' => $_GET['qtymax'] ?? '',
-                                                                                                    'giamin' => $_GET['giamin'] ?? '',
-                                                                                                    'giamax' => $_GET['giamax'] ?? '',
-                                                                                                    'trangthai' => $_GET['trangthai'] ?? '',
-                                                                                                    'sapxep' => $_GET['sapxep'] ?? 1,
-                                                                                                    'theocot' => $_GET['theocot'] ?? 'id',
-                                                                                                    'page' => $_GET['page'] ?? 1,
-                                                                                                ])) ?>" class="btn btn-warning btn-sm float-end ms-2">
-                                        <i class="fa fa-tag"></i> Quản lý giá &amp; tồn kho
-                                    </a>
                                     <a href="products.php?<?= http_build_query(array_filter([
                                                                 'tensanpham' => $_GET['tensanpham'] ?? '',
                                                                 'loaisanpham' => $_GET['loaisanpham'] ?? '',
@@ -131,9 +117,7 @@ include("../admin/includes/header.php");
                                         <div class="col-md-12">
                                             <small class="text-muted">
                                                 <i class="fa fa-info-circle"></i>
-                                                Để chỉnh sửa giá và số lượng, vui lòng dùng
-                                                <a href="manage-price.php?product_id=<?= $data['id'] ?>">Quản lý giá bán</a>
-                                                và <a href="manage-stock.php?product_id=<?= $data['id'] ?>">Quản lý tồn kho</a>.
+                                                Giá bán và số lượng tồn hiện chỉ xem ở đây.
                                             </small>
                                         </div>
                                         <div class="col-md-6">

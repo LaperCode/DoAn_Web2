@@ -204,10 +204,12 @@ function getOrderWasBuy($cart_id)
 {
     global $conn;
     $user_id = $_SESSION['auth_user']['id'];
-    $query =    "SELECT `order_detail`.`created_at`,`order_detail`.`selling_price`, `order_detail`.`quantity`, `products`.`name`, `products`.`slug` FROM `order_detail` 
-                JOIN `products` on `order_detail`.`product_id` = `products`.`id`
-                WHERE `order_detail`.`user_id` = '$user_id' AND `order_detail`.`status` NOT IN (0,1) and `order_detail`.`order_id` = '$cart_id'
-                ORDER BY `order_detail`.`id` DESC";
+    $query =    "SELECT `order_detail`.`created_at`,`order_detail`.`selling_price`, `order_detail`.`quantity`,
+                           `products`.`name`, `products`.`slug`, `products`.`image`
+                    FROM `order_detail` 
+                    JOIN `products` on `order_detail`.`product_id` = `products`.`id`
+                    WHERE `order_detail`.`user_id` = '$user_id' AND `order_detail`.`status` NOT IN (0,1) and `order_detail`.`order_id` = '$cart_id'
+                    ORDER BY `order_detail`.`id` DESC";
     $result = mysqli_query($conn, $query);
 
     $orders = [];

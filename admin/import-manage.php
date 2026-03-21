@@ -132,11 +132,17 @@ $receipts = mysqli_query($conn, $receipt_query);
                                                 <?php
                                                 $st = (int)$receipt['status'];
                                                 if ($st === 0) {
-                                                    $badge_bg  = '#FFA726'; $badge_color = '#fff'; $badge_label = 'Chờ nhập';
+                                                    $badge_bg  = '#FFA726';
+                                                    $badge_color = '#fff';
+                                                    $badge_label = 'Chờ nhập';
                                                 } elseif ($st === 1) {
-                                                    $badge_bg  = '#43A047'; $badge_color = '#fff'; $badge_label = 'Đã nhập';
+                                                    $badge_bg  = '#43A047';
+                                                    $badge_color = '#fff';
+                                                    $badge_label = 'Đã nhập';
                                                 } else {
-                                                    $badge_bg  = '#E53935'; $badge_color = '#fff'; $badge_label = 'Đã hủy';
+                                                    $badge_bg  = '#E53935';
+                                                    $badge_color = '#fff';
+                                                    $badge_label = 'Đã hủy';
                                                 }
                                                 ?>
                                                 <td class="text-center">
@@ -146,24 +152,24 @@ $receipts = mysqli_query($conn, $receipt_query);
                                                 </td>
                                                 <td class="text-center" style="white-space:nowrap;">
                                                     <?php if ($st === 0): ?>
-                                                    <form method="POST" action="code.php" style="display:inline-block;margin:1px;" onsubmit="return confirm('Xác nhận nhập kho phiếu #<?= htmlspecialchars($receipt_code) ?>?')">
-                                                        <input type="hidden" name="update_receipt_status" value="1">
-                                                        <input type="hidden" name="receipt_id" value="<?= $receipt['id'] ?>">
-                                                        <input type="hidden" name="new_status" value="1">
-                                                        <button type="submit" title="Xác nhận nhập kho"
-                                                            style="width:32px;height:32px;border-radius:50%;border:none;background:#43A047;color:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;">
-                                                            <i class="material-icons" style="font-size:16px;">check</i>
-                                                        </button>
-                                                    </form>
-                                                    <form method="POST" action="code.php" style="display:inline-block;margin:1px;" onsubmit="return confirm('Hủy phiếu #<?= htmlspecialchars($receipt_code) ?>?')">
-                                                        <input type="hidden" name="update_receipt_status" value="1">
-                                                        <input type="hidden" name="receipt_id" value="<?= $receipt['id'] ?>">
-                                                        <input type="hidden" name="new_status" value="2">
-                                                        <button type="submit" title="Hủy phiếu"
-                                                            style="width:32px;height:32px;border-radius:50%;border:none;background:#E53935;color:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;">
-                                                            <i class="material-icons" style="font-size:16px;">close</i>
-                                                        </button>
-                                                    </form>
+                                                        <form method="POST" action="code.php" style="display:inline-block;margin:1px;" onsubmit="return confirm('Xác nhận nhập kho phiếu #<?= htmlspecialchars($receipt_code) ?>?')">
+                                                            <input type="hidden" name="update_receipt_status" value="1">
+                                                            <input type="hidden" name="receipt_id" value="<?= $receipt['id'] ?>">
+                                                            <input type="hidden" name="new_status" value="1">
+                                                            <button type="submit" title="Xác nhận nhập kho"
+                                                                style="width:32px;height:32px;border-radius:50%;border:none;background:#43A047;color:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;">
+                                                                <i class="material-icons" style="font-size:16px;">check</i>
+                                                            </button>
+                                                        </form>
+                                                        <form method="POST" action="code.php" style="display:inline-block;margin:1px;" onsubmit="return confirm('Hủy phiếu #<?= htmlspecialchars($receipt_code) ?>?')">
+                                                            <input type="hidden" name="update_receipt_status" value="1">
+                                                            <input type="hidden" name="receipt_id" value="<?= $receipt['id'] ?>">
+                                                            <input type="hidden" name="new_status" value="2">
+                                                            <button type="submit" title="Hủy phiếu"
+                                                                style="width:32px;height:32px;border-radius:50%;border:none;background:#E53935;color:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;">
+                                                                <i class="material-icons" style="font-size:16px;">close</i>
+                                                            </button>
+                                                        </form>
                                                     <?php endif; ?>
                                                     <a href="import-receipt-detail.php?id=<?= $receipt['id'] ?>" title="Xem chi tiết"
                                                         style="width:32px;height:32px;border-radius:50%;background:#1976D2;color:#fff;display:inline-flex;align-items:center;justify-content:center;margin:1px;text-decoration:none;">

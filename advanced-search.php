@@ -271,6 +271,18 @@ if ($check) {
 
         const toRawNumber = (value) => value.replace(/[^0-9]/g, '');
         const toFormatted = (value) => (value ? Number(value).toLocaleString('vi-VN') : '');
+        const formatWithCaret = (inputEl) => {
+            const raw = toRawNumber(inputEl.value);
+            const prevPos = inputEl.selectionStart || 0;
+            const prevLength = inputEl.value.length;
+            const formatted = toFormatted(raw);
+            inputEl.value = formatted;
+            const newLength = formatted.length;
+            const diff = newLength - prevLength;
+            const newPos = Math.max(0, prevPos + diff);
+            inputEl.setSelectionRange(newPos, newPos);
+            return raw;
+        };
 
         pricePairs.forEach(pair => {
             if (!pair.hidden || !pair.display) return;
@@ -278,12 +290,8 @@ if ($check) {
             pair.display.value = toFormatted(pair.hidden.value);
 
             pair.display.addEventListener('input', () => {
-                const raw = toRawNumber(pair.display.value);
+                const raw = formatWithCaret(pair.display);
                 pair.hidden.value = raw;
-            });
-
-            pair.display.addEventListener('focus', () => {
-                pair.display.value = pair.hidden.value;
             });
 
             pair.display.addEventListener('blur', () => {

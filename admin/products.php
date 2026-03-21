@@ -35,7 +35,10 @@ $query_string = http_build_query([
                         <h4>Sản phẩm</h4>
                     </div>
                     <div class="card-body">
-                        <div style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
+                        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 10px;">
+                            <a class="btn btn-success" href="add-product.php">
+                                <i class="fa fa-plus"></i> Thêm sản phẩm
+                            </a>
                             <button class="btn btn-primary" onclick="openModal()">Tìm</button>
                         </div>
                         <div class="table-responsive">
