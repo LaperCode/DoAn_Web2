@@ -58,7 +58,7 @@ $page = $page - 1;
             <i class='bx bx-x'></i>
         </span>
         <!-- top header -->
-        <div class="bg-second" style="background-color: #1A252F;">
+        <!-- <div class="bg-second" style="background-color: #1A252F;">
             <div class="top-header container">
                 <ul class="devided">
                     <li>
@@ -69,7 +69,7 @@ $page = $page - 1;
                     </li>
                 </ul>
             </div>
-        </div>
+        </div> -->
         <!-- end top header -->
         <!-- mid header -->
         <div class="bg-main" style="background-color: #2C3E50;">

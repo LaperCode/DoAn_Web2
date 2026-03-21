@@ -39,7 +39,7 @@ include("../admin/includes/header.php");
                                 </div>
                                 <div class="col-md-6">
                                     <br>
-                                    <label for=""><b>Trạng thái</b></label>
+                                    <label for=""><b>Ẩn danh mục</b></label>
                                     <input type="checkbox" name="status">
                                 </div>
                                 <div class="col-md-12">

@@ -1,5 +1,6 @@
 <?php
 include("../admin/includes/header.php");
+$search = isset($_GET['search']) ? trim($_GET['search']) : '';
 ?>
 
 <body>
@@ -8,7 +9,27 @@ include("../admin/includes/header.php");
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4>Danh mục</h4>
+                        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+                            <h4 class="mb-0">Danh mục</h4>
+                            <div class="d-flex align-items-center gap-2 flex-nowrap">
+                                <form method="GET" class="d-flex align-items-center gap-2 flex-nowrap" style="margin:0;">
+                                    <div class="input-group" style="min-width: 260px; max-width: 320px; height: 38px; align-items: center;">
+                                        <span class="input-group-text bg-white" style="height: 38px; align-items: center;"><i class="fa fa-search"></i></span>
+                                        <input type="text" name="search" value="<?= htmlspecialchars($search) ?>"
+                                            class="form-control" placeholder="Tìm danh mục..." style="height: 38px; line-height: 38px; padding-top: 0; padding-bottom: 0;">
+                                    </div>
+                                    <button class="btn btn-primary" type="submit"
+                                        style="height: 38px; min-width: 72px; padding: 0 16px; white-space: nowrap; display: inline-flex; align-items: center; justify-content: center;">Tìm</button>
+                                    <?php if ($search !== ''): ?>
+                                        <a class="btn btn-outline-secondary" href="category.php"
+                                            style="height: 38px; min-width: 88px; padding: 0 14px; white-space: nowrap; display: inline-flex; align-items: center; justify-content: center;">Xóa lọc</a>
+                                    <?php endif; ?>
+                                </form>
+                                <a class="btn btn-success" href="add-category.php" style="height: 38px; display: inline-flex; align-items: center;">
+                                    <i class="fa fa-plus"></i> Thêm danh mục
+                                </a>
+                            </div>
+                        </div>
                     </div>
                     <div class="card-body">
                         <table class="table table-bordered table-striped">
@@ -24,7 +45,12 @@ include("../admin/includes/header.php");
                             </thead>
                             <tbody>
                                 <?php
-                                $category = getAll("categories");
+                                if ($search !== '') {
+                                    $safe_search = mysqli_real_escape_string($conn, $search);
+                                    $category = mysqli_query($conn, "SELECT * FROM categories WHERE name LIKE '%$safe_search%' ORDER BY id DESC");
+                                } else {
+                                    $category = getAll("categories");
+                                }
 
                                 if (mysqli_num_rows($category) > 0) {
                                     foreach ($category as $item) {
@@ -50,7 +76,7 @@ include("../admin/includes/header.php");
                                 <?php
                                     }
                                 } else {
-                                    echo "No records found";
+                                    echo "Không tìm thấy danh mục phù hợp";
                                 }
                                 ?>
 

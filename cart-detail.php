@@ -3,6 +3,7 @@ include("./includes/header.php");
 if (!isset($_SESSION['auth_user']['id'])) {
     die("Từ Chối truy cập <a href='./login'>Đăng nhập ngay</a>");
 }
+$user_id = $_SESSION['auth_user']['id'];
 ?>
 
 <style>
@@ -180,6 +181,50 @@ if (!isset($_SESSION['auth_user']['id'])) {
     .back-to-orders-btn i {
         margin-right: 8px;
     }
+
+    .order-info-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+        margin: 20px 0 30px;
+    }
+
+    .order-info-card {
+        background: #f8f9fa;
+        border: 1px solid #ecf0f1;
+        border-radius: 10px;
+        padding: 18px 20px;
+    }
+
+    .order-info-card h3 {
+        font-size: 16px;
+        color: #2C3E50;
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+        border-bottom: 2px solid #ECF0F1;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .order-info-card p {
+        margin: 6px 0;
+        font-size: 14px;
+        color: #34495E;
+    }
+
+    .product-thumb {
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+        border-radius: 6px;
+        border: 1px solid #ecf0f1;
+    }
+
+    @media (max-width: 768px) {
+        .order-info-grid {
+            grid-template-columns: 1fr;
+        }
+    }
 </style>
 
 <body>
@@ -205,7 +250,16 @@ if (!isset($_SESSION['auth_user']['id'])) {
                         $cart_id = "null";
                     }
                     $order_total = 0;
+                    $order_info = null;
                     if ($cart_id != "null") {
+                        $order_info_query = "SELECT o.*, u.name, u.email, u.phone, u.address
+                                            FROM `orders` o
+                                            JOIN `users` u ON o.user_id = u.id
+                                            WHERE o.id = '$cart_id' AND o.user_id = '$user_id'";
+                        $order_info_result = mysqli_query($conn, $order_info_query);
+                        if ($order_info_result && mysqli_num_rows($order_info_result) > 0) {
+                            $order_info = mysqli_fetch_assoc($order_info_result);
+                        }
                         $orders = getOrderWasBuy($cart_id);
 
                         foreach ($orders as $order) {
@@ -228,14 +282,52 @@ if (!isset($_SESSION['auth_user']['id'])) {
                     <?php } ?>
 
                     <div class="container text-center mx-auto mt-5">
-                        <?php if (!empty($orders)) { ?>
-                            <h1>ĐƠN HÀNG: <span>COSS<?= $cart_id ?></span>, ĐẶT LÚC --- <span><?= $orders[0]["created_at"] ?></span></h1>
+                        <?php if (!empty($orders) && $order_info) { ?>
+                            <h1>ĐƠN HÀNG: <span>COSS<?= $cart_id ?></span>, ĐẶT LÚC --- <span><?= date('d/m/Y H:i', strtotime($order_info['created_at'])) ?></span></h1>
+
+                            <div class="order-info-grid">
+                                <div class="order-info-card text-start">
+                                    <h3>Thông tin khách hàng</h3>
+                                    <p><strong>Họ tên:</strong> <?= htmlspecialchars($order_info['name']) ?></p>
+                                    <p><strong>Email:</strong> <?= htmlspecialchars($order_info['email']) ?></p>
+                                    <p><strong>Số điện thoại:</strong> <?= htmlspecialchars($order_info['phone']) ?></p>
+                                    <p><strong>Địa chỉ:</strong> <?= htmlspecialchars($order_info['address']) ?></p>
+                                </div>
+                                <div class="order-info-card text-start">
+                                    <h3>Thông tin đơn hàng</h3>
+                                    <p><strong>Thanh toán:</strong>
+                                        <?= $order_info['payment'] == '1' ? 'COD (Tiền mặt)' : 'Chuyển khoản ngân hàng' ?>
+                                    </p>
+                                    <p><strong>Trạng thái:</strong>
+                                        <?php
+                                        switch ($order_info['status']) {
+                                            case '2':
+                                                echo 'Đang chuẩn bị hàng';
+                                                break;
+                                            case '3':
+                                                echo 'Đang giao hàng';
+                                                break;
+                                            case '4':
+                                                echo 'Đã giao';
+                                                break;
+                                            case '5':
+                                                echo 'Đã hủy';
+                                                break;
+                                            default:
+                                                echo 'Đang xử lý';
+                                        }
+                                        ?>
+                                    </p>
+                                    <p><strong>Ghi chú:</strong> <?= htmlspecialchars($order_info['additional'] ?? '') ?: 'Không có' ?></p>
+                                </div>
+                            </div>
 
                             <div class="container">
-                                <h2 class="title-customers">Đơn hàng sản phẩm</h2>
+                                <h2 class="title-customers">Chi tiết đơn hàng</h2>
                                 <table class="table table-bordered">
                                     <thead class="thead-dark">
                                         <tr>
+                                            <th scope="col" class="text-center ">Hình</th>
                                             <th scope="col" class="text-center ">Sản phẩm</th>
                                             <th scope="col" class="text-center ">Giá</th>
                                             <th scope="col" class="text-center ">Số lượng</th>
@@ -245,6 +337,9 @@ if (!isset($_SESSION['auth_user']['id'])) {
                                     <tbody>
                                         <?php foreach ($orders as $order) { ?>
                                             <tr>
+                                                <td class="text-center">
+                                                    <img class="product-thumb" src="./images/<?= htmlspecialchars($order['image']) ?>" alt="<?= htmlspecialchars($order['name']) ?>">
+                                                </td>
                                                 <td>
                                                     <center><a style="color:#0d6efd" href="./product-detail.php?slug=<?= $order['slug'] ?>" title="Sản phẩm"><?= $order['name'] ?></a></center> <br>
                                                 </td>
@@ -257,14 +352,8 @@ if (!isset($_SESSION['auth_user']['id'])) {
                                                 </td>
                                             </tr>
                                         <?php } ?>
-                                        <tr class="order_summary">
-                                            <td colspan="3" class="text-center "><b>Giá sản phẩm</b></td>
-                                            <td class="text-right"><b>
-                                                    <center>$<?= fmt_price($order_total) ?></center>
-                                                </b></td>
-                                        </tr>
                                         <tr class="order_summary order_total">
-                                            <td colspan="3" class="text-center "><b>Tổng tiền</b></td>
+                                            <td colspan="4" class="text-center "><b>Tổng tiền</b></td>
                                             <td class="text-right"><b>
                                                     <center>$<?= fmt_price($order_total) ?></center>
                                                 </b></td>
