@@ -38,7 +38,7 @@ $page = substr($_SERVER['SCRIPT_NAME'], strripos($_SERVER['SCRIPT_NAME'], "/") +
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link text-white <?= $page == "category.php" || $page == "edit-category.php" ? 'active bg-gradient-primary' : '' ?>" href="category.php">
+        <a class="nav-link text-white <?= $page == "category.php" || $page == "edit-category.php" || $page == "add-category.php" ? 'active bg-gradient-primary' : '' ?>" href="category.php">
           <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
             <i class="material-icons opacity-10">table_view</i>
           </div>
@@ -46,7 +46,7 @@ $page = substr($_SERVER['SCRIPT_NAME'], strripos($_SERVER['SCRIPT_NAME'], "/") +
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link text-white <?= $page == "products.php" || $page == "edit-product.php" || $page == "product-manage.php" ? 'active bg-gradient-primary' : '' ?>" href="products.php">
+        <a class="nav-link text-white <?= $page == "products.php" || $page == "edit-product.php" || $page == "product-manage.php" || $page == "add-product.php" ? 'active bg-gradient-primary' : '' ?>" href="products.php">
           <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
             <i class="material-icons opacity-10">menu_book</i>
           </div>
