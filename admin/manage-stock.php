@@ -121,6 +121,10 @@ $low_stock_res = mysqli_query(
 );
 $low_stock_list = [];
 while ($ls = mysqli_fetch_assoc($low_stock_res)) $low_stock_list[] = $ls;
+
+// Quy định tồn kho
+$stock_out_threshold = 0; // Hết hàng
+$stock_low_threshold = 9; // Sắp hết: 1-9
 ?>
 
 <style>
@@ -277,6 +281,17 @@ while ($ls = mysqli_fetch_assoc($low_stock_res)) $low_stock_list[] = $ls;
                     </div>
                     <div class="card-body" style="padding: 24px;">
 
+                        <div style="background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%); padding: 16px; border-radius: 10px; border-left: 4px solid #2196F3; margin-bottom: 20px;">
+                            <h6 style="color: #1565C0; margin: 0 0 8px; font-weight: 700;">
+                                <i class="fa fa-info-circle"></i> Quy định tồn kho
+                            </h6>
+                            <ul style="margin: 0; padding-left: 18px; color: #1976D2;">
+                                <li><strong>Hết hàng:</strong> Số lượng ≤ <?= $stock_out_threshold ?></li>
+                                <li><strong>Sắp hết:</strong> Số lượng 1 - <?= $stock_low_threshold ?></li>
+                                <li><strong>Còn hàng:</strong> Số lượng ≥ <?= $stock_low_threshold + 1 ?></li>
+                            </ul>
+                        </div>
+
                         <!-- Cảnh báo sắp hết hàng -->
                         <?php if (count($low_stock_list) > 0): ?>
                             <div style="background:linear-gradient(135deg,#FFF8E1,#FFF3CD);border:1.5px solid #FFC107;border-radius:12px;padding:18px 20px;margin-bottom:24px;">
@@ -414,18 +429,18 @@ while ($ls = mysqli_fetch_assoc($low_stock_res)) $low_stock_list[] = $ls;
                                             <label style="font-size:15px;font-weight:600;color:#555;margin:6px;display:block;">Chọn sản phẩm</label>
                                             <select name="product_id" class="form-select product-select">
                                                 <option value="">-- Chọn sản phẩm --</option>
-                                                <?php 
+                                                <?php
                                                 // Kiểm tra xem mảng sản phẩm có dữ liệu không trước khi lặp
-                                                if (!empty($all_products)): 
-                                                    foreach ($all_products as $p): 
+                                                if (!empty($all_products)):
+                                                    foreach ($all_products as $p):
                                                         // Kiểm tra ID để giữ trạng thái đã chọn (Selected)
-                                                        $is_selected = ($selected_id == $p['id']) ? 'selected' : '';?>
-                                                    <option value="<?= $p['id'] ?>" <?= $is_selected ?>>
-                                                        <?= htmlspecialchars($p['name']) ?>
-                                                    </option>
-                                                <?php 
-                                                    endforeach; 
-                                                endif; 
+                                                        $is_selected = ($selected_id == $p['id']) ? 'selected' : ''; ?>
+                                                        <option value="<?= $p['id'] ?>" <?= $is_selected ?>>
+                                                            <?= htmlspecialchars($p['name']) ?>
+                                                        </option>
+                                                <?php
+                                                    endforeach;
+                                                endif;
                                                 ?>
                                             </select>
                                         </div>
@@ -503,7 +518,7 @@ while ($ls = mysqli_fetch_assoc($low_stock_res)) $low_stock_list[] = $ls;
                                                     <i class="material-icons" style="font-size:14px;vertical-align:middle;">arrow_back</i> Đến ngày
                                                 </label>
                                                 <input type="date" name="range_to" class="form-control"
-                                                    value="<?= $range_to ?>" 
+                                                    value="<?= $range_to ?>"
                                                     style="border-color:#BFDBFE;font-size:14px;">
                                             </div>
                                         </div>
