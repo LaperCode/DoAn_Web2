@@ -140,8 +140,7 @@ if (mysqli_num_rows($products) > 0) {
                                     <div class="mb-3">
                                         <label class="form-label"><b>Ngày nhập <span style="color: red;">*</span></b></label>
                                         <input type="date" name="import_date" class="form-control" required
-                                            value="<?= date('Y-m-d') ?>"
-                                            min="<?= date('Y-m-d') ?>">
+                                            value="<?= date('Y-m-d') ?>">
                                     </div>
                                 </div>
                                 <div class="col-md-8">

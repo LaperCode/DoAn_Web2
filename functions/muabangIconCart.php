@@ -60,13 +60,11 @@ if (isset($_POST['order'])) {
     }
 
     $_SESSION['giohang'] = "Đã Thêm Sản Phẩm Vào Giỏ Hàng";
-    
+
     // Chuyển hướng về trang trước đó
-    $previousPage = $_SERVER['HTTP_REFERER']; 
+    $previousPage = $_SERVER['HTTP_REFERER'];
     header("Location: $previousPage");
     exit();
 }
 
 unset($_SESSION['message']);
-
-?>
