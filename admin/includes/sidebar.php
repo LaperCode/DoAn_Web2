@@ -54,19 +54,11 @@ $page = substr($_SERVER['SCRIPT_NAME'], strripos($_SERVER['SCRIPT_NAME'], "/") +
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link text-white <?= $page == "blog.php" || $page == "edit-blog.php" ? 'active bg-gradient-primary' : '' ?>" href="blog.php">
+        <a class="nav-link text-white <?= $page == "blog.php" || $page == "edit-blog.php" || $page == "add-blog.php" ? 'active bg-gradient-primary' : '' ?>" href="blog.php">
           <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
             <i class="material-icons opacity-10">article</i>
           </div>
-          <span class="nav-link-text ms-1">Tất cả bài viết</span>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link text-white <?= $page == "add-blog.php" ? 'active bg-gradient-primary' : '' ?>" href="add-blog.php">
-          <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-            <i class="material-icons opacity-10">edit</i>
-          </div>
-          <span class="nav-link-text ms-1">Thêm bài viết</span>
+          <span class="nav-link-text ms-1">Quản lý bài viết</span>
         </a>
       </li>
       <li class="nav-item">

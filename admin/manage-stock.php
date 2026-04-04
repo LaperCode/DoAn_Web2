@@ -7,6 +7,12 @@ $all_products = [];
 while ($row = mysqli_fetch_assoc($all_products_res)) {
     $all_products[] = $row;
 }
+// Lấy danh sách danh mục
+$all_categories_res = getAll("categories");
+$all_categories = [];
+while ($row = mysqli_fetch_assoc($all_categories_res)) {
+    $all_categories[] = $row;
+}
 // Sản phẩm đang chọn
 $selected_id = isset($_GET['product_id']) ? (int)$_GET['product_id'] : 0;
 $product     = null;
@@ -16,6 +22,24 @@ if (!in_array($active_tab, ['all', 'check', 'report'], true)) {
     $active_tab = 'all';
 }
 
+// Lưu & lấy quy định tồn kho (lưu vào DB để giữ sau đăng xuất)
+mysqli_query(
+    $conn,
+    "CREATE TABLE IF NOT EXISTS settings (
+        setting_key VARCHAR(100) PRIMARY KEY,
+        setting_value VARCHAR(255) NOT NULL
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4"
+);
+
+$stored_threshold = null;
+$setting_res = mysqli_query(
+    $conn,
+    "SELECT setting_value FROM settings WHERE setting_key = 'stock_threshold' LIMIT 1"
+);
+if ($setting_res && mysqli_num_rows($setting_res) > 0) {
+    $stored_threshold = (int)mysqli_fetch_assoc($setting_res)['setting_value'];
+}
+
 if ($selected_id) {
     $res     = getByID("products", $selected_id);
     $product = mysqli_fetch_assoc($res);
@@ -23,64 +47,10 @@ if ($selected_id) {
 
 $id = $selected_id;
 
-// Tra cứu tồn kho tại thời điểm
-$check_date     = isset($_GET['check_date'])  ? $_GET['check_date']  : '';
-$qty_at_date    = null;
-$imported_total = 0;
-$exported_total = 0;
-if ($check_date && $product) {
-    // 1. Tổng nhập đến ngày T (để hiển thị thống kê)
-    $q_in = mysqli_query($conn, "
-        SELECT COALESCE(SUM(ih.quantity_imported),0) as total
-        FROM import_history ih
-        INNER JOIN import_receipts ir ON ih.receipt_id = ir.id
-        WHERE ih.product_id='$id'
-          AND ir.status = 1
-          AND ir.import_date <= '$check_date'
-    ");
-    $imported_total = (int)mysqli_fetch_assoc($q_in)['total'];
-
-    // 2. Tổng xuất đến ngày T (chỉ tính đơn hợp lệ: status != 5)
-    $q_out = mysqli_query($conn, "
-        SELECT COALESCE(SUM(od.quantity),0) as total
-        FROM order_detail od
-        INNER JOIN orders o ON od.order_id = o.id
-        WHERE od.product_id='$id'
-          AND o.status != 5
-          AND DATE(o.created_at) <= '$check_date'
-    ");
-    $exported_total = (int)mysqli_fetch_assoc($q_out)['total'];
-
-    // 3. Tính lượng nhập SAU ngày T
-    $q_in_after = mysqli_query($conn, "
-        SELECT COALESCE(SUM(ih.quantity_imported),0) as total
-        FROM import_history ih
-        INNER JOIN import_receipts ir ON ih.receipt_id = ir.id
-        WHERE ih.product_id='$id'
-          AND ir.status = 1
-          AND ir.import_date > '$check_date'
-    ");
-    $imported_after = (int)mysqli_fetch_assoc($q_in_after)['total'];
-
-    // 4. Tính lượng xuất SAU ngày T
-    $q_out_after = mysqli_query($conn, "
-        SELECT COALESCE(SUM(od.quantity),0) as total
-        FROM order_detail od
-        INNER JOIN orders o ON od.order_id = o.id
-        WHERE od.product_id='$id'
-          AND o.status != 5
-          AND DATE(o.created_at) > '$check_date'
-    ");
-    $exported_after = (int)mysqli_fetch_assoc($q_out_after)['total'];
-
-    // 5. CÔNG THỨC TINH NGƯỢC
-    // Tồn kho quá khứ = Tồn kho hiện tại - (Lượng đã nhập vào sau đó) + (Lượng đã xuất ra sau đó)
-    $current_qty = (int)$product['qty'];
-    $qty_at_date = $current_qty - $imported_after + $exported_after;
-} elseif ($check_date) {
-    // Nếu người dùng chọn ngày nhưng chưa chọn sản phẩm
-    $qty_at_date = null;
-}
+// Tra cứu tồn kho tại thời điểm (lọc theo danh mục)
+$check_date = isset($_GET['check_date']) ? $_GET['check_date'] : '';
+$check_category = isset($_GET['check_category']) ? (int)$_GET['check_category'] : 0;
+$check_results = [];
 
 // Báo cáo nhập - xuất theo khoảng thời gian
 $range_from   = isset($_GET['range_from']) ? $_GET['range_from'] : '';
@@ -89,7 +59,7 @@ $total_import = 0;
 $total_export = 0;
 
 if ($range_from && $range_to) {
-    $product_filter = $product ? "AND ih.product_id='$id'" : "";
+    $product_filter = "";
     $q_import = mysqli_query(
         $conn,
         "SELECT COALESCE(SUM(ih.quantity_imported),0) as total
@@ -114,17 +84,168 @@ if ($range_from && $range_to) {
     if ($r = mysqli_fetch_assoc($q_export)) $total_export = (int)$r['total'];
 }
 
-// Danh sách sắp hết hàng (qty < 10)
+// Quy định tồn kho
+$stock_threshold = $stored_threshold !== null ? max(1, (int)$stored_threshold) : 10;
+if (isset($_GET['stock_threshold'])) {
+    $stock_threshold = max(1, (int)$_GET['stock_threshold']);
+    $value = mysqli_real_escape_string($conn, (string)$stock_threshold);
+    mysqli_query(
+        $conn,
+        "REPLACE INTO settings (setting_key, setting_value) VALUES ('stock_threshold', '$value')"
+    );
+}
+$stock_out_threshold = 0;
+
+// Danh sách sắp hết hàng (qty < threshold)
 $low_stock_res = mysqli_query(
     $conn,
-    "SELECT id, name, qty FROM products WHERE qty < 10 ORDER BY qty ASC"
+    "SELECT id, name, qty FROM products WHERE qty < $stock_threshold ORDER BY qty ASC"
 );
 $low_stock_list = [];
 while ($ls = mysqli_fetch_assoc($low_stock_res)) $low_stock_list[] = $ls;
 
-// Quy định tồn kho
-$stock_out_threshold = 0; // Hết hàng
-$stock_low_threshold = 9; // Sắp hết: 1-9
+// Kết quả tra cứu tồn kho theo danh mục + thời điểm
+if ($check_date && $check_category > 0) {
+    $products_q = mysqli_query($conn, "SELECT id, name, qty FROM products WHERE category_id = '$check_category' ORDER BY name ASC");
+    $products_list = [];
+    while ($row = mysqli_fetch_assoc($products_q)) {
+        $products_list[] = $row;
+    }
+
+    foreach ($products_list as $p) {
+        $pid = (int)$p['id'];
+        $current_qty = (int)$p['qty'];
+
+        $q_in_after = mysqli_query($conn, "
+            SELECT COALESCE(SUM(ih.quantity_imported),0) as total
+            FROM import_history ih
+            INNER JOIN import_receipts ir ON ih.receipt_id = ir.id
+            WHERE ih.product_id='$pid'
+              AND ir.status = 1
+              AND ir.import_date > '$check_date'
+        ");
+        $imported_after = (int)mysqli_fetch_assoc($q_in_after)['total'];
+
+        $q_out_after = mysqli_query($conn, "
+            SELECT COALESCE(SUM(od.quantity),0) as total
+            FROM order_detail od
+            INNER JOIN orders o ON od.order_id = o.id
+            WHERE od.product_id='$pid'
+              AND o.status != 5
+              AND DATE(o.created_at) > '$check_date'
+        ");
+        $exported_after = (int)mysqli_fetch_assoc($q_out_after)['total'];
+
+        $qty_at_date_item = $current_qty - $imported_after + $exported_after;
+
+        $check_results[] = [
+            'id' => $pid,
+            'name' => $p['name'],
+            'qty' => max(0, (int)$qty_at_date_item)
+        ];
+    }
+}
+
+// Dữ liệu popup báo cáo
+$report_product_id = isset($_GET['report_product_id']) ? (int)$_GET['report_product_id'] : 0;
+$report_view = isset($_GET['report_view']) ? $_GET['report_view'] : '';
+$report_receipt_id = isset($_GET['receipt_id']) ? (int)$_GET['receipt_id'] : 0;
+$report_order_id = isset($_GET['order_id']) ? (int)$_GET['order_id'] : 0;
+
+$report_rows = [];
+$report_import_list = [];
+$report_export_list = [];
+$report_detail_rows = [];
+
+if ($range_from && $range_to) {
+    $report_sql = "
+        SELECT p.id, p.name,
+               COALESCE(imp.total_import, 0) AS total_import,
+               COALESCE(exp.total_export, 0) AS total_export
+        FROM products p
+        LEFT JOIN (
+            SELECT ih.product_id, SUM(ih.quantity_imported) AS total_import
+            FROM import_history ih
+            INNER JOIN import_receipts ir ON ih.receipt_id = ir.id
+            WHERE ir.status = 1
+              AND ir.import_date BETWEEN '$range_from' AND '$range_to'
+            GROUP BY ih.product_id
+        ) imp ON p.id = imp.product_id
+        LEFT JOIN (
+            SELECT od.product_id, SUM(od.quantity) AS total_export
+            FROM order_detail od
+            INNER JOIN orders o ON od.order_id = o.id
+            WHERE o.status != 5
+              AND DATE(o.created_at) BETWEEN '$range_from' AND '$range_to'
+            GROUP BY od.product_id
+        ) exp ON p.id = exp.product_id
+        WHERE (imp.total_import IS NOT NULL OR exp.total_export IS NOT NULL)
+        ORDER BY p.name ASC";
+    $report_res = mysqli_query($conn, $report_sql);
+    while ($row = mysqli_fetch_assoc($report_res)) {
+        $report_rows[] = $row;
+    }
+}
+
+if ($report_product_id && $range_from && $range_to) {
+    $report_import_list_res = mysqli_query($conn, "
+        SELECT ir.id, ir.code, ir.import_date,
+               SUM(ih.quantity_imported) AS total_qty,
+               SUM(ih.quantity_imported * ih.import_price) AS total_value
+        FROM import_history ih
+        INNER JOIN import_receipts ir ON ih.receipt_id = ir.id
+        WHERE ih.product_id = '$report_product_id'
+          AND ir.status = 1
+          AND ir.import_date BETWEEN '$range_from' AND '$range_to'
+        GROUP BY ir.id, ir.code, ir.import_date
+        ORDER BY ir.import_date DESC
+    ");
+    while ($row = mysqli_fetch_assoc($report_import_list_res)) {
+        $report_import_list[] = $row;
+    }
+
+    $report_export_list_res = mysqli_query($conn, "
+        SELECT o.id, o.created_at,
+               SUM(od.quantity) AS total_qty,
+               SUM(od.quantity * od.selling_price) AS total_value
+        FROM order_detail od
+        INNER JOIN orders o ON od.order_id = o.id
+        WHERE od.product_id = '$report_product_id'
+          AND o.status != 5
+          AND DATE(o.created_at) BETWEEN '$range_from' AND '$range_to'
+        GROUP BY o.id, o.created_at
+        ORDER BY o.created_at DESC
+    ");
+    while ($row = mysqli_fetch_assoc($report_export_list_res)) {
+        $report_export_list[] = $row;
+    }
+
+    if ($report_view === 'receipt' && $report_receipt_id) {
+        $detail_res = mysqli_query($conn, "
+            SELECT ih.quantity_imported, ih.import_price, p.name
+            FROM import_history ih
+            INNER JOIN products p ON ih.product_id = p.id
+            WHERE ih.receipt_id = '$report_receipt_id'
+            ORDER BY ih.id ASC
+        ");
+        while ($row = mysqli_fetch_assoc($detail_res)) {
+            $report_detail_rows[] = $row;
+        }
+    }
+
+    if ($report_view === 'order' && $report_order_id) {
+        $detail_res = mysqli_query($conn, "
+            SELECT od.quantity, od.selling_price, p.name
+            FROM order_detail od
+            INNER JOIN products p ON od.product_id = p.id
+            WHERE od.order_id = '$report_order_id'
+            ORDER BY od.id ASC
+        ");
+        while ($row = mysqli_fetch_assoc($detail_res)) {
+            $report_detail_rows[] = $row;
+        }
+    }
+}
 ?>
 
 <style>
@@ -285,11 +406,17 @@ $stock_low_threshold = 9; // Sắp hết: 1-9
                             <h6 style="color: #1565C0; margin: 0 0 8px; font-weight: 700;">
                                 <i class="fa fa-info-circle"></i> Quy định tồn kho
                             </h6>
-                            <ul style="margin: 0; padding-left: 18px; color: #1976D2;">
-                                <li><strong>Hết hàng:</strong> Số lượng ≤ <?= $stock_out_threshold ?></li>
-                                <li><strong>Sắp hết:</strong> Số lượng 1 - <?= $stock_low_threshold ?></li>
-                                <li><strong>Còn hàng:</strong> Số lượng ≥ <?= $stock_low_threshold + 1 ?></li>
-                            </ul>
+                            <form method="GET" style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:0;">
+                                <input type="hidden" name="tab" value="<?= htmlspecialchars($active_tab) ?>">
+                                <?php if ($range_from): ?><input type="hidden" name="range_from" value="<?= $range_from ?>"><?php endif; ?>
+                                <?php if ($range_to): ?><input type="hidden" name="range_to" value="<?= $range_to ?>"><?php endif; ?>
+                                <?php if ($check_date): ?><input type="hidden" name="check_date" value="<?= $check_date ?>"><?php endif; ?>
+                                <?php if ($check_category): ?><input type="hidden" name="check_category" value="<?= $check_category ?>"><?php endif; ?>
+                                <span style="color:#1976D2;font-weight:700;">Còn hàng khi số lượng ≥</span>
+                                <input type="number" name="stock_threshold" min="1" value="<?= $stock_threshold ?>"
+                                    style="width:80px;border:1.5px solid #90CAF9;border-radius:8px;padding:6px 10px;">
+                                <button type="submit" class="btn" style="background:#1976D2;color:#fff;border-radius:8px;padding:6px 14px;font-weight:700;border:none;">Áp dụng</button>
+                            </form>
                         </div>
 
                         <!-- Cảnh báo sắp hết hàng -->
@@ -382,7 +509,7 @@ $stock_low_threshold = 9; // Sắp hết: 1-9
                                                 $idx = 1;
                                                 foreach ($all_products as $p):
                                                     $qty = (int)$p['qty'];
-                                                    if ($qty >= 10) {
+                                                    if ($qty >= $stock_threshold) {
                                                         $badge_bg = '#4CAF50';
                                                         $label = 'Còn hàng';
                                                     } elseif ($qty > 0) {
@@ -425,26 +552,23 @@ $stock_low_threshold = 9; // Sắp hết: 1-9
                                         Tra cứu tồn kho tại thời điểm
                                     </div>
                                     <form method="GET" action="manage-stock.php">
-                                        <div class="col-md-4">
-                                            <label style="font-size:15px;font-weight:600;color:#555;margin:6px;display:block;">Chọn sản phẩm</label>
-                                            <select name="product_id" class="form-select product-select">
-                                                <option value="">-- Chọn sản phẩm --</option>
-                                                <?php
-                                                // Kiểm tra xem mảng sản phẩm có dữ liệu không trước khi lặp
-                                                if (!empty($all_products)):
-                                                    foreach ($all_products as $p):
-                                                        // Kiểm tra ID để giữ trạng thái đã chọn (Selected)
-                                                        $is_selected = ($selected_id == $p['id']) ? 'selected' : ''; ?>
-                                                        <option value="<?= $p['id'] ?>" <?= $is_selected ?>>
-                                                            <?= htmlspecialchars($p['name']) ?>
-                                                        </option>
-                                                <?php
-                                                    endforeach;
-                                                endif;
-                                                ?>
-                                            </select>
-                                        </div>
                                         <input type="hidden" name="tab" value="check">
+                                        <?php if ($range_from): ?><input type="hidden" name="range_from" value="<?= $range_from ?>"><?php endif; ?>
+                                        <?php if ($range_to): ?><input type="hidden" name="range_to" value="<?= $range_to ?>"><?php endif; ?>
+                                        <?php if ($stock_threshold): ?><input type="hidden" name="stock_threshold" value="<?= $stock_threshold ?>"><?php endif; ?>
+                                        <div class="row g-2 mb-3">
+                                            <div class="col-md-6">
+                                                <label style="font-size:15px;font-weight:600;color:#555;margin:6px;display:block;">Chọn loại sản phẩm</label>
+                                                <select name="check_category" class="form-select" style="border-color:#BFDBFE;font-size:14px;border-radius:8px;">
+                                                    <option value="0">-- Chọn loại sản phẩm --</option>
+                                                    <?php foreach ($all_categories as $cat): ?>
+                                                        <option value="<?= $cat['id'] ?>" <?= $check_category == (int)$cat['id'] ? 'selected' : '' ?>>
+                                                            <?= htmlspecialchars($cat['name']) ?>
+                                                        </option>
+                                                    <?php endforeach; ?>
+                                                </select>
+                                            </div>
+                                        </div>
                                         <?php if ($range_from): ?><input type="hidden" name="range_from" value="<?= $range_from ?>"><?php endif; ?>
                                         <?php if ($range_to): ?><input type="hidden" name="range_to" value="<?= $range_to ?>"><?php endif; ?>
                                         <label style="font-size:15px;font-weight:600;color:#555;margin:6px;display:block;">Chọn ngày muốn tra cứu</label>
@@ -457,38 +581,53 @@ $stock_low_threshold = 9; // Sắp hết: 1-9
                                             </button>
                                         </div>
                                     </form>
-
-                                    <?php if ($check_date && $qty_at_date !== null): ?>
-                                        <?php
-                                        $qd = max(0, $qty_at_date);
-                                        if ($qd >= 10) {
-                                            $qd_c = '#1B5E20';
-                                            $qd_bg = '#E8F5E9';
-                                            $qd_bd = '#4CAF50';
-                                            $qd_lbl = 'Còn hàng';
-                                        } elseif ($qd > 0) {
-                                            $qd_c = '#E65100';
-                                            $qd_bg = '#FFF3E0';
-                                            $qd_bd = '#FF9800';
-                                            $qd_lbl = 'Sắp hết';
-                                        } else {
-                                            $qd_c = '#B71C1C';
-                                            $qd_bg = '#FFEBEE';
-                                            $qd_bd = '#EF5350';
-                                            $qd_lbl = 'Hết hàng';
-                                        }
-                                        ?>
-                                        <div class="result-box" style="background:<?= $qd_bg ?>;border:1.5px solid <?= $qd_bd ?>;">
-                                            <div>
-                                                <div class="result-label" style="color:<?= $qd_c ?>;">Tồn kho ngày <?= $check_date ?></div>
-                                                <div class="result-num" style="color:<?= $qd_c ?>;"><?= $qd ?> <span style="font-size:16px;font-weight:600;">sản phẩm</span></div>
-                                                <div class="result-detail">Tổng nhập: <strong><?= $imported_total ?></strong> &nbsp;|&nbsp; Tổng bán: <strong><?= $exported_total ?></strong></div>
+                                    <?php if ($check_date && $check_category > 0): ?>
+                                        <?php if (!empty($check_results)): ?>
+                                            <div class="table-responsive" style="margin-top:14px;">
+                                                <table class="table table-bordered table-hover" style="border-color:#DBEAFE;">
+                                                    <thead style="background:#E3F2FD;color:#0D47A1;">
+                                                        <tr>
+                                                            <th style="width:60px;">#</th>
+                                                            <th>Sản phẩm</th>
+                                                            <th style="width:140px;">Tồn kho</th>
+                                                            <th style="width:140px;">Trạng thái</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <?php foreach ($check_results as $idx => $row): ?>
+                                                            <?php
+                                                            $qd = (int)$row['qty'];
+                                                            if ($qd >= $stock_threshold) {
+                                                                $qd_bd = '#4CAF50';
+                                                                $qd_lbl = 'Còn hàng';
+                                                            } elseif ($qd > 0) {
+                                                                $qd_bd = '#FF9800';
+                                                                $qd_lbl = 'Sắp hết';
+                                                            } else {
+                                                                $qd_bd = '#EF5350';
+                                                                $qd_lbl = 'Hết hàng';
+                                                            }
+                                                            ?>
+                                                            <tr>
+                                                                <td class="text-center"><?= $idx + 1 ?></td>
+                                                                <td><?= htmlspecialchars($row['name']) ?></td>
+                                                                <td class="text-center"><?= $qd ?></td>
+                                                                <td class="text-center">
+                                                                    <span style="background:<?= $qd_bd ?>;color:#fff;padding:4px 14px;border-radius:20px;font-size:12px;font-weight:700;white-space:nowrap;"><?= $qd_lbl ?></span>
+                                                                </td>
+                                                            </tr>
+                                                        <?php endforeach; ?>
+                                                    </tbody>
+                                                </table>
                                             </div>
-                                            <span style="background:<?= $qd_bd ?>;color:#fff;padding:4px 14px;border-radius:20px;font-size:13px;font-weight:700;margin-left:auto;white-space:nowrap;"><?= $qd_lbl ?></span>
-                                        </div>
+                                        <?php else: ?>
+                                            <div style="margin-top:12px;padding:10px 14px;background:#F5F5F5;border-radius:8px;font-size:13px;color:#888;">
+                                                Không tìm thấy sản phẩm thuộc loại này trong ngày đã chọn.
+                                            </div>
+                                        <?php endif; ?>
                                     <?php elseif ($check_date): ?>
                                         <div style="margin-top:12px;padding:10px 14px;background:#F5F5F5;border-radius:8px;font-size:13px;color:#888;">
-                                            Không có dữ liệu cho ngày này.
+                                            Vui lòng chọn loại sản phẩm để tra cứu.
                                         </div>
                                     <?php endif; ?>
                                 </div>
@@ -555,6 +694,47 @@ $stock_low_threshold = 9; // Sắp hết: 1-9
                                                 </span>
                                             </div>
                                         </div>
+
+                                        <?php if (!empty($report_rows)): ?>
+                                            <div style="margin-top:16px;">
+                                                <table class="table table-bordered table-hover" style="border-color:#DBEAFE;width:100%;table-layout:fixed;">
+                                                    <thead style="background:#E3F2FD;color:#0D47A1;">
+                                                        <tr>
+                                                            <th style="width:60px;">STT</th>
+                                                            <th style="width:auto;">Sản phẩm</th>
+                                                            <th style="width:110px;">Tổng nhập</th>
+                                                            <th style="width:110px;">Tổng xuất</th>
+                                                            <th style="width:110px;">Chênh lệch</th>
+                                                            <th style="width:90px;">Chi tiết</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <?php foreach ($report_rows as $idx => $row): ?>
+                                                            <?php $diff_row = (int)$row['total_import'] - (int)$row['total_export']; ?>
+                                                            <tr>
+                                                                <td class="text-center" style="vertical-align:middle;">
+                                                                    <?= $idx + 1 ?>
+                                                                </td>
+                                                                <td style="word-break:break-word;white-space:normal;">
+                                                                    <?= htmlspecialchars($row['name']) ?>
+                                                                </td>
+                                                                <td class="text-center" style="color:#1565C0;font-weight:700;">+<?= (int)$row['total_import'] ?></td>
+                                                                <td class="text-center" style="color:#B91C1C;font-weight:700;">-<?= (int)$row['total_export'] ?></td>
+                                                                <td class="text-center" style="font-weight:800;color:<?= $diff_row >= 0 ? '#15803D' : '#B91C1C' ?>;">
+                                                                    <?= ($diff_row >= 0 ? '+' : '') . $diff_row ?>
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    <a href="manage-stock.php?tab=report&range_from=<?= $range_from ?>&range_to=<?= $range_to ?>&stock_threshold=<?= $stock_threshold ?>&report_product_id=<?= $row['id'] ?>"
+                                                                        class="btn btn-sm" style="background:#1976D2;color:#fff;border-radius:20px;padding:4px 12px;font-weight:700;">
+                                                                        Xem
+                                                                    </a>
+                                                                </td>
+                                                            </tr>
+                                                        <?php endforeach; ?>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        <?php endif; ?>
                                     <?php elseif ($range_from || $range_to): ?>
                                         <div style="margin-top:12px;padding:10px 14px;background:#F5F5F5;border-radius:8px;font-size:13px;color:#888;">
                                             Vui lòng chọn đủ khoảng thời gian để xem báo cáo.
@@ -569,6 +749,160 @@ $stock_low_threshold = 9; // Sắp hết: 1-9
             </div>
         </div>
     </div>
+
+    <?php if ($report_product_id && $range_from && $range_to): ?>
+        <?php
+        $report_base = http_build_query([
+            'tab' => 'report',
+            'range_from' => $range_from,
+            'range_to' => $range_to,
+            'stock_threshold' => $stock_threshold,
+            'report_product_id' => $report_product_id
+        ]);
+        ?>
+        <div style="position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:2147483647;display:flex;align-items:center;justify-content:center;padding:20px;">
+            <div style="background:#fff;max-width:980px;width:92vw;border-radius:14px;box-shadow:0 20px 40px rgba(0,0,0,0.2);padding:20px;max-height:90vh;overflow:auto;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+                    <h5 style="margin:0;color:#1E293B;">Chi tiết nhập / xuất</h5>
+                    <a href="manage-stock.php?tab=report&range_from=<?= $range_from ?>&range_to=<?= $range_to ?>&stock_threshold=<?= $stock_threshold ?>" style="text-decoration:none;font-weight:700;color:#EF4444;">Đóng</a>
+                </div>
+
+                <?php if ($report_view === 'receipt' && $report_receipt_id): ?>
+                    <div style="margin-bottom:12px;">
+                        <a href="manage-stock.php?<?= $report_base ?>" class="btn btn-sm btn-secondary">← Quay lại danh sách</a>
+                    </div>
+                    <h6 style="margin-bottom:10px;color:#0F172A;">Chi tiết phiếu nhập #<?= $report_receipt_id ?></h6>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead style="background:#E3F2FD;">
+                                <tr>
+                                    <th>Sản phẩm</th>
+                                    <th style="width:120px;">Số lượng</th>
+                                    <th style="width:140px;">Giá nhập</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php if (!empty($report_detail_rows)): ?>
+                                    <?php foreach ($report_detail_rows as $row): ?>
+                                        <tr>
+                                            <td><?= htmlspecialchars($row['name']) ?></td>
+                                            <td class="text-center"><?= (int)$row['quantity_imported'] ?></td>
+                                            <td class="text-end">$<?= number_format($row['import_price'], 2) ?></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <tr>
+                                        <td colspan="3" class="text-center">Không có dữ liệu.</td>
+                                    </tr>
+                                <?php endif; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                <?php elseif ($report_view === 'order' && $report_order_id): ?>
+                    <div style="margin-bottom:12px;">
+                        <a href="manage-stock.php?<?= $report_base ?>" class="btn btn-sm btn-secondary">← Quay lại danh sách</a>
+                    </div>
+                    <h6 style="margin-bottom:10px;color:#0F172A;">Chi tiết đơn hàng #<?= $report_order_id ?></h6>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead style="background:#E3F2FD;">
+                                <tr>
+                                    <th>Sản phẩm</th>
+                                    <th style="width:120px;">Số lượng</th>
+                                    <th style="width:140px;">Giá bán</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php if (!empty($report_detail_rows)): ?>
+                                    <?php foreach ($report_detail_rows as $row): ?>
+                                        <tr>
+                                            <td><?= htmlspecialchars($row['name']) ?></td>
+                                            <td class="text-center"><?= (int)$row['quantity'] ?></td>
+                                            <td class="text-end">$<?= number_format($row['selling_price'], 2) ?></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <tr>
+                                        <td colspan="3" class="text-center">Không có dữ liệu.</td>
+                                    </tr>
+                                <?php endif; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                <?php else: ?>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <h6 style="color:#1565C0;">Chi tiết nhập hàng</h6>
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead style="background:#E3F2FD;">
+                                        <tr>
+                                            <th>Mã phiếu</th>
+                                            <th style="width:100px;">Ngày</th>
+                                            <th style="width:90px;">SL</th>
+                                            <th style="width:120px;">Giá nhập</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php if (!empty($report_import_list)): ?>
+                                            <?php foreach ($report_import_list as $row): ?>
+                                                <?php $code = $row['code'] ?: ('PN' . str_pad($row['id'], 3, '0', STR_PAD_LEFT)); ?>
+                                                <tr>
+                                                    <td>
+                                                        <a href="manage-stock.php?<?= $report_base ?>&report_view=receipt&receipt_id=<?= $row['id'] ?>" style="color:#1976D2;font-weight:700;"><?= htmlspecialchars($code) ?></a>
+                                                    </td>
+                                                    <td><?= date('d/m/Y', strtotime($row['import_date'])) ?></td>
+                                                    <td class="text-center"><?= (int)$row['total_qty'] ?></td>
+                                                    <td class="text-end">$<?= number_format($row['total_value'], 2) ?></td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                        <?php else: ?>
+                                            <tr>
+                                                <td colspan="4" class="text-center">Không có dữ liệu.</td>
+                                            </tr>
+                                        <?php endif; ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 style="color:#1565C0;">Chi tiết xuất (đơn hàng)</h6>
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead style="background:#E3F2FD;">
+                                        <tr>
+                                            <th>Mã đơn</th>
+                                            <th style="width:100px;">Ngày</th>
+                                            <th style="width:90px;">SL</th>
+                                            <th style="width:120px;">Giá bán</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php if (!empty($report_export_list)): ?>
+                                            <?php foreach ($report_export_list as $row): ?>
+                                                <tr>
+                                                    <td>
+                                                        <a href="manage-stock.php?<?= $report_base ?>&report_view=order&order_id=<?= $row['id'] ?>" style="color:#1976D2;font-weight:700;">#<?= $row['id'] ?></a>
+                                                    </td>
+                                                    <td><?= date('d/m/Y', strtotime($row['created_at'])) ?></td>
+                                                    <td class="text-center"><?= (int)$row['total_qty'] ?></td>
+                                                    <td class="text-end">$<?= number_format($row['total_value'], 2) ?></td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                        <?php else: ?>
+                                            <tr>
+                                                <td colspan="4" class="text-center">Không có dữ liệu.</td>
+                                            </tr>
+                                        <?php endif; ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+    <?php endif; ?>
 </body>
 
 <?php include("../admin/includes/footer.php"); ?>
