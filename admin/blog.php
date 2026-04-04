@@ -1,5 +1,6 @@
 <?php
 include("../admin/includes/header.php");
+$search = isset($_GET['search']) ? trim($_GET['search']) : '';
 ?>
 
 <body>
@@ -8,9 +9,17 @@ include("../admin/includes/header.php");
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4>Bài viết</h4>
+                        <h4>Quản lý bài viết</h4>
                     </div>
                     <div class="card-body">
+                        <form method="GET" style="display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; align-items:center;">
+                            <input type="text" name="search" value="<?= htmlspecialchars($search) ?>"
+                                class="form-control" placeholder="Tìm theo tiêu đề bài viết..." style="max-width: 320px;">
+                            <button type="submit" class="btn btn-primary">Tìm</button>
+                            <a class="btn btn-success" href="add-blog.php">
+                                <i class="fa fa-plus"></i> Thêm bài viết
+                            </a>
+                        </form>
                         <table class="table table-bordered table-striped">
                             <thead>
                                 <tr>
@@ -24,7 +33,12 @@ include("../admin/includes/header.php");
                             </thead>
                             <tbody>
                                 <?php
-                                $blog = getAll("blog");
+                                if ($search !== '') {
+                                    $keyword = mysqli_real_escape_string($conn, $search);
+                                    $blog = mysqli_query($conn, "SELECT * FROM blog WHERE title LIKE '%$keyword%' ORDER BY id DESC");
+                                } else {
+                                    $blog = getAll("blog");
+                                }
 
                                 if (mysqli_num_rows($blog) > 0) {
                                     foreach ($blog as $item) {

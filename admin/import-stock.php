@@ -4,17 +4,17 @@ include("../admin/includes/header.php");
 // Lấy danh sách sản phẩm
 $products = getAll("products");
 $selected_product_id = isset($_GET['product_id']) ? (int)$_GET['product_id'] : 0;
-$productOptions = '';
+$productData = [];
 if (mysqli_num_rows($products) > 0) {
     foreach ($products as $item) {
-        $selected_attr = ($selected_product_id && $selected_product_id === (int)$item['id']) ? ' selected' : '';
-        $productOptions .= '<option value="' . $item['id'] . '"'
-            . ' data-qty="' . $item['qty'] . '"'
-            . ' data-price="' . $item['original_price'] . '"'
-            . ' data-selling="' . $item['selling_price'] . '"'
-            . ' data-margin="' . $item['profit_margin'] . '"' . $selected_attr . '>'
-            . htmlspecialchars($item['name'])
-            . '</option>';
+        $productData[] = [
+            'id' => (int)$item['id'],
+            'name' => $item['name'],
+            'qty' => (float)$item['qty'],
+            'price' => (float)$item['original_price'],
+            'selling' => (float)$item['selling_price'],
+            'margin' => (float)$item['profit_margin']
+        ];
     }
 }
 ?>
@@ -77,10 +77,11 @@ if (mysqli_num_rows($products) > 0) {
                                     <div class="row g-3 align-items-end">
                                         <div class="col-md-4">
                                             <label class="form-label"><b>Chọn sản phẩm <span style="color: red;">*</span></b></label>
-                                            <select name="product_id[]" class="form-select product-select" required>
-                                                <option value="">-- Chọn sản phẩm --</option>
-                                                <?= $productOptions ?>
-                                            </select>
+                                            <div class="product-search-wrap" style="position:relative;">
+                                                <input type="text" class="form-control product-input" placeholder="Gõ để tìm sản phẩm..." required autocomplete="off">
+                                                <input type="hidden" name="product_id[]" class="product-id-input" value="">
+                                                <div class="product-dropdown" style="position:absolute;left:0;right:0;top:calc(100% + 6px);background:#fff;border:1px solid #E2E8F0;border-radius:10px;box-shadow:0 10px 20px rgba(0,0,0,0.08);max-height:220px;overflow:auto;z-index:20;display:none;"></div>
+                                            </div>
                                         </div>
                                         <div class="col-md-2">
                                             <label class="form-label"><b>Số lượng <span style="color: red;">*</span></b></label>
@@ -170,7 +171,7 @@ if (mysqli_num_rows($products) > 0) {
     </div>
 
     <script>
-        const productOptionsHtml = <?= json_encode($productOptions) ?>;
+        const productData = <?= json_encode($productData) ?>;
         const preselectedProductId = <?= (int)$selected_product_id ?>;
 
         // JavaScript để tính toán tự động
@@ -179,7 +180,9 @@ if (mysqli_num_rows($products) > 0) {
             const addItemBtn = document.getElementById('add-item');
 
             function bindRow(row) {
-                const productSelect = row.querySelector('.product-select');
+                const productInput = row.querySelector('.product-input');
+                const productIdInput = row.querySelector('.product-id-input');
+                const dropdown = row.querySelector('.product-dropdown');
                 const quantityInput = row.querySelector('.quantity-input');
                 const importPriceInput = row.querySelector('.import-price-input');
                 const profitMarginInput = row.querySelector('.margin-input');
@@ -192,37 +195,166 @@ if (mysqli_num_rows($products) > 0) {
 
                 let currentQty = 0;
                 let currentPrice = 0;
+                let currentSelling = 0;
 
-                productSelect.addEventListener('change', function() {
-                    const selectedOption = this.options[this.selectedIndex];
-                    if (this.value) {
-                        currentQty = parseFloat(selectedOption.getAttribute('data-qty'));
-                        currentPrice = parseFloat(selectedOption.getAttribute('data-price'));
-                        const currentSelling = parseFloat(selectedOption.getAttribute('data-selling'));
-                        const currentMargin = parseFloat(selectedOption.getAttribute('data-margin'));
-
-                        currentInfo.innerHTML = `
-                            <div style="color: #E65100;">
-                                <p style="margin: 5px 0;"><strong style="color: #8B5A00;">📦 Số lượng tồn:</strong> <span style="font-weight: 600; color: #F57C00;">${currentQty} sp</span></p>
-                                <p style="margin: 5px 0;"><strong style="color: #8B5A00;">💰 Giá nhập hiện tại:</strong> <span style="font-weight: 600; color: #F57C00;">${currentPrice.toFixed(2)} $</span></p>
-                                <p style="margin: 5px 0;"><strong style="color: #8B5A00;">💵 Giá bán hiện tại:</strong> <span style="font-weight: 600; color: #388E3C;">${currentSelling.toFixed(2)} $</span></p>
-                                <p style="margin: 5px 0;"><strong style="color: #8B5A00;">📊 Tỷ lệ lợi nhuận:</strong> <span style="font-weight: 600; color: #1976D2;">${currentMargin.toFixed(2)}%</span></p>
-                            </div>
-                        `;
-                        profitMarginInput.value = currentMargin;
-                        if (marginDisplay) {
-                            marginDisplay.textContent = `${currentMargin.toFixed(2)}%`;
-                        }
-                        calculate();
-                    } else {
+                function updateProductInfo(product) {
+                    if (!product) {
+                        productIdInput.value = '';
                         currentInfo.innerHTML = '<small style="color: #8B5A00;">Chọn sản phẩm để xem thông tin</small>';
                         calculationResult.style.display = 'none';
+                        return;
+                    }
+
+                    productIdInput.value = product.id;
+                    currentQty = parseFloat(product.qty);
+                    currentPrice = parseFloat(product.price);
+                    currentSelling = parseFloat(product.selling);
+                    const currentMargin = parseFloat(product.margin);
+
+                    currentInfo.innerHTML = `
+                        <div style="color: #E65100;">
+                            <p style="margin: 5px 0;"><strong style="color: #8B5A00;">📦 Số lượng tồn:</strong> <span style="font-weight: 600; color: #F57C00;">${currentQty} sp</span></p>
+                            <p style="margin: 5px 0;"><strong style="color: #8B5A00;">💰 Giá nhập hiện tại:</strong> <span style="font-weight: 600; color: #F57C00;">${currentPrice.toFixed(2)} $</span></p>
+                            <p style="margin: 5px 0;"><strong style="color: #8B5A00;">💵 Giá bán hiện tại:</strong> <span style="font-weight: 600; color: #388E3C;">${currentSelling.toFixed(2)} $</span></p>
+                            <p style="margin: 5px 0;"><strong style="color: #8B5A00;">📊 Tỷ lệ lợi nhuận:</strong> <span style="font-weight: 600; color: #1976D2;">${currentMargin.toFixed(2)}%</span></p>
+                        </div>
+                    `;
+                    profitMarginInput.value = currentMargin;
+                    if (marginDisplay) {
+                        marginDisplay.textContent = `${currentMargin.toFixed(2)}%`;
+                    }
+                    calculate();
+                }
+
+                function normalizeText(value) {
+                    return value
+                        .toLowerCase()
+                        .normalize('NFD')
+                        .replace(/[\u0300-\u036f]/g, '')
+                        .replace(/đ/g, 'd')
+                        .replace(/[^a-z0-9\s]/g, ' ')
+                        .replace(/\s+/g, ' ')
+                        .trim();
+                }
+
+                function hasDiacritics(value) {
+                    return normalizeText(value) !== value.toLowerCase();
+                }
+
+                function hasDiacritics(value) {
+                    return normalizeText(value) !== value.toLowerCase();
+                }
+
+                let activeIndex = -1;
+
+                function renderDropdown(matches) {
+                    if (!dropdown) {
+                        return;
+                    }
+                    if (!matches.length) {
+                        dropdown.style.display = 'none';
+                        dropdown.innerHTML = '';
+                        activeIndex = -1;
+                        return;
+                    }
+                    if (activeIndex >= matches.length) {
+                        activeIndex = matches.length - 1;
+                    }
+                    dropdown.innerHTML = matches.map((item, index) => `
+                        <div class="dropdown-item" data-id="${item.id}" data-index="${index}" style="padding:8px 12px;cursor:pointer;border-bottom:1px solid #F1F5F9;font-size:14px;background:${index === activeIndex ? '#EEF2FF' : 'transparent'};font-weight:${index === activeIndex ? '600' : '400'};">
+                            ${item.name}
+                        </div>
+                    `).join('');
+                    dropdown.style.display = 'block';
+                }
+
+                function getMatches(keywordRaw) {
+                    const keyword = keywordRaw.trim();
+                    if (!keyword) {
+                        return [];
+                    }
+                    if (hasDiacritics(keyword)) {
+                        const lower = keyword.toLowerCase();
+                        return productData.filter(p => p.name.toLowerCase().includes(lower)).slice(0, 12);
+                    }
+                    const normalized = normalizeText(keyword);
+                    return productData.filter(p => normalizeText(p.name).includes(normalized)).slice(0, 12);
+                }
+
+                function handleInput() {
+                    const keywordRaw = productInput.value.trim();
+                    const matches = getMatches(keywordRaw);
+                    activeIndex = matches.length ? 0 : -1;
+                    renderDropdown(matches);
+
+                    const exact = hasDiacritics(keywordRaw) ?
+                        productData.find(p => p.name.toLowerCase() === keywordRaw.toLowerCase()) :
+                        productData.find(p => normalizeText(p.name) === normalizeText(keywordRaw));
+                    updateProductInfo(exact || null);
+                }
+
+                function chooseByIndex(index) {
+                    const keywordRaw = productInput.value.trim();
+                    const matches = getMatches(keywordRaw);
+                    if (!matches.length || index < 0 || index >= matches.length) {
+                        return;
+                    }
+                    const selected = matches[index];
+                    productInput.value = selected.name;
+                    updateProductInfo(selected);
+                    dropdown.style.display = 'none';
+                }
+
+                if (productInput) {
+                    productInput.addEventListener('input', handleInput);
+                    productInput.addEventListener('focus', handleInput);
+                    productInput.addEventListener('keydown', function(e) {
+                        const keywordRaw = productInput.value.trim();
+                        const matches = getMatches(keywordRaw);
+                        if (!matches.length) {
+                            return;
+                        }
+
+                        if (e.key === 'ArrowDown') {
+                            e.preventDefault();
+                            activeIndex = (activeIndex + 1) % matches.length;
+                            renderDropdown(matches);
+                        } else if (e.key === 'ArrowUp') {
+                            e.preventDefault();
+                            activeIndex = (activeIndex - 1 + matches.length) % matches.length;
+                            renderDropdown(matches);
+                        } else if (e.key === 'Enter') {
+                            e.preventDefault();
+                            chooseByIndex(activeIndex >= 0 ? activeIndex : 0);
+                        }
+                    });
+                }
+
+                if (dropdown) {
+                    dropdown.addEventListener('mousedown', function(e) {
+                        const item = e.target.closest('.dropdown-item');
+                        if (!item) return;
+                        const selected = productData.find(p => p.id === parseInt(item.dataset.id, 10));
+                        if (selected) {
+                            productInput.value = selected.name;
+                            updateProductInfo(selected);
+                            dropdown.style.display = 'none';
+                        }
+                    });
+                }
+
+                document.addEventListener('click', function(e) {
+                    if (!row.contains(e.target) && dropdown) {
+                        dropdown.style.display = 'none';
                     }
                 });
 
-                if (preselectedProductId && !productSelect.value) {
-                    productSelect.value = preselectedProductId;
-                    productSelect.dispatchEvent(new Event('change'));
+                if (preselectedProductId && !productIdInput.value) {
+                    const matched = productData.find(p => p.id === preselectedProductId);
+                    if (matched) {
+                        productInput.value = matched.name;
+                        updateProductInfo(matched);
+                    }
                 }
 
                 [quantityInput, importPriceInput, profitMarginInput].forEach(input => {
@@ -230,7 +362,7 @@ if (mysqli_num_rows($products) > 0) {
                 });
 
                 function calculate() {
-                    if (!productSelect.value || !quantityInput.value || !importPriceInput.value || !profitMarginInput.value) {
+                    if (!productIdInput.value || !quantityInput.value || !importPriceInput.value || !profitMarginInput.value) {
                         calculationResult.style.display = 'none';
                         return;
                     }
@@ -266,6 +398,7 @@ if (mysqli_num_rows($products) > 0) {
 
             function addRow() {
                 const row = document.createElement('div');
+                const listId = `product-list-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
                 row.className = 'import-item mb-4';
                 row.style.border = '1px solid #FFE0B2';
                 row.style.borderRadius = '10px';
@@ -275,10 +408,11 @@ if (mysqli_num_rows($products) > 0) {
                     <div class="row g-3 align-items-end">
                         <div class="col-md-4">
                             <label class="form-label"><b>Chọn sản phẩm <span style=\"color: red;\">*</span></b></label>
-                            <select name="product_id[]" class="form-select product-select" required>
-                                <option value="">-- Chọn sản phẩm --</option>
-                                ${productOptionsHtml}
-                            </select>
+                            <div class="product-search-wrap" style="position:relative;">
+                                <input type="text" class="form-control product-input" placeholder="Gõ để tìm sản phẩm..." required autocomplete="off">
+                                <input type="hidden" name="product_id[]" class="product-id-input" value="">
+                                <div class="product-dropdown" style="position:absolute;left:0;right:0;top:calc(100% + 6px);background:#fff;border:1px solid #E2E8F0;border-radius:10px;box-shadow:0 10px 20px rgba(0,0,0,0.08);max-height:220px;overflow:auto;z-index:20;display:none;"></div>
+                            </div>
                         </div>
                         <div class="col-md-2">
                             <label class="form-label"><b>Số lượng <span style=\"color: red;\">*</span></b></label>
