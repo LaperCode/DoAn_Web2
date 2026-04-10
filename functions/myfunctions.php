@@ -1,5 +1,5 @@
 <?php
-include("../config/dbcon.php");
+include("../config/dbcon.php"); // Kết nối database
 
 // Format số thành dạng 10.000, 1.500.000
 if (!function_exists('fmt_price')) {
@@ -22,6 +22,7 @@ function getByID($table, $id)
     return $query_run = mysqli_query($conn, $query);
 }
 
+// Hàm lấy tất cả bản ghi có trạng thái active (status = 0)
 function totalValue($table)
 {
     global $conn;
@@ -30,6 +31,8 @@ function totalValue($table)
     $totalValue = mysqli_fetch_array($totalValue);
     return $totalValue['number'];
 }
+
+// Hàm lấy tất cả người dùng, có thể loại trừ một người dùng cụ thể bằng ID
 function getAllUsers($exclude_id = null)
 {
     global $conn;
@@ -42,7 +45,7 @@ function getAllUsers($exclude_id = null)
     return $query_run = mysqli_query($conn, $query);
 }
 
-// order
+// Hàm lấy tất cả đơn hàng với các điều kiện lọc và sắp xếp
 function getAllOrder($status = -1, $from_date = null, $to_date = null, $district = null, $city = null, $ward = null, $ward_sort = null)
 {
     global $conn;
@@ -91,6 +94,7 @@ function getAllOrder($status = -1, $from_date = null, $to_date = null, $district
     return mysqli_query($conn, $query);
 }
 
+// Hàm lấy chi tiết đơn hàng theo order_id
 function getOrderDetail($order_id)
 {
     global $conn;
@@ -103,6 +107,7 @@ function getOrderDetail($order_id)
     return mysqli_query($conn, $query);
 }
 
+// Hàm tính tổng giá trị đơn hàng đã hoàn tất (status = 4)
 function totalPriceGet()
 {
     global $conn;
@@ -115,6 +120,7 @@ function totalPriceGet()
     return $total_price;
 }
 
+// Hàm chuyển hướng với thông báo
 function redirect($url, $message)
 {
     $_SESSION['message'] = $message;
@@ -122,6 +128,7 @@ function redirect($url, $message)
     exit();
 }
 
+// Hàm thống kê khách hàng mua nhiều nhất trong khoảng thời gian nhất định
 function thongkeKH($from_date = null, $to_date = null)
 {
     global $conn;

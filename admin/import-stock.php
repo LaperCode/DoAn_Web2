@@ -271,7 +271,7 @@ if (mysqli_num_rows($products) > 0) {
                 function getMatches(keywordRaw) {
                     const keyword = keywordRaw.trim();
                     if (!keyword) {
-                        return [];
+                        return productData; // Hiển thị tất cả khi chưa gõ
                     }
                     if (hasDiacritics(keyword)) {
                         const lower = keyword.toLowerCase();
@@ -287,10 +287,13 @@ if (mysqli_num_rows($products) > 0) {
                     activeIndex = matches.length ? 0 : -1;
                     renderDropdown(matches);
 
-                    const exact = hasDiacritics(keywordRaw) ?
-                        productData.find(p => p.name.toLowerCase() === keywordRaw.toLowerCase()) :
-                        productData.find(p => normalizeText(p.name) === normalizeText(keywordRaw));
-                    updateProductInfo(exact || null);
+                    let exact = null;
+                    if (keywordRaw) {
+                        exact = hasDiacritics(keywordRaw) ?
+                            productData.find(p => p.name.toLowerCase() === keywordRaw.toLowerCase()) :
+                            productData.find(p => normalizeText(p.name) === normalizeText(keywordRaw));
+                    }
+                    updateProductInfo(exact);
                 }
 
                 function chooseByIndex(index) {

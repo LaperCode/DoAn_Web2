@@ -9,36 +9,47 @@ if (!function_exists('fmt_price')) {
     }
 }
 
+// Hàm lấy tất cả bản ghi có trạng thái active (status = 0)
 function getAllActive($table)
 {
     global $conn;
     $query = "SELECT * FROM $table WHERE status='0'";
     return $query_run = mysqli_query($conn, $query);
 }
+
+// Hàm lấy bản ghi theo ID và có trạng thái active (status = 0)
 function getIDActive($table, $id)
 {
     global $conn;
     $query = "SELECT * FROM $table WHERE id='$id' AND status='0'";
     return $query_run = mysqli_query($conn, $query);
 }
+
+// Hàm lấy bản ghi theo ID mà không quan tâm đến trạng thái
 function getByID($table, $id)
 {
     global $conn;
     $query = "SELECT * FROM $table WHERE id='$id'";
     return $query_run = mysqli_query($conn, $query);
 }
+
+// Hàm lấy bản ghi theo slug
 function getAll($table)
 {
     global $conn;
     $query = "SELECT * FROM $table";
     return $query_run = mysqli_query($conn, $query);
 }
+
+// Hàm lấy bản ghi theo slug
 function getBySlug($table, $slug)
 {
     global $conn;
     $query = "SELECT * FROM $table WHERE slug='$slug'";
     return $query_run = mysqli_query($conn, $query);
 }
+
+// Hàm đếm tổng số bản ghi trong một bảng
 function totalValue($table)
 {
     global $conn;
@@ -47,6 +58,8 @@ function totalValue($table)
     $totalValue = mysqli_fetch_array($totalValue);
     return $totalValue['number'];
 }
+
+// Hàm lấy sản phẩm bán chạy nhất
 function getBestSelling($numberGet)
 {
     global $conn;
@@ -58,6 +71,8 @@ function getBestSelling($numberGet)
                 LIMIT $numberGet";
     return mysqli_query($conn, $query);
 }
+
+// Hàm lấy sản phẩm mới nhất với các điều kiện lọc và phân trang
 function getLatestProducts($numberGet, $page = 0, $type = "", $search = "")
 {
     global $conn;
@@ -135,6 +150,7 @@ function getTotalProducts($type = "", $search = "")
     return (int)$row['total']; // Trả về tổng số sản phẩm
 }
 
+// Hàm lấy tất cả bài viết
 function getBlogs($page, $keyWold)
 {
     global $conn;
@@ -146,7 +162,7 @@ function getBlogs($page, $keyWold)
     return mysqli_query($conn, $query);
 }
 
-// order
+// Hàm kiểm tra xem người dùng đã mua sản phẩm chưa và trạng thái đơn hàng
 function checkOrder($id_product)
 {
     global $conn;
@@ -163,6 +179,7 @@ function checkOrder($id_product)
     }
 }
 
+// Hàm lấy tất cả đơn hàng của người dùng đã thanh toán (status = 1)
 function getMyOrders()
 {
     global $conn;
@@ -173,6 +190,7 @@ function getMyOrders()
     return mysqli_query($conn, $query);
 }
 
+// Hàm lấy thông tin đánh giá của đơn hàng đã hoàn tất (status = 4) theo order_id
 function getMyOrderVote($id)
 {
     global $conn;
@@ -200,6 +218,7 @@ function getMyOrderVote($id)
     return $data ?: null; // Trả về null nếu không có dữ liệu
 }
 
+// Hàm lấy tất cả sản phẩm đã mua của một đơn hàng đã hoàn tất (status = 4) theo order_id
 function getOrderWasBuy($cart_id)
 {
     global $conn;
@@ -220,6 +239,7 @@ function getOrderWasBuy($cart_id)
     return $orders;
 }
 
+// Hàm lấy tất cả đơn hàng của người dùng với các điều kiện lọc và sắp xếp
 function getOrderByUserId($sort = 'newest', $payment_filter = '', $status_filter = '')
 {
     global $conn;
@@ -272,6 +292,7 @@ function getOrderByUserId($sort = 'newest', $payment_filter = '', $status_filter
     return mysqli_query($conn, $query);
 }
 
+// Hàm lấy tất cả đánh giá của sản phẩm đã hoàn tất (status = 4) theo product_id
 function getRate($product_id)
 {
     global $conn;
@@ -282,6 +303,7 @@ function getRate($product_id)
     return mysqli_query($conn, $query);
 }
 
+// Hàm lấy đánh giá trung bình của sản phẩm đã hoàn tất (status = 4) theo product_id
 function avgRate($product_id)
 {
     global $conn;
@@ -291,6 +313,7 @@ function avgRate($product_id)
     return round($rate['avg_rate'], 1);
 }
 
+// Hàm chuyển hướng với thông báo
 function redirect($url, $message)
 {
     $_SESSION['message'] = $message;
