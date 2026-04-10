@@ -1,5 +1,5 @@
 <?php
-session_start();
+session_start(); // Bắt đầu session để sử dụng $_SESSION
 include("../middleware/adminMiddleware.php");
 include("../config/dbcon.php");
 
@@ -488,7 +488,6 @@ if (isset($_POST['add_category_btn'])) {    //Thêm danh mục
         mysqli_rollback($conn);
         redirect("import-stock.php", "Có lỗi xảy ra: " . $e->getMessage());
     }
-
 } else if (isset($_POST['update_receipt_status'])) {  // XÁC NHẬN / HỦY PHIẾU NHẬP
     $receipt_id = (int)($_POST['receipt_id'] ?? 0);
     $new_status  = (int)($_POST['new_status']  ?? -1);
@@ -513,7 +512,8 @@ if (isset($_POST['add_category_btn'])) {    //Thêm danh mục
     try {
         if ($new_status === 1) {
             // XÁC NHẬN: cập nhật kho từ import_history
-            $history_res = mysqli_query($conn,
+            $history_res = mysqli_query(
+                $conn,
                 "SELECT * FROM import_history WHERE receipt_id = '$receipt_id'"
             );
 

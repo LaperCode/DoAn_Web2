@@ -3,12 +3,14 @@ session_start();
 include("../config/dbcon.php");
 include("../functions/myfunctions.php");
 
+//Đăng ký người dùng
 if (isset($_POST['register-btn'])) {
+    //Lấy dữ liệu từ form đăng ký và sử dụng mysqli_real_escape_string để tránh lỗi SQL Injection
     $name = mysqli_real_escape_string($conn, $_POST['name']);
     $phone = mysqli_real_escape_string($conn, $_POST['phone']);
     $email = mysqli_real_escape_string($conn, $_POST['email']);
     $password = mysqli_real_escape_string($conn, $_POST['password']);
-    $cpassword = mysqli_real_escape_string($conn, $_POST['cpassword']);
+    $cpassword = mysqli_real_escape_string($conn, $_POST['cpassword']); // Lấy lại mật khẩu xác nhận để so sánh với mật khẩu chính
 
 
     //Check email already 
@@ -22,7 +24,7 @@ if (isset($_POST['register-btn'])) {
         if ($password == $cpassword) {
             if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 //Inser user data
-                $pass_hash = password_hash($password, PASSWORD_DEFAULT);
+                $pass_hash = password_hash($password, PASSWORD_DEFAULT); // Mã hóa mật khẩu trước khi lưu vào database
                 $insert_query = "INSERT INTO `users` (`name`,`email`,`phone`,`password`) VALUES ('$name','$email','$phone','$pass_hash')";
                 $insert_query_run = mysqli_query($conn, $insert_query);
                 if ($insert_query_run) {
@@ -37,12 +39,13 @@ if (isset($_POST['register-btn'])) {
             redirect("../register.php", "Mật khẩu không khớp");
         }
     }
-} else if (isset($_POST['login_btn'])) {
+} else if (isset($_POST['login_btn'])) { //Đăng nhập người dùng
     $email = mysqli_real_escape_string($conn, $_POST['email']);
     $password = mysqli_real_escape_string($conn, $_POST['password']);
     $login_query = "SELECT * FROM `users` WHERE `email`='$email'";
     $login_query_run = mysqli_query($conn, $login_query);
 
+    // Kiểm tra xem có người dùng nào với email đó không
     if (mysqli_num_rows($login_query_run) > 0) {
         $userdata   =   mysqli_fetch_array($login_query_run);
         $verify = password_verify($password, $userdata['password']);
@@ -74,10 +77,9 @@ if (isset($_POST['register-btn'])) {
     } else {
         redirect("../login.php", "Tài khoản email không tồn tại");
     }
-} else if (isset($_POST['update_user_btn'])) {
+} else if (isset($_POST['update_user_btn'])) { //Cập nhật thông tin người dùng
     $id = $_SESSION['auth_user']['id'];
     $name = $_POST['name'];
-
     $email = $_POST['email'];
     $phone = $_POST['phone'];
     $address = $_POST['address'];
